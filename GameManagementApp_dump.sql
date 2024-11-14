@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS GameManagamentApp;
+CREATE DATABASE IF NOT EXISTS GameManagementApp;
 
-USE GameManagamentApp;
+USE GameManagementApp;
 
 CREATE TABLE IF NOT EXISTS Players (
     playerID INT AUTO_INCREMENT PRIMARY KEY,
