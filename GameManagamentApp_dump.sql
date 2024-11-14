@@ -1,8 +1,8 @@
-CREATE DATABASE GameDB;
+CREATE DATABASE IF NOT EXISTS GameManagamentApp;
 
-USE GameDB;
+USE GameManagamentApp;
 
-CREATE TABLE Player (
+CREATE TABLE IF NOT EXISTS Players (
     playerID INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE Player (
     city VARCHAR(255) NULL
 );
 
-CREATE TABLE Games (
+CREATE TABLE IF NOT EXISTS Games (
     gameID INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     type VARCHAR(100),
@@ -22,7 +22,7 @@ CREATE TABLE Games (
     description TEXT
 );
 
-CREATE TABLE PlayerGames (
+CREATE TABLE IF NOT EXISTS PlayerGames (
     playerID INT,
     gameID INT,
     gamerTag VARCHAR(255) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE PlayerGames (
     joinDate DATE,
     currentLevel INT,
     PRIMARY KEY (playerID, gameID),
-    FOREIGN KEY (playerID) REFERENCES Player(playerID) ON DELETE RESTRICT,
+    FOREIGN KEY (playerID) REFERENCES Players(playerID) ON DELETE RESTRICT,
     FOREIGN KEY (gameID) REFERENCES Games(gameID) ON DELETE CASCADE
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE PlayerGames (
 
 -- INSERT ----------------------------------------------------------------------
 
-INSERT INTO Player (username, password, email, joinDate, age, occupation, gender, city)
+INSERT INTO Players (username, password, email, joinDate, age, occupation, gender, city)
 VALUES 
 ('Gamer_420', 'password123', 'gamer420@example.com', '2024-01-01', 28, 'Software Engineer', 'Male', 'New York'),
 ('EpicNoodle', 'noodlesRlife', 'epicnoodle@example.com', '2024-02-15', 35, 'Chef', 'Female', 'San Francisco'),
