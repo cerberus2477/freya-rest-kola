@@ -11,20 +11,51 @@
 
 .btn {
 
-    border-radius: 5px;
-    padding: 1.5rem .75rem;
-
-    background-color: var(--clr-highlight);
-    color: var(--clr-text);
-}
-
-.order {
-
-    border-radius: 5px;
     padding: 1.5rem .75rem;
 
     background-color: var(--clr-text);
-    color: var(--clr-bg-light);
+    color: var(--clr-bg);
+    /* Default button border */
+    border-radius: 4px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+    transition: .2s;
+    border: 2px solid var(--clr-text);
+}
+
+
+.btn:hover {
+    color: var(--clr-text);
+    background-color: var(--clr-bg);
+    border-color: var(--clr-text);
+}
+
+.btn-edit,
+.btn-delete {
+    padding: 1rem !important;
+    margin: .5rem !important;
+    background-color: transparent;
+    border-color: var(--clr-secondary) !important;
+}
+
+.btn-edit i,
+.btn-delete i {
+    color: var(--clr-secondary);
+}
+
+.btn-edit:hover,
+.btn-delete:hover {
+    background-color: var(--clr-secondary);
+}
+
+.btn-edit:hover i,
+.btn-delete:hover i {
+    color: var(--clr-bg);
+}
+
+td.actions form {
+    display: inline;
 }
 
 a.btn {
@@ -86,7 +117,6 @@ nav ul li a:hover {
 }
 
 
-/* General styling for the nav */
 body {
     background-color: var(--clr-bg);
     color: var(--clr-text);
@@ -116,9 +146,16 @@ footer {
     padding: 20px;
     text-align: center;
     color: var(--clr-text);
+}
+
+footer {
     position: absolute;
     bottom: 0;
     width: 100%;
+}
+
+header {
+    position: sticky;
 }
 
 h1,
@@ -129,6 +166,14 @@ p {
     margin: 20px 0;
 }
 
+.title-add h1 {
+    display: inline-block;
+}
+
+.title-add {
+    display: flex;
+    justify-content: space-between;
+}
 
 /* TABLES ------------------------------------------------------------------------------------------------------------------------------------ */
 /* Table styling in dark mode */
@@ -140,7 +185,7 @@ table {
     color: var(--clr-text);
     border: 1px solid var(--clr-border);
     /* Border for the table */
-    margin-bottom: 20px;
+    margin-bottom: 10rem;
 }
 
 th,
@@ -170,7 +215,8 @@ tbody tr:nth-child(odd) td {
 }
 
 tbody tr:hover td {
-    background-color: var(--clr-secondary);
+    /* background-color: var(--clr-border); */
+    background-color: black;
     /* Highlight row on hover */
 }
 

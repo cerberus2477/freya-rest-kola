@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS Players (
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    joinDate DATE,
+    joinDate DATE NOT NULL,
     age INT NULL,
     occupation VARCHAR(255) NULL,
     gender VARCHAR(50) NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS PlayerGames (
     joinDate DATE,
     currentLevel INT,
     PRIMARY KEY (playerID, gameID),
-    FOREIGN KEY (playerID) REFERENCES Players(playerID) ON DELETE RESTRICT,
+    FOREIGN KEY (playerID) REFERENCES Players(playerID) ON DELETE CASCADE,
     FOREIGN KEY (gameID) REFERENCES Games(gameID) ON DELETE CASCADE
 );
 

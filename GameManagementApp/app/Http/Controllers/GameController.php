@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use Illuminate\Http\Request;
+use Illuminate\Http\Requests\GameRequest;
+
 
 class GameController extends Controller
 {
@@ -12,7 +13,9 @@ class GameController extends Controller
      */
     public function index()
     {
-        //
+        $games = Game::all();
+        return view('games.index', compact('gamers'));
+
     }
 
     /**
@@ -20,23 +23,16 @@ class GameController extends Controller
      */
     public function create()
     {
-        //
+        return view('games.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(GameRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Game $game)
-    {
-        //
+        Game::create($request->validated());
+        return redirect()->route('games.index');
     }
 
     /**
@@ -44,15 +40,17 @@ class GameController extends Controller
      */
     public function edit(Game $game)
     {
-        //
+        return view('games.edit', compact('game'));
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Game $game)
+    public function update(GameRequest $request, Game $game)
     {
-        //
+        $game->update($request->validated());
+        return redirect()->route('games.index');
     }
 
     /**
@@ -60,6 +58,7 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        //
+        $game->delete();
+        return redirect()->route('games.index');
     }
 }
