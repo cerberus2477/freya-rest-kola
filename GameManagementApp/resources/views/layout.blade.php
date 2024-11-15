@@ -6,15 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GameManagementApp Kezelőfelület</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.css') }}">
 </head>
 
 <body>
     <nav>
         <ul>
-            <li><a href="{{ route('players.index') }}">Players</a></li>
-            <li><a href="{{ route('games.index') }}">Games</a></li>
-            <li><a href="{{ route('playergames.index') }}">Player Games</a></li>
+            <li class="nav-left"><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li><a href="{{ route('players.index') }}"><i class="fa-solid fa-user"></i> Players</a></li>
+            <li><a href="{{ route('games.index') }}"><i class="fa-solid fa-gamepad"></i> Games</a></li>
+            <li><a href="{{ route('playergames.index') }}"><i class="fa-solid fa-arrows-left-right"></i> Player
+                    Games</a>
+            </li>
         </ul>
     </nav>
 

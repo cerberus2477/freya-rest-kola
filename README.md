@@ -493,6 +493,7 @@ Kód másolása
 
 ## Továbbfejlesztési lehetőségek
 - show mindenhová - playergames táblázatból lehetne link a playerid és gameid, és odavisz
+    - show nem playerid-t írna pl hanem a nevét a játéknak
 - kereső
 - filter
 - egyszerre csak x rekordot töltsön be
@@ -506,9 +507,10 @@ Kód másolása
 
 - az adatbázist egyből betölteni
 
+
 ## Hibák
 -  games oldalon nem jelenik meg semmi valamiért ( van view, van controller)
-
+- mentésnél nem adja hozzá az új rekordot
 
 ## TODO
 - playergames egyáltalán nincs meg

@@ -13,21 +13,24 @@
 
     padding: 1.5rem .75rem;
 
-    background-color: var(--clr-text);
-    color: var(--clr-bg);
     /* Default button border */
     border-radius: 4px;
     /* Rounded corners */
     cursor: pointer;
     /* Change cursor to pointer on hover */
     transition: .2s;
+
+
+    color: var(--clr-text);
+    background-color: var(--clr-bg);
     border: 2px solid var(--clr-text);
 }
 
 
 .btn:hover {
-    color: var(--clr-text);
-    background-color: var(--clr-bg);
+
+    background-color: var(--clr-text);
+    color: var(--clr-bg);
     border-color: var(--clr-text);
 }
 
