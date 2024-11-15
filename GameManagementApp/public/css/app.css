@@ -46,18 +46,18 @@ img {
 }
 
 .btn-edit i,
-.btn-delete i {
-    color: var(--clr-secondary);
+.td.actions form .btn-delete i {
+    color: var(--clr-secondary) !important;
 }
 
 .btn-edit:hover,
-.btn-delete:hover {
-    background-color: var(--clr-secondary);
+td.actions form .btn-delete:hover {
+    background-color: var(--clr-secondary) !important;
 }
 
 .btn-edit:hover i,
-.btn-delete:hover i {
-    color: var(--clr-bg);
+td.actions form .btn-delete:hover i {
+    color: var(--clr-bg) !important;
 }
 
 td.actions form {
