@@ -17,16 +17,7 @@
 6. Enjoy :)
 
 
-  
-
-## Laravellel kapcsolatos megjegyzések
-
-
-
-- Igyekeztem most gyorsabban / optimálisan megoldani a dolgot :3
-
-
-## Leírás
+## A feladat leírása
 ***Készítsen egy webes vagy asztali alkalmazást, amely egy játékokhoz tartozó nyilvántartást vezet!***
 
 - A megbízó szeretné a ==játékosok adatait== nyilvántartani
@@ -186,10 +177,11 @@ PlayerGames{
 }
 
 ### Adatbázis ábrázolás
-![[Pasted image 20241115120047.png]]
+![adatbazis-abrazolas](https://github.com/user-attachments/assets/32bcfc27-312c-405b-bade-e4b8bbf1917e)
 
 
 ## Saját jegyzetem / micsináltam
+Igyekeztem most gyorsabban / optimálisan megoldani a dolgot :3
 
 ### Stuff I learned (some of it)
 	- `php artisan make:model Player -mcr` - controllert is csinál + migration
