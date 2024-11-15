@@ -14,6 +14,7 @@
             <th>Type</th>
             <th>Level Count</th>
             <th>Descripton</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,7 +24,7 @@
                 <td>{{ $game->name }}</td>
                 <td>{{ $game->type }}</td>
                 <td>{{ $game->levelCount }}</td>
-                <td>{{ $game->descripton}}</td>
+                <td>{{ $game->description}}</td>
                 <td class="actions">
                     <a href="{{ route('games.edit', $game->gameID) }}" class="btn btn-edit">
                         <i class="fa-solid fa-pen-to-square"></i>

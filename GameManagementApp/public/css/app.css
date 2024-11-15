@@ -26,6 +26,9 @@
     border: 2px solid var(--clr-text);
 }
 
+img {
+    max-width: 300px;
+}
 
 .btn:hover {
 
@@ -59,6 +62,14 @@
 
 td.actions form {
     display: inline;
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    max-width: unset;
+    margin-top: unset;
+    margin-bottom: unset;
+    color: unset;
 }
 
 a.btn {
@@ -232,4 +243,89 @@ tbody tr:hover td {
 tbody tr:nth-child(odd) td.edit {
     background-color: var(--clr-highlight);
     color: var(--clr-bg-light);
+}
+
+
+/* edit, add
+ */
+
+/* Form Styling */
+form {
+    background-color: var(--clr-bg-light);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border);
+    max-width: 600px;
+    margin-top: 2rem;
+    margin-bottom: 10rem;
+    color: var(--clr-text);
+}
+
+/* Labels */
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--clr-text);
+}
+
+/* Input Fields */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="date"],
+form input[type="number"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--clr-border);
+    border-radius: 4px;
+    background-color: var(--clr-bg);
+    color: var(--clr-text);
+    font-size: 1rem;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form input[type="date"]:focus,
+form input[type="number"]:focus {
+    border-color: var(--clr-secondary);
+    outline: none;
+}
+
+/* Submit Button */
+form button[type="submit"] {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--clr-secondary);
+    color: var(--clr-text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+    background-color: var(--clr-accent);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    form {
+        padding: 1.5rem;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="date"],
+    form input[type="number"] {
+        font-size: 0.9rem;
+    }
+
+    form button[type="submit"] {
+        font-size: 0.9rem;
+        padding: 0.8rem 1.5rem;
+    }
 }

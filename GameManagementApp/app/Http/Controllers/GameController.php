@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use Illuminate\Http\Requests\GameRequest;
+use App\Http\Requests\GameRequest;
 
 
 class GameController extends Controller
@@ -14,7 +14,7 @@ class GameController extends Controller
     public function index()
     {
         $games = Game::all();
-        return view('games.index', compact('gamers'));
+        return view('games.index', compact('games'));
 
     }
 
@@ -40,7 +40,7 @@ class GameController extends Controller
      */
     public function edit(Game $game)
     {
-        return view('games.edit', compact('game'));
+        return view('games.edit', compact('games'));
 
     }
 

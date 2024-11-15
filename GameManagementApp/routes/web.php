@@ -7,7 +7,7 @@ use App\Http\Controllers\PlayerGameController;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 
 Route::resource('players', controller: PlayerController::class);
