@@ -39,7 +39,7 @@ class GameController extends Controller
         // dd($validatedData); // Ensure validation works and data is correct
 
         // try {
-        //     $game = Game::create($validatedData);
+        // $game = Game::create($validatedData);
         //     dd($game); // Check if the record is saved correctly
         // } catch (\Exception $e) {
         //     dd($e->getMessage()); // Catch any error during save
@@ -47,6 +47,7 @@ class GameController extends Controller
 
 
         Game::create($request->validated());
+
         return redirect()->route('games.index')->with('success', 'Game created successfully!');
     }
 
