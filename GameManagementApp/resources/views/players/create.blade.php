@@ -2,7 +2,7 @@
 
 @section('content')
 <h1>{{ isset($player) ? 'Játékos módosítása' : 'Új játékos hozzáadása' }}</h1>
-
+@include('error')
 <form action="{{ isset($player) ? route('players.update', $player->playerID) : route('players.store') }}" method="POST">
     @csrf
     @if (isset($player))

@@ -6,7 +6,7 @@
 
 @section('content')
 <h1>{{ isset($game) ? 'Játék módosítása' : 'Új játék hozzáadása' }}</h1>
-
+@include('error')
 <form action="{{ isset($game) ? route('games.update', $game->gameID) : route('games.store') }}" method="POST">
     @csrf
     @if (isset($game))

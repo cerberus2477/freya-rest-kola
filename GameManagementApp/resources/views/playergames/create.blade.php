@@ -2,7 +2,7 @@
 
 @section('content')
 <h1>{{ isset($player) ? 'Játékos-Játék módosítása' : 'Új játékos-játék hozzáadása' }}</h1>
-
+@include('error')
 <form
     action="{{ isset($player) ? route('playergames.update', $idontknowwhattowritehere) : route('playergames.store') }}"
     method="POST">
