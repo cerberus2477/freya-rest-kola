@@ -14,11 +14,11 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
+    //for debugging reasons
+    public function boot()
     {
-        //
+        \DB::listen(function ($query) {
+            \Log::info($query->sql);
+        });
     }
 }

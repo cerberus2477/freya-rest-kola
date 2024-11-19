@@ -12,7 +12,7 @@ class Game extends Model
     protected $fillable = [
         'name',
         'type',
-        'description',
-        'levelCount'
+        'levelCount',
+        'description'
     ];
 }

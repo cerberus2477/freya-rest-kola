@@ -31,8 +31,23 @@ class GameController extends Controller
      */
     public function store(GameRequest $request)
     {
+
+        //debugging ------------------------------------------------------
+
+        // $validatedData = $request->validated();
+
+        // dd($validatedData); // Ensure validation works and data is correct
+
+        // try {
+        //     $game = Game::create($validatedData);
+        //     dd($game); // Check if the record is saved correctly
+        // } catch (\Exception $e) {
+        //     dd($e->getMessage()); // Catch any error during save
+        // }
+
+
         Game::create($request->validated());
-        return redirect()->route('games.index');
+        return redirect()->route('games.index')->with('success', 'Game created successfully!');
     }
 
     /**
@@ -40,7 +55,7 @@ class GameController extends Controller
      */
     public function edit(Game $game)
     {
-        return view('games.edit', compact('games'));
+        return view('games.edit', compact('game'));
 
     }
 
@@ -50,7 +65,7 @@ class GameController extends Controller
     public function update(GameRequest $request, Game $game)
     {
         $game->update($request->validated());
-        return redirect()->route('games.index');
+        return redirect()->route('games.index')->with('success', 'Game updated successfully!');
     }
 
     /**
@@ -59,6 +74,6 @@ class GameController extends Controller
     public function destroy(Game $game)
     {
         $game->delete();
-        return redirect()->route('games.index');
+        return redirect()->route('games.index')->with('success', 'Game deleted successfully!');
     }
 }

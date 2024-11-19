@@ -27,5 +27,7 @@ class GameRequest extends FormRequest
             'levelCount' => 'required|integer|min:1',
             'description' => 'nullable|string',
         ];
+
     }
 }
+
