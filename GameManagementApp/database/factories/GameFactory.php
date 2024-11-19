@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Game;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Game>
@@ -15,15 +16,16 @@ class GameFactory extends Factory
      * @return array<string, mixed>
      */
 
+    protected $model = Game::class;
 
     //  Nem biztos hogy jó
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
-            'type' => $this->faker->type,
-            'levelCount' => $this->faker->levelCount,
-            'description' => $this->faker->description
+            'name' => $this->faker->unique()->words(3, true),
+            'type' => $this->faker->word,
+            'levelCount' => $this->faker->numberBetween(1, 6969),
+            'description' => $this->faker->sentence()
         ];
     }
 }
