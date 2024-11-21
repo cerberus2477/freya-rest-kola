@@ -7,6 +7,7 @@
     --clr-border: #333;
     --clr-highlight: rgb(113, 147, 242);
     --clr-error: rgb(255, 67, 67);
+    --clr-success: rgb(12, 211, 38);
 }
 
 .btn {
@@ -87,6 +88,14 @@ a.btn {
 
 .error {
     color: var(--clr-error);
+    border: 2px solid var(--clr-error);
+    padding: 2rem;
+}
+
+.success {
+    color: var(--clr-success);
+    border: 2px solid var(--clr-success);
+    padding: 2rem;
 }
 
 
