@@ -4,17 +4,18 @@
 
   
 ## Futtatás lépései:
-
-1. XAMPP indítása (Apache, MySQL)
-2. *GameManagamentApp_dump.sql* file importálása Phpmyadmin felületén (localhost/phpmyadmin)
-3. A laravel működéséhez szükséges táblák létrehozása
+1. A projekt letöltése <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
+    - A fájl kicsomagolása a `C:\xampp\htdocs\` mappába
+2. XAMPP indítása (Apache, MySQL)
+3. *GameManagamentApp_dump.sql* file importálása Phpmyadmin felületén (localhost/phpmyadmin)
+4. A laravel működéséhez szükséges táblák létrehozása
 	`cd GameManagementApp`
 	`php artisan migrate`
-4. Szerver indítása
+5. Szerver indítása
 	(`cd GameManagementApp`)
 	`php artisan serve`
-5. A kezelőfelület megnyitása a `http://127.0.0.1:8000/` címen
-6. Enjoy :)
+6. A kezelőfelület megnyitása a `http://127.0.0.1:8000/` címen
+7. Enjoy :)
 
 
 ## A feladat leírása
