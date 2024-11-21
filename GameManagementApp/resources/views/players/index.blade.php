@@ -7,6 +7,8 @@
     <a href="{{ route('players.create') }}" class="btn btn-add">Új rekord hozzáadása <i
             class="fa-solid fa-plus"></i></a>
 </div>
+@include('success')
+@include('error')
 <table>
     <thead>
         <tr>

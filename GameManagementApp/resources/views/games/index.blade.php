@@ -6,6 +6,8 @@
     <h1>Games</h1>
     <a href="{{ route('games.create') }}" class="btn btn-add">Új rekord hozzáadása <i class="fa-solid fa-plus"></i></a>
 </div>
+@include('success')
+@include('error')
 <table>
     <thead>
         <tr>

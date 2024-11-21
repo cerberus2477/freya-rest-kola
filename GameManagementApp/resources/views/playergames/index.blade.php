@@ -3,12 +3,14 @@
 @section('title', 'Player-Games')
 
 @section('content')
+
 <div class="title-add">
     <h1>Player-Games</h1>
     <a href="{{ route('playergames.create') }}" class="btn btn-add">Új Player-Game rekord hozzáadása <i
             class="fa-solid fa-plus"></i></a>
 </div>
-
+@include('success')
+@include('error')
 <table>
     <thead>
         <tr>
