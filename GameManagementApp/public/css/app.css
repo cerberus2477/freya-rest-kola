@@ -10,25 +10,37 @@
     --clr-success: rgb(12, 211, 38);
 }
 
-/* Style for the custom dropdown arrow */
-form select::-ms-expand {
-    display: none; /* Hide default arrow in IE */
+
+
+/* Styling for textarea to fit the dark theme */
+form textarea {
+    width: 100%; /* Full width of the container */
+    padding: 0.8rem; /* Padding for better space inside */
+    margin-bottom: 1.5rem; /* Space below textarea */
+    border: 1px solid var(--clr-border); /* Border matching other form elements */
+    border-radius: 4px; /* Rounded corners for consistency */
+    background-color: var(--clr-bg); /* Dark background */
+    color: var(--clr-text); /* Light text for contrast */
+    font-size: 1rem; /* Standard font size */
+    font-family: Arial, sans-serif; /* Consistent font family */
+    resize: vertical; /* Allow only vertical resizing */
+    outline: none; /* Remove default focus outline */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition on focus */
+    height: 200px; /* Increase the height to make it taller */
 }
 
-form select option {
-    background-color: var(--clr-bg-light);
-    color: var(--clr-text);
+/* Focus state for textarea */
+form textarea:focus {
+    border-color: var(--clr-secondary); /* Highlight border on focus */
+    box-shadow: 0 0 8px rgba(116, 37, 213, 0.3); /* Subtle glow effect */
 }
 
-form select option:hover {
-    background-color: var(--clr-accent);
+/* Styling for textarea placeholder */
+form textarea::placeholder {
+    color: #aaa; /* Light placeholder color */
+    font-style: italic; /* Italic placeholder text */
 }
 
-/* Optional: style for the disabled option */
-form select[disabled] {
-    background-color: var(--clr-bg-light);
-    color: var(--clr-border);
-}
 
 form p {
     color: var(--clr-text);
@@ -127,6 +139,10 @@ a.btn {
     color: var(--clr-success);
     border: 2px solid var(--clr-success);
     padding: 2rem;
+}
+
+.error, .success{
+    margin-block: 1.5rem;
 }
 
 
@@ -368,4 +384,53 @@ form button[type="submit"]:hover {
         font-size: 0.9rem;
         padding: 0.8rem 1.5rem;
     }
+}
+
+
+/* Styling for the select element to match other inputs */
+form select {
+    width: 100%; /* Full width of the container */
+    padding: 0.8rem; /* Padding for better space inside */
+    margin-bottom: 1.5rem; /* Space below the select */
+    border: 1px solid var(--clr-border); /* Border matching other form elements */
+    border-radius: 4px; /* Rounded corners for consistency */
+    background-color: var(--clr-bg); /* Dark background */
+    color: var(--clr-text); /* Light text for contrast */
+    font-size: 1rem; /* Standard font size */
+    font-family: Arial, sans-serif; /* Consistent font family */
+    appearance: none; /* Remove default dropdown arrow in most browsers */
+    -webkit-appearance: none; /* Safari and Chrome */
+    -moz-appearance: none; /* Firefox */
+    outline: none; /* Remove default focus outline */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition on focus */
+    position: relative; /* To position the custom arrow */
+    padding-right: 2.5rem; /* Space for the custom arrow */
+}
+
+/* Styling for select in focus state */
+form select:focus {
+    border-color: var(--clr-accent); /* Highlight border on focus with the purple theme */
+    box-shadow: 0 0 8px rgba(116, 37, 213, 0.3); /* Subtle glow effect with purple */
+}
+
+/* Custom arrow for the select (matching the theme's purple) */
+form select::-ms-expand {
+    display: none; /* Remove default arrow in Internet Explorer */
+}
+
+form select::after {
+    content: '\25BC'; /* Unicode character for a downwards triangle */
+    font-size: 1.2rem;
+    color: var(--clr-accent); /* Set the color of the arrow to match your purple theme */
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%); /* Center the arrow vertically */
+    pointer-events: none; /* Prevent arrow from blocking clicks */
+}
+
+/* Optional: styling for disabled select option */
+form select[disabled] {
+    background-color: var(--clr-bg-light);
+    color: var(--clr-border);
 }
