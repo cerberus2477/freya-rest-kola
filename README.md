@@ -4,16 +4,27 @@
 
   
 ## Futtatás lépései:
-1. A projekt letöltése <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
-    - A fájl kicsomagolása a `C:\xampp\htdocs\` mappába
+1. Töltsd le a projektet.
+ <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
+    - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
 2. XAMPP indítása (Apache, MySQL)
-3. *GameManagamentApp_dump.sql* file importálása Phpmyadmin felületén (localhost/phpmyadmin)
-4. A laravel működéséhez szükséges táblák létrehozása
-	`cd GameManagementApp`
-	`php artisan migrate`
-5. Szerver indítása
-	(`cd GameManagementApp`)
-	`php artisan serve`
+3. Importáld a *`GameManagamentApp_dump.sql`* fájlt a Phpmyadmin felületén (`localhost/phpmyadmin`)
+4. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
+```cmd
+cd GameManagementApp
+```
+```cmd
+composer install
+php artisan migrate
+php artisan serve
+```
+
+Magyarázat parancsonként:
+- a célmappába navigálunk
+- a projekthez szükséges függőségek telepítése
+- adatbázis táblák létrehozása a laravelen belül
+- szerver indítása
+
 6. A kezelőfelület megnyitása a `http://127.0.0.1:8000/` címen
 7. Enjoy :)
 
