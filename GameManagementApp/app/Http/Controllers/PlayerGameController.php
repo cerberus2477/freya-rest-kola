@@ -21,7 +21,9 @@ class PlayerGameController extends Controller
      */
     public function create()
     {
-        return view('playergames.create');
+        $players = Player::all();
+        $games = Game::all();
+        return view('playergames.create', compact('players', 'games'));
     }
 
     /**
@@ -31,7 +33,10 @@ class PlayerGameController extends Controller
     {
         PlayerGame::create($request->validated());
 
-        return redirect()->route('playergames.index')->with('success', 'PlayerGame created successfully!');
+        $playerName = $playergame->player->username;
+        $gameName = $playergame->game->name;
+
+        return redirect()->route('playergames.index')->with('success', "$playerName - $gameName játékos-játék sikeresen létrehozva!");
     }
 
     /**
@@ -52,7 +57,9 @@ class PlayerGameController extends Controller
     public function update(PlayerGameRequest $request, PlayerGame $playerGame)
     {
         $playerGame->update($request->validated());
-        return redirect()->route('playergames.index')->with('success', 'PlayerGame updated successfully!');
+        $playerName = $playergame->player->username;
+        $gameName = $playergame->game->name;
+        return redirect()->route('playergames.index')->with('success', "$playerName - $gameName játékos-játék sikeresen módosítva!");
     }
 
     /**
@@ -61,6 +68,8 @@ class PlayerGameController extends Controller
     public function destroy(PlayerGame $playerGame)
     {
         $playerGame->delete();
-        return redirect()->route('playergames.index')->with('success', 'PlayerGame deleted successfully!');
+        $playerName = $playergame->player->username;
+        $gameName = $playergame->game->name;
+        return redirect()->route('playergames.index')->with('success', "$playerName - $gameName játékos-játék sikeresen törölve!");
     }
 }

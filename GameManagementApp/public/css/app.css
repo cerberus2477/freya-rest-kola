@@ -10,6 +10,33 @@
     --clr-success: rgb(12, 211, 38);
 }
 
+/* Style for the custom dropdown arrow */
+form select::-ms-expand {
+    display: none; /* Hide default arrow in IE */
+}
+
+form select option {
+    background-color: var(--clr-bg-light);
+    color: var(--clr-text);
+}
+
+form select option:hover {
+    background-color: var(--clr-accent);
+}
+
+/* Optional: style for the disabled option */
+form select[disabled] {
+    background-color: var(--clr-bg-light);
+    color: var(--clr-border);
+}
+
+form p {
+    color: var(--clr-text);
+    font-size: 1rem;
+    margin: 1rem 0;
+    line-height: 1.5;
+}
+
 .btn {
 
     padding: 1.5rem .75rem;
@@ -92,6 +119,10 @@ a.btn {
     padding: 2rem;
 }
 
+.error h2, .success h2{
+    margin: 0;
+    color: currentColor;
+}
 .success {
     color: var(--clr-success);
     border: 2px solid var(--clr-success);

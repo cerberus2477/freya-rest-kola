@@ -24,62 +24,53 @@ class PlayerGameRequest extends FormRequest
         return [
             'playerID' => 'required|integer|exists:players,playerID',
             'gameID' => 'required|integer|exists:games,gameID',
-            'gamerTag' => 'required|string|max:255',
-            'hoursPlayed' => 'required|integer|min:0',
-            'lastPlayedDate' => 'required|date',
-            'joinDate' => 'required|date',
+            'gamerTag' => 'required|string|max:255|min:2',
+            'hoursPlayed' => 'required|integer|min:0|max:2000',
+            'lastPlayedDate' => [
+                'required',
+                'date',
+                'after_or_equal:joinDate', // Ensure lastPlayedDate >= joinDate
+                'after_or_equal:1900-01-01', // Minimum valid date
+                'before_or_equal:9999-12-31', // Maximum valid date
+            ],
+            'joinDate' => [
+                'required',
+                'date',
+                'after_or_equal:1900-01-01', // Minimum valid date
+                'before_or_equal:9999-12-31', // Maximum valid date
+            ],
             'currentLevel' => 'nullable|integer|min:0',
         ];
     }
 
-    /**
-     * Get custom attribute names for validator errors.
-     *
-     * @return array
-     */
-    // public function attributes()
-    // {
-    //     return [
-    //         'playerID' => 'Játékos ID',
-    //         'gameID' => 'Játék ID',
-    //         'gamerTag' => 'Játékosnév (a játékban)',
-    //         'hoursPlayed' => 'Játszott órák',
-    //         'lastPlayedDate' => 'Legutóbb elérhető',
-    //         'joinDate' => 'Csatlakozás dátuma',
-    //         'currentLevel' => 'Aktuális szint',
-    //     ];
-    // }
-
     public function messages(): array
     {
         return [
-            'username.required' => 'A felhasználónév megadása kötelező.',
-            'username.string' => 'A felhasználónévnek szövegnek kell lennie.',
-            'username.min' => 'A felhasználónév túl rövid, legalább 4 karakter szükséges.',
-            'username.max' => 'A felhasználónév túl hosszú, maximum 255 karakter.',
-            'username.unique' => 'A felhasználónév már létezik.',
-            'password.required' => 'A jelszó megadása kötelező.',
-            'password.string' => 'A jelszónak szövegnek kell lennie.',
-            'password.min' => 'A jelszónak legalább 8 karakterből kell állnia.',
-            'password.max' => 'A jelszó túl hosszú, maximum 255 karakter.',
-            'email.required' => 'Az email megadása kötelező.',
-            'email.string' => 'Az emailnek szövegnek kell lennie.',
-            'email.email' => 'Az email formátuma érvénytelen.',
-            'email.max' => 'Az email túl hosszú, maximum 255 karakter.',
-            'email.unique' => 'Ez az email már regisztrálva van.',
+            'playerID.required' => 'A játékos kiválasztása kötelező.',
+            'playerID.integer' => 'A játékos azonosítójának egész számnak kell lennie.',
+            'playerID.exists' => 'A kiválasztott játékos nem létezik.',
+            'gameID.required' => 'A játék kiválasztása kötelező.',
+            'gameID.integer' => 'A játék azonosítójának egész számnak kell lennie.',
+            'gameID.exists' => 'A kiválasztott játék nem létezik.',
+            'gamerTag.required' => 'A gamer tag megadása kötelező.',
+            'gamerTag.string' => 'A gamer tagnak szövegnek kell lennie.',
+            'gamerTag.max' => 'A gamer tag túl hosszú, maximum 255 karakter.',
+            'gamerTag.min' => 'A gamer tag túl rövid, legalább 2 karakter szükséges.',
+            'hoursPlayed.required' => 'Az órák száma megadása kötelező.',
+            'hoursPlayed.integer' => 'Az órák száma csak egész szám lehet.',
+            'hoursPlayed.min' => 'Az órák száma nem lehet negatív.',
+            'hoursPlayed.max' => 'Az órák száma maximum 2000 lehet.',
+            'lastPlayedDate.required' => 'A legutóbbi játék dátumának megadása kötelező.',
+            'lastPlayedDate.date' => 'A legutóbbi játék dátuma érvénytelen.',
+            'lastPlayedDate.after_or_equal' => 'A legutóbbi játék dátuma nem lehet korábbi a csatlakozási dátumnál.',
+            'lastPlayedDate.after_or_equal:1900-01-01' => 'A legutóbbi játék dátuma nem lehet 1900-nál korábbi.',
+            'lastPlayedDate.before_or_equal:9999-12-31' => 'A legutóbbi játék dátuma nem lehet 9999-nél későbbi.',
             'joinDate.required' => 'A csatlakozási dátum megadása kötelező.',
             'joinDate.date' => 'A csatlakozási dátum érvénytelen.',
-            'joinDate.before_or_equal' => 'A csatlakozási dátumnak ma vagy korábbi dátumnak kell lennie.',
-            'age.integer' => 'A kor egész szám kell legyen.',
-            'age.min' => 'A kor nem lehet kevesebb, mint 13.',
-            'occupation.string' => 'A foglalkozás szövegnek kell lennie.',
-            'occupation.max' => 'A foglalkozás túl hosszú, maximum 255 karakter.',
-            'gender.string' => 'A nem szövegnek kell lennie.',
-            'gender.max' => 'A nem túl hosszú, maximum 50 karakter.',
-            'gender.in' => 'A nem csak a következő értékek lehetnek: Férfi, Nő, Nem-binaris, Egyéb.',
-            'city.string' => 'A város szövegnek kell lennie.',
-            'city.max' => 'A város neve túl hosszú, maximum 255 karakter.',
+            'joinDate.after_or_equal:1900-01-01' => 'A csatlakozási dátum nem lehet 1900-nál korábbi.',
+            'joinDate.before_or_equal:9999-12-31' => 'A csatlakozási dátum nem lehet 9999-nél későbbi.',
+            'currentLevel.integer' => 'A szintnek egész számnak kell lennie.',
+            'currentLevel.min' => 'A szint nem lehet negatív.',
         ];
     }
-
 }

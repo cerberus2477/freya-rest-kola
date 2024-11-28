@@ -48,7 +48,7 @@ class GameController extends Controller
 
         Game::create($request->validated());
 
-        return redirect()->route('games.index')->with('success', 'Game created successfully!');
+        return redirect()->route('games.index')->with('success', "$game->name játék sikeresen létrehozva!");
     }
 
     /**
@@ -66,7 +66,7 @@ class GameController extends Controller
     public function update(GameRequest $request, Game $game)
     {
         $game->update($request->validated());
-        return redirect()->route('games.index')->with('success', 'Game updated successfully!');
+        return redirect()->route('games.index')->with('success', "$game->name játék sikeresen módosítva!");
     }
 
     /**
@@ -75,6 +75,6 @@ class GameController extends Controller
     public function destroy(Game $game)
     {
         $game->delete();
-        return redirect()->route('games.index')->with('success', 'Game deleted successfully!');
+        return redirect()->route('games.index')->with('success', "$game->name játék sikeresen törölve!");
     }
 }

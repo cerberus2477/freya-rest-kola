@@ -19,23 +19,9 @@ class PlayerController extends Controller
 
     public function store(PlayerRequest $request)
     {
-
-        //debugging ------------------------------------------------------
-
-        // $validatedData = $request->validated();
-
-        // dd($validatedData); // Ensure validation works and data is correct
-
-        // try {
-        //     $game = Player::create($validatedData);
-        //     dd($game); // Check if the record is saved correctly
-        // } catch (\Exception $e) {
-        //     dd($e->getMessage()); // Catch any error during save
-        // }
-
-
         Player::create($request->validated());
-        return redirect()->route('players.index')->with('success', 'Player created successfully!');
+        $data['password'] = Hash::make($data['password']); // Hash the password
+        return redirect()->route('players.index')->with('success', "$player->name játékos sikeresen létrehozva!");
     }
 
     public function edit(Player $player)
@@ -45,14 +31,21 @@ class PlayerController extends Controller
 
     public function update(PlayerRequest $request, Player $player)
     {
-        $player->update($request->validated());
-        return redirect()->route('players.index')->with('success', 'Player created successfully!');
-    }
+        // Only hash the password if it's being updated
+        $data = $request->validated();
+        
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']); // Hash the password
+        }
 
+        $player->update($data);
+        return redirect()->route('players.index')->with('success', "Player successfully updated!");
+    }
+    
     public function destroy(Player $player)
     {
         $player->delete();
-        return redirect()->route('players.index')->with('success', 'Player deleted successfully!');
+        return redirect()->route('players.index')->with('success', "$player->name játékos sikeresen törölve!");
     }
 }
 
