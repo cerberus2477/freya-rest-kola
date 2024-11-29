@@ -510,7 +510,7 @@ Kód másolása
 - filter
 - egyszerre csak x rekordot töltsön be
 - bejelentkezés
-	`composer require laravel/ui 
+	`composer require laravel/ui `
 	`php artisan ui `
 	`vue --auth`
 	`npm install && npm run dev`
