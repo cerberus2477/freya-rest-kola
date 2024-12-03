@@ -64,6 +64,7 @@ más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
 
 ## Egyéb random notes
 - egyelőre a /api/plants visszaadja a created at meg az updated at mezőket is
+- usernél null az értéke a plsuz mezőknek, mert a seederben így van írva (db:insert vs create)
 <hr>
 <hr>
 

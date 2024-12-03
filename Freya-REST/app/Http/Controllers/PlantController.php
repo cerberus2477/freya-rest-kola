@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plant;
-use Illuminate\Http\Request;
+use App\Http\Requests\PlantRequest;
 
 class PlantController extends Controller
 {
@@ -38,15 +38,9 @@ class PlantController extends Controller
      */
 
     // POST /api/plants - Store a new plant
-    public function store(Request $request)
+    public function store(PlantRequest $request)
     {
-        // KÜLÖN FÁJLBA!
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'latin_name' => 'required|string|max:255',
-        ]);
-
-        $plant = Plant::create($validated);
+        $plant = Plant::create($request->validated());
         return response()->json($plant);
     }
 
@@ -56,16 +50,11 @@ class PlantController extends Controller
      */
 
     // PUT/PATCH /api/plants/{id} - Update a plant by ID
-    public function update(Request $request, $id)
+    public function update(PlantRequest $request, $id)
     {
         $plant = Plant::findOrFail($id);
 
-        $validated = $request->validate([
-            'name' => 'string|max:255',
-            'latin_name' => 'required|string|max:255',
-        ]);
-
-        $plant->update($validated);
+        $plant->update($request->validated());
         return response()->json($plant);
     }
 
