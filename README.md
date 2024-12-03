@@ -44,23 +44,13 @@ van most a usernél, dbben lehet kéne (meg így verificitaon tbh)
 
 - create db (lehet e meglévő migrationokból, meg van e minden vagy kell az sql?)
 - run seeders
-```cmd
+```bash
 php artisan db:seed
 ```
-- register Seeders in DatabaseSeeder The DatabaseSeeder file (located in database/seeders/DatabaseSeeder.php) is the entry point for running seeders. You need to call your seeders here.
 
-```php
- public function run()
-    {
-        $this->call([
-            RoleSeeder::class,
-            UserSeeder::class,
-            PlantSeeder::class,
-            // Add other seeders here
-        ]);
-    }
+```bash
+php artisan migrate:refresh --seed
 ```
-
 
 más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
         // Create the new plant
@@ -69,6 +59,11 @@ más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
         // Return a response with the created plant data
         return new PlantResource($plant); // Optional: Using a resource for transformation
 
+
+- hogy kell azt megcsinálni hogy a json az adatokon kívűl jó kódot is visszadjon, meg ha még kell akkor mást is? 
+
+## Egyéb random notes
+- egyelőre a /api/plants visszaadja a created at meg az updated at mezőket is
 <hr>
 <hr>
 

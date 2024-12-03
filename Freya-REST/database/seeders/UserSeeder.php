@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use DB;
 
 class UserSeeder extends Seeder
 {
@@ -15,14 +16,14 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create();
         foreach (range(1, 10) as $index) {
-        DB::table('users')->insert([
-            'username' => $faker->userName,
-            'email' => $faker->email,
-            'city' => $faker->city,
-            'birthdate' => $faker->date(),
-            'password' => bcrypt('password'),
-            'role_id' => $faker->numberBetween(1, 3),
-            'active' => $faker->boolean,
+            DB::table('users')->insert([
+                'username' => $faker->userName,
+                'email' => $faker->email,
+                'city' => $faker->city,
+                'birthdate' => $faker->date(),
+                'password' => bcrypt('password'),
+                'role_id' => $faker->numberBetween(1, 3),
+                'active' => $faker->boolean,
             ]);
         }
     }
