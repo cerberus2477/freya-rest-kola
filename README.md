@@ -1,6 +1,6 @@
-# GameManagementApp
+# Freya's REST
 
-***11.14 játéknyilvántartás feladat - Készítsen egy webes vagy asztali alkalmazást, amely egy játékokhoz tartozó nyilvántartást vezet!***
+***Az éves projektünkhöz (Freya's Garden) készül a REST api Laravelben, bár graphql apit szeretnénk. Ez ilyen backup addig, meg valamit le kell adni. ***
 
   
 ## Futtatás lépései:
@@ -8,32 +8,27 @@
  <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
     - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
 2. XAMPP indítása (Apache, MySQL)
-3. Importáld a *`GameManagamentApp_dump.sql`* fájlt a Phpmyadmin felületén (`localhost/phpmyadmin`)
+3. *(Importáld a *`GameManagamentApp_dump.sql`* fájlt a Phpmyadmin felületén (`localhost/phpmyadmin`))*
 4. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
-```cmd
-cd GameManagementApp
-```
 ```cmd
 composer install
 php artisan migrate
-php artisan serve
+php artisan serve --post 8069
 ```
 
 Magyarázat parancsonként:
 - a célmappába navigálunk
 - a projekthez szükséges függőségek telepítése
 - adatbázis táblák létrehozása a laravelen belül
-- szerver indítása
+- szerver indítása a megadott porton. a post megadása akkor fontos, ha a klienssel együtt szeretnénk használni, hiszen itt próbál majd csatlakozni a kliens.
 
-6. A kezelőfelület megnyitása a `http://127.0.0.1:8000/` címen
+6. A kezelőfelület megnyitása a `http://127.0.0.1:8069/` címen
 7. Enjoy :)
 
 
 
 ## Freya-jegyzet
 gamemanagementappból kezdtem
-
-doing migrations and models currently
 
 ## TODO
 - -unique legyen a dbben az user email, name
@@ -42,6 +37,8 @@ doing migrations and models currently
 $table->timestamp('email_verified_at')->nullable();
 ``` 
 van most a usernél, dbben lehet kéne (meg így verificitaon tbh)
+
+- validation külön fájlba
 
 <hr>
 
@@ -64,51 +61,13 @@ php artisan db:seed
     }
 ```
 
-```cmd
-PS C:\xampp\htdocs\TUNDE-Ne_Torold\kola-freya-rest\GameManagementApp> php artisan migrate
 
-   WARN  The database 'freyas_garden' does not exist on the 'mysql' connection.
+más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
+        // Create the new plant
+        $plant = Plant::create($validated);
 
-  Would you like to create it? (yes/no) [yes]
-❯ 
-
-   INFO  Preparing database.  
-
-  Creating migration table ......................................................................................................... 15.26ms DONE
-
-   INFO  Running migrations.  
-
-  0001_01_01_000001_create_cache_table ............................................................................................. 29.05ms DONE
-  0001_01_01_000002_create_jobs_table .............................................................................................. 68.90ms DONE
-  2024_11_19_145057_run_sql_dump .................................................................................................... 0.14ms DONE  
-  2024_12_02_125306_create_articles_table .......................................................................................... 26.34ms FAIL
-
-   Illuminate\Database\QueryException 
-
-  SQLSTATE[HY000]: General error: 1005 Can't create table `freyas_garden`.`articles` (errno: 150 "Foreign key constraint is incorrectly formed") (Connection: mysql, SQL: alter table `articles` add constraint `articles_plant_id_foreign` foreign key (`plant_id`) references `plants` (`id`) on delete set null)
-
-  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:825
-    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
-    822▕                 );
-    823▕             }
-    824▕
-  ➜ 825▕             throw new QueryException(
-    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
-    827▕             );
-    828▕         }
-    829▕     }
-
-  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
-      PDOException::("SQLSTATE[HY000]: General error: 1005 Can't create table `freyas_garden`.`articles` (errno: 150 "Foreign key constraint is incorrectly formed")")
-
-  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
-      PDOStatement::execute()
-
-PS C:\xampp\htdocs\TUNDE-Ne_Torold\kola-freya-rest\GameManagementApp> 
-
-```
-ez a legutobbi error.
-
+        // Return a response with the created plant data
+        return new PlantResource($plant); // Optional: Using a resource for transformation
 
 <hr>
 <hr>
