@@ -4,7 +4,7 @@
 
   
 ## Futtatás lépései:
-1. Töltsd le a projektet.
+1. Töltsd le a projektet. 
  <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
     - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
 2. XAMPP indítása (Apache, MySQL)
@@ -29,167 +29,91 @@ Magyarázat parancsonként:
 7. Enjoy :)
 
 
-## A feladat leírása
-***Készítsen egy webes vagy asztali alkalmazást, amely egy játékokhoz tartozó nyilvántartást vezet!***
 
-- A megbízó szeretné a ==játékosok adatait== nyilvántartani
-	- (==belépéshez==/azonosításhoz szükséges adatok,
-	- plusz szeretné a ==játékokat célzottan fejleszteni==, ezért ehhez szükséges plusz adatokra is szüksége lenne
-		- pl.: életkor/születési év, 
-		- foglalkozások, 
-		- nem, 
-		- lakhely(település),
-		<hr>
-		- játékkal töltött idő,
-		- játszott játék,
-		- játék típusa...;
-		- még csak homályos elképzelései vannak erről, így segítséget kér a fejlesztőktől, bízik benne, hogy tapasztalt játékosok),
-- természetesen a ==játékhoz tartozó információk==at is tároljuk,
-		- elért eredmények, - nem lesz, külön tábla kéne stb
-		- szintek száma játékonként. - lehetséges, akkor playergamesnél az aktuális is
+## Freya-jegyzet
+gamemanagementappból kezdtem
 
-- Tervezze meg az adatbázist (adja meg mind a **három normál formát** és a kapcsolati ábrát is), 
-- s készítse el hozzá a felhasználóbarát **kezelő felületet**!
+doing migrations and models currently
 
-- Figyeljen a tiszta kód elveire!
-servername lehetne, de ahhoz is jó lenne külön tábla
+## TODO
+- -unique legyen a dbben az user email, name
+- this
+```php
+$table->timestamp('email_verified_at')->nullable();
+``` 
+van most a usernél, dbben lehet kéne (meg így verificitaon tbh)
 
+<hr>
 
+- create db (lehet e meglévő migrationokból, meg van e minden vagy kell az sql?)
+- run seeders
+```cmd
+php artisan db:seed
+```
+- register Seeders in DatabaseSeeder The DatabaseSeeder file (located in database/seeders/DatabaseSeeder.php) is the entry point for running seeders. You need to call your seeders here.
 
+```php
+ public function run()
+    {
+        $this->call([
+            RoleSeeder::class,
+            UserSeeder::class,
+            PlantSeeder::class,
+            // Add other seeders here
+        ]);
+    }
+```
 
+```cmd
+PS C:\xampp\htdocs\TUNDE-Ne_Torold\kola-freya-rest\GameManagementApp> php artisan migrate
 
+   WARN  The database 'freyas_garden' does not exist on the 'mysql' connection.
 
-## Adatbázismodell 
-### Normalizáció
+  Would you like to create it? (yes/no) [yes]
+❯ 
 
-#### 0. NF
-***vastag, dőlt*** = többértékű tulajdonságok
+   INFO  Preparing database.  
 
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- player_joinDate 
-- age
-- occupation
-- gender
-- city
-- ***gameID***
-- ***game_name***
-- ***game_type***
-- ***game_levelCount***
-- ***game_description***
-- ***gamerTag***
-- ***hoursPlayed***
-- ***lastPlayedDate***
-- ***playerGame_joinDate***
-- ***playerGame_currentLevel***
-}
+  Creating migration table ......................................................................................................... 15.26ms DONE
 
-#### 1. NF
-***vastag, dőlt*** = részleges funkcionális függés
+   INFO  Running migrations.  
 
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- joinDate 
-- age
-- occupation
-- gender
-- city
-}
+  0001_01_01_000001_create_cache_table ............................................................................................. 29.05ms DONE
+  0001_01_01_000002_create_jobs_table .............................................................................................. 68.90ms DONE
+  2024_11_19_145057_run_sql_dump .................................................................................................... 0.14ms DONE  
+  2024_12_02_125306_create_articles_table .......................................................................................... 26.34ms FAIL
 
-PlayerGames{
-- ==playerID== - FK, PK
-- ==gameID== - PK
-- ***name***
-- ***type***
-- ***levelCount***
-- ***description***
-- gamerTag
-- hoursPlayed
-- lastPlayedDate
-- joinDate
-- currentLeve
-}
+   Illuminate\Database\QueryException 
 
-(kiemeltek a gameID-től függnek)
+  SQLSTATE[HY000]: General error: 1005 Can't create table `freyas_garden`.`articles` (errno: 150 "Foreign key constraint is incorrectly formed") (Connection: mysql, SQL: alter table `articles` add constraint `articles_plant_id_foreign` foreign key (`plant_id`) references `plants` (`id`) on delete set null)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOException::("SQLSTATE[HY000]: General error: 1005 Can't create table `freyas_garden`.`articles` (errno: 150 "Foreign key constraint is incorrectly formed")")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:571
+      PDOStatement::execute()
+
+PS C:\xampp\htdocs\TUNDE-Ne_Torold\kola-freya-rest\GameManagementApp> 
+
+```
+ez a legutobbi error.
 
 
-#### 2. NF
-***vastag, dőlt*** = tranzitív függés (nincs)
+<hr>
+<hr>
 
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- joinDate 
-alap értéke az adatbázisban unknown, nem szükséges megadni feltétlen:
-- age
-- occupation
-- gender
-- city
-}
-
-Games{
-- ==gameID== - PK, autoincrement, unique
-- name
-- type
-- levelCount
-- description
-}
-
-PlayerGames{
-- ==playerID== - FK, PK
-- ==gameID== - FK, PK
-- gamerTag - egyedi felhasználóneve egy játékosnak egy játékban, leíró tulajdonság csak
-- hoursPlayed
-- lastPlayedDate
-- joinDate
-- currentLevel
-}
-
-
-#### 3. NF
-***ugyanaz, mint a 2.nf, mert nem volt tranzitív függés***
-
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- joinDate 
-alap értéke az adatbázisban unknown, nem szükséges megadni feltétlen:
-- age
-- occupation
-- gender
-- city
-}
-
-Games{
-- ==gameID== - PK, autoincrement, unique
-- name
-- type
-- levelCount
-- description
-}
-
-PlayerGames{
-- ==playerID== - FK, PK
-- ==gameID== - FK, PK
-- gamerTag - egyedi felhasználóneve egy játékosnak egy játékban, leíró tulajdonság csak
-- hoursPlayed
-- lastPlayedDate
-- joinDate
-- currentLevel
-}
-
-### Adatbázis ábrázolás
-![adatbazis-abrazolas](https://github.com/user-attachments/assets/32bcfc27-312c-405b-bade-e4b8bbf1917e)
+# Innentől gamemanagement dolgok
 
 
 ## Saját jegyzetem / micsináltam
