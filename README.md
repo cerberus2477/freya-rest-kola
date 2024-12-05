@@ -1,195 +1,74 @@
-# GameManagementApp
+# Freya's REST
 
-***11.14 játéknyilvántartás feladat - Készítsen egy webes vagy asztali alkalmazást, amely egy játékokhoz tartozó nyilvántartást vezet!***
+***Az éves projektünkhöz (Freya's Garden) készül a REST api Laravelben, bár graphql apit szeretnénk. Ez ilyen backup addig, meg valamit le kell adni. ***
 
   
 ## Futtatás lépései:
-1. Töltsd le a projektet.
+1. Töltsd le a projektet. 
  <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
     - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
 2. XAMPP indítása (Apache, MySQL)
-3. Importáld a *`GameManagamentApp_dump.sql`* fájlt a Phpmyadmin felületén (`localhost/phpmyadmin`)
+3. *(Importáld a *`GameManagamentApp_dump.sql`* fájlt a Phpmyadmin felületén (`localhost/phpmyadmin`))*
 4. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
-```cmd
-cd GameManagementApp
-```
 ```cmd
 composer install
 php artisan migrate
-php artisan serve
+php artisan serve --post 8069
 ```
 
 Magyarázat parancsonként:
 - a célmappába navigálunk
 - a projekthez szükséges függőségek telepítése
 - adatbázis táblák létrehozása a laravelen belül
-- szerver indítása
+- szerver indítása a megadott porton. a post megadása akkor fontos, ha a klienssel együtt szeretnénk használni, hiszen itt próbál majd csatlakozni a kliens.
 
-6. A kezelőfelület megnyitása a `http://127.0.0.1:8000/` címen
+6. A kezelőfelület megnyitása a `http://127.0.0.1:8069/` címen
 7. Enjoy :)
 
 
-## A feladat leírása
-***Készítsen egy webes vagy asztali alkalmazást, amely egy játékokhoz tartozó nyilvántartást vezet!***
 
-- A megbízó szeretné a ==játékosok adatait== nyilvántartani
-	- (==belépéshez==/azonosításhoz szükséges adatok,
-	- plusz szeretné a ==játékokat célzottan fejleszteni==, ezért ehhez szükséges plusz adatokra is szüksége lenne
-		- pl.: életkor/születési év, 
-		- foglalkozások, 
-		- nem, 
-		- lakhely(település),
-		<hr>
-		- játékkal töltött idő,
-		- játszott játék,
-		- játék típusa...;
-		- még csak homályos elképzelései vannak erről, így segítséget kér a fejlesztőktől, bízik benne, hogy tapasztalt játékosok),
-- természetesen a ==játékhoz tartozó információk==at is tároljuk,
-		- elért eredmények, - nem lesz, külön tábla kéne stb
-		- szintek száma játékonként. - lehetséges, akkor playergamesnél az aktuális is
+## Freya-jegyzet
+gamemanagementappból kezdtem
 
-- Tervezze meg az adatbázist (adja meg mind a **három normál formát** és a kapcsolati ábrát is), 
-- s készítse el hozzá a felhasználóbarát **kezelő felületet**!
+## TODO
+- -unique legyen a dbben az user email, name
+- this
+```php
+$table->timestamp('email_verified_at')->nullable();
+``` 
+van most a usernél, dbben lehet kéne (meg így verificitaon tbh)
 
-- Figyeljen a tiszta kód elveire!
-servername lehetne, de ahhoz is jó lenne külön tábla
+- validation külön fájlba
 
+<hr>
 
+- create db (lehet e meglévő migrationokból, meg van e minden vagy kell az sql?)
+- run seeders
+```bash
+php artisan db:seed
+```
 
+```bash
+php artisan migrate:refresh --seed
+```
 
+más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
+        // Create the new plant
+        $plant = Plant::create($validated);
 
-
-## Adatbázismodell 
-### Normalizáció
-
-#### 0. NF
-***vastag, dőlt*** = többértékű tulajdonságok
-
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- player_joinDate 
-- age
-- occupation
-- gender
-- city
-- ***gameID***
-- ***game_name***
-- ***game_type***
-- ***game_levelCount***
-- ***game_description***
-- ***gamerTag***
-- ***hoursPlayed***
-- ***lastPlayedDate***
-- ***playerGame_joinDate***
-- ***playerGame_currentLevel***
-}
-
-#### 1. NF
-***vastag, dőlt*** = részleges funkcionális függés
-
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- joinDate 
-- age
-- occupation
-- gender
-- city
-}
-
-PlayerGames{
-- ==playerID== - FK, PK
-- ==gameID== - PK
-- ***name***
-- ***type***
-- ***levelCount***
-- ***description***
-- gamerTag
-- hoursPlayed
-- lastPlayedDate
-- joinDate
-- currentLeve
-}
-
-(kiemeltek a gameID-től függnek)
+        // Return a response with the created plant data
+        return new PlantResource($plant); // Optional: Using a resource for transformation
 
 
-#### 2. NF
-***vastag, dőlt*** = tranzitív függés (nincs)
+- hogy kell azt megcsinálni hogy a json az adatokon kívűl jó kódot is visszadjon, meg ha még kell akkor mást is? 
 
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- joinDate 
-alap értéke az adatbázisban unknown, nem szükséges megadni feltétlen:
-- age
-- occupation
-- gender
-- city
-}
+## Egyéb random notes
+- egyelőre a /api/plants visszaadja a created at meg az updated at mezőket is
+- usernél null az értéke a plsuz mezőknek, mert a seederben így van írva (db:insert vs create)
+<hr>
+<hr>
 
-Games{
-- ==gameID== - PK, autoincrement, unique
-- name
-- type
-- levelCount
-- description
-}
-
-PlayerGames{
-- ==playerID== - FK, PK
-- ==gameID== - FK, PK
-- gamerTag - egyedi felhasználóneve egy játékosnak egy játékban, leíró tulajdonság csak
-- hoursPlayed
-- lastPlayedDate
-- joinDate
-- currentLevel
-}
-
-
-#### 3. NF
-***ugyanaz, mint a 2.nf, mert nem volt tranzitív függés***
-
-Player{
-- ==playerID== - PK, autoincrement, unique
-- username
-- password
-- email
-- joinDate 
-alap értéke az adatbázisban unknown, nem szükséges megadni feltétlen:
-- age
-- occupation
-- gender
-- city
-}
-
-Games{
-- ==gameID== - PK, autoincrement, unique
-- name
-- type
-- levelCount
-- description
-}
-
-PlayerGames{
-- ==playerID== - FK, PK
-- ==gameID== - FK, PK
-- gamerTag - egyedi felhasználóneve egy játékosnak egy játékban, leíró tulajdonság csak
-- hoursPlayed
-- lastPlayedDate
-- joinDate
-- currentLevel
-}
-
-### Adatbázis ábrázolás
-![adatbazis-abrazolas](https://github.com/user-attachments/assets/32bcfc27-312c-405b-bade-e4b8bbf1917e)
+# Innentől gamemanagement dolgok
 
 
 ## Saját jegyzetem / micsináltam
