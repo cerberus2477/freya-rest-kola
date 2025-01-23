@@ -13,7 +13,7 @@
 ```cmd
 composer install
 php artisan migrate
-php artisan serve --post 8069
+php artisan serve --port 8069
 ```
 
 Magyarázat parancsonként:
