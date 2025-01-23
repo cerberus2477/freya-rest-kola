@@ -4,9 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Logs in with email and password
+     * returns token.
+     */
+    public function login(Request $request)
+    {
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+        $user = User::where ('email', $email)->first();
+
+        if(!user || !Hash::check($password, $password ? $user -> password: '')){
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        //revoke old tokens
+        $user->tokens()->delete();
+
+        $user ->token = $user->createToken('acces')->plainTextToken;
+
+    }
+
+
     /**
      * Display a listing of the resource.
      */

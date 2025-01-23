@@ -15,6 +15,18 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
+
+        DB::table('users')->insert([
+            'username' => 'admin',
+            'email' => 'nacsalevi@gmail.com',
+            'city' => 'bottyan',
+            'birthdate' => $faker->date(),
+            'password' => bcrypt('admin123'),
+            'role_id' => 1,
+            'active' => true,
+        ]);
+
+        
         foreach (range(1, 10) as $index) {
             DB::table('users')->insert([
                 'username' => $faker->userName,
