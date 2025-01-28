@@ -12,13 +12,13 @@
 4. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
 ```cmd
 composer install
-php artisan migrate
+php artisan migrate:refresh --seed
 php artisan serve --port 8069
 ```
 
 Magyarázat parancsonként:
 - a projekthez szükséges függőségek telepítése
-- adatbázis táblák létrehozása a laravelen belül
+- adatbázis táblák létrehozása a laravelen belül (migration) és feltöltés adatokkal (seedelés)
 - szerver indítása a megadott porton.
   	- a port megadása akkor fontos, ha a klienssel együtt szeretnénk használni, hiszen itt próbál majd csatlakozni a kliens.
 
@@ -62,6 +62,16 @@ más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
 
 
 - hogy kell azt megcsinálni hogy a json az adatokon kívűl jó kódot is visszadjon, meg ha még kell akkor mást is? 
+
+## api válaszok eddig
+### /api/userplants
+[[]]
+
+### /api/users
+
+### /api/plants
+
+
 
 ## Egyéb random notes
 - egyelőre a /api/plants visszaadja a created at meg az updated at mezőket is
