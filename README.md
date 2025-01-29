@@ -14,6 +14,8 @@ composer install
 php artisan migrate:refresh --seed
 php artisan serve --port 8069
 ```
+4. A kezelőfelület megnyitása a `http://127.0.0.1:8069/` címen. Enjoy :)
+
 
 Magyarázat parancsonként:
 - a projekthez szükséges függőségek telepítése
@@ -26,7 +28,6 @@ Potential errors:
 	- **megoldás**: `C:\xampp\php\php.ini`-ben `extension=zip` legyen `;` nélkül.
 
 
-4. A kezelőfelület megnyitása a `http://127.0.0.1:8069/` címen. Enjoy :)
 
 
 ## TODO
