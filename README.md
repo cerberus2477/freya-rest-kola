@@ -8,8 +8,7 @@
  <a href= "https://github.com/cerberus2477/GameManagamentApp/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
     - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
 2. XAMPP indítása (Apache, MySQL)
-3. *(Importáld a *`GameManagamentApp_dump.sql`* fájlt a Phpmyadmin felületén (`localhost/phpmyadmin`))*
-4. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
+3. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
 ```cmd
 composer install
 php artisan migrate:refresh --seed
@@ -27,8 +26,7 @@ Potential errors:
 	- **megoldás**: `C:\xampp\php\php.ini`-ben `extension=zip` legyen `;` nélkül.
 
 
-6. A kezelőfelület megnyitása a `http://127.0.0.1:8069/` címen
-7. Enjoy :)
+4. A kezelőfelület megnyitása a `http://127.0.0.1:8069/` címen. Enjoy :)
 
 
 ## TODO
