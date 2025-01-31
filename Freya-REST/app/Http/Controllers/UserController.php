@@ -12,7 +12,7 @@ class UserController extends Controller
      * Logs in with email and password
      * returns token.
      */
-    public function login(Request $request)
+    public function login(UserRequest $request)
     {
         $email = $request->input('email');
         $password = $request->input('password');
@@ -23,7 +23,7 @@ class UserController extends Controller
         ]);
         $user = User::where ('email', $email)->first();
 
-        if(!user || !Hash::check($password, $password ? $user -> password: '')){
+        if(!$user || !Hash::check($password, $password ? $user -> password: '')){
             return response()->json([
                 'message' => 'Invalid credentials'
             ], 401);
@@ -33,7 +33,10 @@ class UserController extends Controller
         $user->tokens()->delete();
 
         $user ->token = $user->createToken('acces')->plainTextToken;
-
+        //TODO have to set token ability http://laravel.com/docs/11.x/sanctum#token-abilities
+        return response()->json([
+            'user'=>$user,
+        ],200 );
     }
 
 
