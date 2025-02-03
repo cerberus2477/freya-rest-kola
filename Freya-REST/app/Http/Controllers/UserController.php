@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
+use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -10,34 +10,38 @@ class UserController extends Controller
 {
     /**
      * Logs in with email and password
-     * returns token.
+     * 
      */
-    public function login(UserRequest $request)
+    public function login(Request $request)
     {
-        $email = $request->input('email');
-        $password = $request->input('password');
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
-        $user = User::where ('email', $email)->first();
-
-        if(!$user || !Hash::check($password, $password ? $user -> password: '')){
+    
+        $email = $request->input('email');
+        $password = $request->input('password');
+    
+        $user = User::where('email', $email)->first();
+    
+        if (!$user || !Hash::check($password, $user->password)) {
             return response()->json([
                 'message' => 'Invalid credentials'
             ], 401);
         }
-
-        //revoke old tokens
+    
+        // Revoke old tokens
         $user->tokens()->delete();
-
-        $user ->token = $user->createToken('acces')->plainTextToken;
-        //TODO have to set token ability http://laravel.com/docs/11.x/sanctum#token-abilities
+    
+        // Create new token
+        $token = $user->createToken('access')->plainTextToken;
+         //TODO have to set token ability http://laravel.com/docs/11.x/sanctum#token-abilities
         return response()->json([
-            'user'=>$user,
-        ],200 );
+            'user' => $user,
+            'token' => $token
+        ]);
     }
+    
 
 
     /**

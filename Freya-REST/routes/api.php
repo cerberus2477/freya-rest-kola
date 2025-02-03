@@ -6,8 +6,8 @@ use App\Http\Controllers\PlantController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPlantController;
 
-Route::post('/user/login', [UserController::class,'login']);
-Route::get('/user', function (Request $request) {
+Route::post('user/login', [UserController::class,'login']);
+Route::get('user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
