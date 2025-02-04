@@ -33,13 +33,28 @@ class UserController extends Controller
         // Revoke old tokens
         $user->tokens()->delete();
     
-        // Create new token
-        $token = $user->createToken('access')->plainTextToken;
-         //TODO have to set token ability http://laravel.com/docs/11.x/sanctum#token-abilities
+        $abilities = [];
+        switch($user->access_level){
+            case '1':
+                $abilities = ['user', 'stats', 'admin'];
+               break;
+            case '2':
+                $abilities = ['user', 'stats'];
+                break;
+            case '3':
+                $abilities = ['user'];
+                break;
+            default:
+                $abilities = ['?'];
+                break;
+        }
+
+        // Create new token, with abilities
+        $token = $user->createToken('access', $abilities)->plainTextToken;
         return response()->json([
             'user' => $user,
             'token' => $token
-        ]);
+        ], 200);
     }
     
 
@@ -63,7 +78,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
+    public function store(Request $request)
     {
 
         $user = User::create($request->validated());
@@ -73,7 +88,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $user = User::findOrFail($id);
 
