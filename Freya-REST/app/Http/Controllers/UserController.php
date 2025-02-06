@@ -45,7 +45,7 @@ class UserController extends Controller
                 $abilities = ['user'];
                 break;
             default:
-                $abilities = ['?'];
+                $abilities = ['read'];
                 break;
         }
 
