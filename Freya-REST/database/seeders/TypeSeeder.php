@@ -16,10 +16,10 @@ class TypeSeeder extends Seeder
         DB::table('Types')->insert([
             ['Type_name' => 'gyümölcs'],
             ['Type_name' => 'zöldség'],
+            ['Type_name' => 'fűszernövény'],
             ['Type_name' => 'szobanövény'],
             ['Type_name' => 'virág'],
             ['Type_name' => 'gomba'],
-            ['Type_name' => 'fa'],
             ['Type_name' => 'egyéb'],
         ]);
     }
