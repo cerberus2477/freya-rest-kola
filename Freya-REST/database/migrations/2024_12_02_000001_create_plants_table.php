@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('latin_name');
+            $table->unsignedBigInteger('type_id');
             $table->timestamps();
+            $table->foreign('type_id')->references('id')->on('types')->onDelete('restrict');
         });
         
     }
