@@ -15,7 +15,7 @@ class PlantSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-
+        //TODO daddin actual plants, connecting it with type id
         foreach (range(1, 10) as $index) {
             Plant::create([
                 'name' => $faker->word,
