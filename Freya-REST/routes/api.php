@@ -6,6 +6,7 @@ use App\Models\Sanctum\PersonalAccessToken;
 use App\Http\Controllers\PlantController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPlantController;
+use App\Http\Middleware\Abilities;
 
 
 // //demonstrate how to be able to set diffrent autorizatoin levels
@@ -46,6 +47,6 @@ Route::resource('plants', PlantController::class);
 //Route::resource('users', UserController::class);
 Route::resource('userplants', UserPlantController::class);
 
-Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
+Route::middleware(['auth:sanctum', 'Abilities:handle'])->group(function () {
     Route::get('/users', [UserController::class, 'index']);
 });
