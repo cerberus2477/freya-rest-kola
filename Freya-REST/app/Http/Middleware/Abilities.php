@@ -19,6 +19,6 @@ class Abilities
         return $next($request);
     }
 
-    return response()->json(['error' => 'This user does not have the right autentication'], 403);
+    return response()->json(['error' => 'User does not have the right autentication'], 403);
 }
 }

@@ -47,6 +47,6 @@ Route::resource('plants', PlantController::class);
 //Route::resource('users', UserController::class);
 Route::resource('userplants', UserPlantController::class);
 
-Route::middleware(['auth:sanctum', 'Abilities:handle'])->group(function () {
+Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::get('/users', [UserController::class, 'index']);
 });
