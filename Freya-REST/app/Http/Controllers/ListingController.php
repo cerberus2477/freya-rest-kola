@@ -12,12 +12,13 @@ class ListingController extends Controller
     public function index(Request $request)
     {
         // Pagination and page size
-        $pageSize = $request->query('pageSize', 10); // Default page size is 10
+        $pageSize = $request->query('pageSize', 24); // Default page size is 24
         $page = $request->query('page', 1); // Default page is 1
 
         // Query the listings with pagination
-        $listings = Listing::query()
-            ->select(['id', 'title', 'price', 'created_at']) // Select only the necessary fields
+        $listings = Listing::select('user_id', 'id', 'title', 'description', 'plant_name', 'media', 'sell')
+            ->with('UserPlant')
+            ->
             ->paginate($pageSize, ['*'], 'page', $page);
 
         return response()->json([
