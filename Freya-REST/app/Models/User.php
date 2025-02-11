@@ -50,7 +50,6 @@ class User extends Authenticatable
         'updated_at',
         'email_verified_at',
         'active',
-        'role_id',
     ];
 
     /**

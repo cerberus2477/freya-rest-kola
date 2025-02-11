@@ -34,7 +34,7 @@ class UserController extends Controller
         $user->tokens()->delete();
     
         $abilities = [];
-        switch($user->access_level){
+        switch($user->role_id){
             case '1':
                 $abilities = ['user', 'stats', 'admin'];
                break;
