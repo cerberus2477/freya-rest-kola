@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Listing;
+use Illuminate\Support\Facades\DB;
 
 class ListingController extends Controller
 {
@@ -14,13 +15,22 @@ class ListingController extends Controller
         // Pagination and page size
         $pageSize = $request->query('pageSize', 24); // Default page size is 24
         $page = $request->query('page', 1); // Default page is 1
-
-        // Query the listings with pagination
-        $listings = Listing::select('user_id', 'id', 'title', 'description', 'plant_name', 'media', 'sell')
-            ->with('UserPlant')
-            ->
+    
+        // Query the listings with joins and pagination
+        $listings = DB::table('listing')
+            ->join('user_plants', 'listing.user_plants_id', '=', 'user_plants.id')
+            ->join('users', 'user_plants.user_id', '=', 'users.id')
+            ->join('plants', 'user_plants.plant_id', '=', 'plants.id')
+            ->select(
+                'listing.id',
+                'listing.title',
+                'listing.media',
+                'listing.sell',
+                'users.name as user_name',
+                'plants.name as plant_name'
+            )
             ->paginate($pageSize, ['*'], 'page', $page);
-
+    
         return response()->json([
             'data' => $listings->items(),
             'pagination' => [
@@ -35,16 +45,32 @@ class ListingController extends Controller
     // GET /api/listings/{id}
     public function show($id)
     {
-        // Find the listing by ID
-        $listing = Listing::find($id);
-
-        if (!$listing) {
-            return response()->json(['message' => 'Listing not found'], 404);
+        if (Listing::find($id)) {
+            return response()->json([
+                'data'=>'',
+                'message' => 'Listing not found'],
+                404);
         }
 
-        // Return all attributes of the listing
+        $listing = DB::table('listing')
+            ->join('user_plants', 'listing.user_plants_id', '=', 'user_plants.id')
+            ->join('users', 'user_plants.user_id', '=', 'users.id')
+            ->join('plants', 'user_plants.plant_id', '=', 'plants.id')
+            ->select(
+                'listing.id',
+                'listing.title',
+                'listing.description',
+                'listing.media',
+                'listing.sell',
+                'users.name as user_name',
+                'users.email as email',
+                'users.te',
+                'plants.name as plant_name'
+            )
+            ->where('listings.id=',$id);
+    
         return response()->json([
-            'data' => $listing,
-        ]);
+            'data' => $listing->items(),
+            ]);
     }
 }
