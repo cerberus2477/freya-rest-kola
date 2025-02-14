@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Plant extends Model
 {
     protected $fillable = ['name', 'latin_name'];
+    public $timestamps=false;
 
     public function articles()
     {

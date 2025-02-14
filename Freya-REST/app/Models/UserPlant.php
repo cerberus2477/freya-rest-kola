@@ -17,4 +17,9 @@ class UserPlant extends Model
     {
         return $this->belongsTo(Plant::class);
     }
+
+    public function listing()
+    {
+        return $this->hasMany(Listing::class);
+    }
 }
