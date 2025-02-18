@@ -11,9 +11,13 @@ use App\Http\Middleware\Abilities;
 
 //login
 Route::post('user/login', [UserController::class,'login']);
-//example requests
+
 Route::resource('plants', PlantController::class);
 Route::resource('userplants', UserPlantController::class);
+
+
+Route::get('/articles/search', [ArticleController::class, 'search']);
+Route::get('/articles/show/{title}', [ArticleController::class, 'show']);
 
 //requires users abilities
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
