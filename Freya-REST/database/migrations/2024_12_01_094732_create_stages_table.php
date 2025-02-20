@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('stages', function (Blueprint $table) {
             $table->id();
-            $table->string('stage_name')->unique();
+            $table->string('name')->unique();
         });
     }
 

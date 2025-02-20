@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('media');
             $table->boolean('sell');
+            $table->integer('price');
             $table->timestamps();
             $table->foreign('user_plants_id')->references('id')->on('user_plants')->onDelete('cascade');
         });

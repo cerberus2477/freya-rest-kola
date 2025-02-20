@@ -32,6 +32,9 @@ Potential errors:
 
 
 ## TODO
+- i have a different articlecontroller.php class. i want the same thing to happen, but with articles now. /api/articles (searcheable) and /api/articles/{title}
+
+
 - -unique legyen a dbben az user email, name
 - this
 ```php

@@ -8,29 +8,34 @@ use App\Http\Controllers\PlantController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPlantController;
 use App\Http\Middleware\Abilities;
+use App\Http\Controllers\ArticleController;
 
 //login
-Route::post('user/login', [UserController::class,'login']);
+Route::post('/login', [UserController::class,'login']);
 
 Route::resource('plants', PlantController::class);
 Route::resource('userplants', UserPlantController::class);
 
 
 Route::get('/articles/search', [ArticleController::class, 'search']);
-Route::get('/articles/show/{title}', [ArticleController::class, 'show']);
+Route::get('/articles/{title}', [ArticleController::class, 'show']);
 
-//requires users abilities
+
+
+//requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
+
+});
+
+//Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
+//requires stats abilities
+// Route::middleware(['auth:sanctum', 'abilties:stats'])->group(function () {
     Route::get('/listings',[ListingController::class, 'index']);
     Route::get('/listings/{id}',[ListingController::class, 'show']);
-});
+// });
 
-//requires stats abilities
-Route::middleware(['auth:sanctum', 'abilties:stats'])->group(function () {
-
-});
-
+//Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
 //requires admin abilities
-Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
+// Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::get('/users', [UserController::class, 'index']);
-});
+// });

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class listing extends Model
+class Listing extends Model
 {
     protected $fillable = ['user_plant_id', 'city', 'title', 'plant', 'description', 'media', 'sell'];
 
