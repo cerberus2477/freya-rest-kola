@@ -18,10 +18,10 @@ class ListingSeeder extends Seeder
                 'city' => $faker->city,
                 'title' => $faker->sentence,
                 'description' => $faker->paragraph,
-                'media' => $faker->randomDigitNotNull, // Placeholder media IDs
+                'media' => $faker->url, 
                 'sell' => $faker->boolean, // 0 = Buy, 1 = Sell
+                'price' => $faker->numberBetween(5, 500)*100
             ]);
         }
     }
 }
-
