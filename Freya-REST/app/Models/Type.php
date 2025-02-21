@@ -9,7 +9,7 @@ class Type extends Model
     protected $fillable = ['type_name'];
     public $timestamps=false;
 
-    public function plants()
+    public function plant()
     {
         return $this->hasMany(Plant::class);
     }

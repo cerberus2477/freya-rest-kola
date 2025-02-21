@@ -26,14 +26,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function posts()
+    public function userPlant()
     {
-        return $this->hasMany(Post::class);
-    }
-
-    public function plants()
-    {
-        return $this->belongsToMany(Plant::class, 'user_plants');
+        return $this->belongsToMany(UserPlant::class, 'user_plants');
     }
 
 

@@ -9,7 +9,7 @@ class Stage extends Model
     protected $fillable = ['stage_name'];
     public $timestamps=false;
 
-    public function userPlants()
+    public function userPlant()
     {
         return $this->hasMany(UserPlant::class);
     }
