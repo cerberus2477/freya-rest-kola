@@ -12,6 +12,9 @@ use App\Http\Controllers\ArticleController;
 
 //login
 Route::post('/login', [UserController::class,'login']);
+//register
+Route::post('/register', [UserController::class, 'register']);
+
 
 Route::resource('plants', PlantController::class);
 Route::resource('userplants', UserPlantController::class);
@@ -29,13 +32,13 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
 //Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
 //requires stats abilities
-// Route::middleware(['auth:sanctum', 'abilties:stats'])->group(function () {
+Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     Route::get('/listings',[ListingController::class, 'index']);
     Route::get('/listings/{id}',[ListingController::class, 'show']);
-// });
+});
 
 //Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
 //requires admin abilities
-// Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
+Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::get('/users', [UserController::class, 'index']);
-// });
+});
