@@ -65,11 +65,10 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [//TODO what do we need when registering
-            'username'=>['required|string|max255'],
-            'birthdate'=>['required'],
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+        $validator = Validator::make($request->all(), [
+            'username'=>['required','max:255'],
+            'email' => ['required','email','max:255','unique:users'],
+            'password' => ['required','min:6','confirmed'],
         ]);
 
         if ($validator->fails()) {
@@ -81,11 +80,12 @@ class UserController extends Controller
 
 
         // Create the user
-        $user = User::create([//TODO adjust based on the input, and requirements above
-            'name' => $request->name,
+        $user = User::create([
+            'username' => $request->username,
             'email' => $request->email,
+            'city' => null,
+            'birthdate' => null,
             'password' => Hash::make($request->password),
-            'role_id' => 3,
         ]);
 
         // Create a token for the newly registered user
