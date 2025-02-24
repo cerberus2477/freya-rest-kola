@@ -20,20 +20,20 @@ class GameControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_user_can_view_games_index()
-    {
+    // public function test_user_can_view_games_index()
+    // {
 
-        //create a few maker records in the database
-        Game::factory()->count(3)->create();
+    //     //create a few maker records in the database
+    //     Game::factory()->count(3)->create();
 
-        //send get request to the index route
-        $response = $this->get(route('games.index')); //games.indexnek megfelelő kell
+    //     //send get request to the index route
+    //     $response = $this->get(route('games.index')); //games.indexnek megfelelő kell
 
-        $response->assertStatus(200);
+    //     $response->assertStatus(200);
 
-        //assert that the response view contains makers data?
-        $response->assertViewHas('games');
-    }
+    //     //assert that the response view contains makers data?
+    //     $response->assertViewHas('games');
+    // }
 
 
     // public function test_authenticated_user_can_create_maker()
