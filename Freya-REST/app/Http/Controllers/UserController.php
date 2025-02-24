@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -45,7 +46,7 @@ class UserController extends Controller
                 $abilities = ['user'];
                 break;
             default:
-                $abilities = ['read'];
+                $abilities = [];
                 break;
         }
 
@@ -57,6 +58,45 @@ class UserController extends Controller
         ], 200);
     }
     
+
+    /**
+     * Registers a new user - might instantly log them in
+     * 
+     */
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [//TODO what do we need when registering
+            'username'=>['required|string|max255'],
+            'birthdate'=>['required'],
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        // Create the user
+        $user = User::create([//TODO adjust based on the input, and requirements above
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => 3,
+        ]);
+
+        // Create a token for the newly registered user
+        $token = $user->createToken('access', ['user'])->plainTextToken;
+
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => $user,
+            'token' => $token
+        ], 201);
+    }
 
 
     /**

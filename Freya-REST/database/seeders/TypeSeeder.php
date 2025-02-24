@@ -14,13 +14,13 @@ class TypeSeeder extends Seeder
     public function run(): void
     {
         DB::table('Types')->insert([
-            ['Type_name' => 'gyümölcs'],
-            ['Type_name' => 'zöldség'],
-            ['Type_name' => 'fűszernövény'],
-            ['Type_name' => 'szobanövény'],
-            ['Type_name' => 'virág'],
-            ['Type_name' => 'gomba'],
-            ['Type_name' => 'egyéb'],
+            ['name' => 'gyümölcs'],
+            ['name' => 'zöldség'],
+            ['name' => 'fűszernövény'],
+            ['name' => 'szobanövény'],
+            ['name' => 'virág'],
+            ['name' => 'gomba'],
+            ['name' => 'egyéb'],
         ]);
     }
 }

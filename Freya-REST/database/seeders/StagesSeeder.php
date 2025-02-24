@@ -14,12 +14,12 @@ class StagesSeeder extends Seeder
     public function run(): void
     {
         DB::table('Stages')->insert([
-            ['Stage_name' => 'mag'],
-            ['Stage_name' => 'palánta'],
-            ['Stage_name' => 'növény'],
-            ['Stage_name' => 'termés'],
-            ['Stage_name' => 'késztermék'],
-            ['Stage_name' => 'egyéb'],
+            ['name' => 'mag'],
+            ['name' => 'palánta'],
+            ['name' => 'növény'],
+            ['name' => 'termés'],
+            ['name' => 'késztermék'],
+            ['name' => 'egyéb'],
         ]);
     }
 }

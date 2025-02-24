@@ -9,12 +9,12 @@ class Plant extends Model
     protected $fillable = ['name', 'latin_name'];
     public $timestamps=false;
 
-    public function articles()
+    public function article()
     {
         return $this->hasMany(Article::class);
     }
 
-    public function userPlants()
+    public function userPlant()
     {
         return $this->belongsToMany(User::class, 'user_plants');
     }

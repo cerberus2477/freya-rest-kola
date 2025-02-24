@@ -16,9 +16,10 @@ class ArticleSeeder extends Seeder
             Article::create([
                 'title' => $faker->sentence,
                 'plant_id' => $faker->optional()->numberBetween(1, 10), // Optional association with plants
+                'author_id' => $faker->optional()->numberBetween(1, 10),
                 'source' => $faker->url,
+                'content' => $faker->text(200)
             ]);
         }
     }
 }
-
