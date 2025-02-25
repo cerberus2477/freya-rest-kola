@@ -66,13 +66,7 @@ más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
 
 - hogy kell azt megcsinálni hogy a json az adatokon kívűl jó kódot is visszadjon, meg ha még kell akkor mást is? 
 
-## api válaszok eddig
-### /api/userplants
-[[]]
 
-### /api/users
-
-### /api/plants
 
 
 
@@ -86,10 +80,6 @@ más mód: külön lehet defineolni hogy milyen adatokat adunk vissza:
 
 # Innentől random dolgok amit eddig tanultam más projecteknél és kellhet
 
-### 2. Fill in the model
-- `php artisan make:model Player -mcr` - controllert is csinál + migration
-- `$fillable` lista kell a mezők neveivel
-- timestamp nem kell
 
 ### Validálás
 a http/requestet használjuk a create és a store metódusnál, vagy saját requestet csinálunk és ott ***validálunk***
