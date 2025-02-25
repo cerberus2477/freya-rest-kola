@@ -34,6 +34,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
 //Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
 //requires stats abilities
+
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     
 });
