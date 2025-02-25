@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('email')->unique();
-            $table->string('city');
+            $table->string('city')->nullable();
             $table->date('birthdate')->nullable();
             $table->string('password');
-            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('role_id')->default(3);
             $table->boolean('active')->default(true);
 
             $table->timestamps();

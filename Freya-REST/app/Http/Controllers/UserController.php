@@ -10,9 +10,48 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     /**
-     * Logs in with email and password
-     * 
-     */
+ * @api {post} /login Log in with email and password
+ * @apiName LoginUser
+ * @apiGroup Authentication
+ *
+ * @apiDescription Logs in a user by validating their email and password, and returns an access token with specific abilities based on their role.
+ *
+ * @apiBody {String} email User's email address.
+ * @apiBody {String} password User's password.
+ *
+ * @apiSuccess {Object} user Logged-in user details.
+ * @apiSuccess {String} user.id User's unique ID.
+ * @apiSuccess {String} user.username User's username.
+ * @apiSuccess {String} user.email User's email address.
+ * @apiSuccess {String} user.city User's city (nullable).
+ * @apiSuccess {String} user.birthdate User's birthdate (nullable).
+ * @apiSuccess {String} user.role_id User's role ID.
+ * @apiSuccess {String} token Access token for the logged-in user.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "user": {
+ *             "id": 1,
+ *             "username": "johndoe",
+ *             "email": "johndoe@example.com",
+ *             "city": "New York",
+ *             "birthdate": "1990-01-01",
+ *             "role_id": "2",
+ *             "created_at": "2023-10-01T12:00:00.000000Z",
+ *             "updated_at": "2023-10-01T12:00:00.000000Z"
+ *         },
+ *         "token": "2|abcdef1234567890"
+ *     }
+ *
+ * @apiError {String} message Error message.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *         "message": "Invalid credentials"
+ *     }
+ */
     public function login(Request $request)
     {
         $request->validate([
@@ -60,16 +99,61 @@ class UserController extends Controller
     
 
     /**
-     * Registers a new user - might instantly log them in
-     * 
-     */
+    * @api {post} /register Register a new user
+    * @apiName RegisterUser
+    * @apiGroup Authentication
+    *
+    * @apiDescription Registers a new user and logs them in by returning an access token.
+    *
+    * @apiBody {String} username User's desired username (max: 255 characters).
+    * @apiBody {String} email User's email address (must be unique).
+    * @apiBody {String} password User's password (min: 6 characters).
+    * @apiBody {String} password_confirmation Confirmation of the user's password.
+    *
+    * @apiSuccess {String} message Success message.
+    * @apiSuccess {Object} user Registered user details.
+    * @apiSuccess {String} user.id User's unique ID.
+    * @apiSuccess {String} user.username User's username.
+    * @apiSuccess {String} user.email User's email address.
+    * @apiSuccess {String} user.city User's city (nullable).
+    * @apiSuccess {String} user.birthdate User's birthdate (nullable).
+    * @apiSuccess {String} token Access token for the newly registered user.
+    *
+    * @apiSuccessExample {json} Success-Response:
+    *     HTTP/1.1 201 Created
+    *     {
+    *         "message": "User registered successfully",
+    *         "user": {
+    *             "id": 1,
+    *             "username": "johndoe",
+    *             "email": "johndoe@example.com",
+    *             "city": null,
+    *             "birthdate": null,
+    *             "role_id": 3
+    *         },
+    *         "token": "1|abcdef1234567890"
+    *     }
+    *
+    * @apiError {String} message Error message.
+    * @apiError {Object} errors Validation errors.
+    *
+    * @apiErrorExample {json} Error-Response:
+    *     HTTP/1.1 422 Unprocessable Entity
+    *     {
+    *         "message": "Validation failed",
+    *         "errors": {
+    *             "username": ["The username field is required."],
+    *             "email": ["The email field is required."],
+    *             "password": ["The password field is required."]
+    *         }
+    *     }
+    */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [//TODO what do we need when registering
-            'username'=>['required|string|max255'],
-            'birthdate'=>['required'],
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+        $validator = Validator::make($request->all(), [
+            'username'=>['required','max:255'],
+            'email' => ['required','email','max:255','unique:users'],
+            'password' => ['required','min:6','confirmed'],
         ]);
 
         if ($validator->fails()) {
@@ -81,11 +165,12 @@ class UserController extends Controller
 
 
         // Create the user
-        $user = User::create([//TODO adjust based on the input, and requirements above
-            'name' => $request->name,
+        $user = User::create([
+            'username' => $request->username,
             'email' => $request->email,
+            'city' => null,
+            'birthdate' => null,
             'password' => Hash::make($request->password),
-            'role_id' => 3,
         ]);
 
         // Create a token for the newly registered user
