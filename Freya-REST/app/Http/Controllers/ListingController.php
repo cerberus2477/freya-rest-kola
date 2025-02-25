@@ -31,7 +31,7 @@ class ListingController extends Controller
                 )
                 ->get(); // Get all results without pagination
 
-            return response()->json(['data' => $listings]);
+            return response()->json(['data' => $listings], 200);
         }
 
         // Query builder with necessary joins
@@ -58,16 +58,22 @@ class ListingController extends Controller
         $page = $request->query('page', 1);
 
         //approximate search
-        $title = $request->query('title', '');
-        $plant = $request->query('plant', '');
+        $search = $request->query('search', '');
+        //whether to search in description too
+        $indesc = $request->query('indesc');
 
-        if (!empty($title)) {
-        $query->where('listings.title', 'LIKE', "%$title%");
-        }
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search, $indesc) {
+                $q->where('listings.title', 'LIKE', "%$search%")
+                  ->orWhere('plants.name', 'LIKE', "%$search%");
                 
-        if (!empty($plant)) {
-            $query->where('plants.name', 'LIKE', "%$plant%");
+                if ($indesc === 'true') {
+                    $q->orWhere('listings.description', 'LIKE', "%$search%");
+                }
+            });
         }
+
+
 
         //filters
         $sell = $request->query('sell');
@@ -75,7 +81,8 @@ class ListingController extends Controller
         $user = $request->query('user');
         $type = $request->query('type');
         $stage = $request->query('stage');
-
+        $plant = $request->query('plant');
+        
         // $price
         $minprice = $request->query('minprice');
         $maxprice = $request->query('maxprice');
@@ -88,6 +95,10 @@ class ListingController extends Controller
 
         if (!empty($user)) {
             $query->where('users.username', '=', $user);
+        }
+
+        if (!empty($plant)) {
+            $query->where('plants.name', '=', $plant);
         }
 
         if (!empty($type)) {
@@ -120,7 +131,7 @@ class ListingController extends Controller
                 'page' => $listings->currentPage(),
                 'pageSize' => $listings->perPage(),
                 'totalPages' => $listings->lastPage(),
-            ],
+            ],200
         ]);
     }
 
@@ -161,7 +172,7 @@ class ListingController extends Controller
             'status' => 200,
             'message' => 'Listing found',
             'data' => $listing
-        ]);
+        ], 200);
     }
     
 }

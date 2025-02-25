@@ -21,7 +21,7 @@ Route::resource('plants', PlantController::class);
 Route::resource('userplants', UserPlantController::class);
 
 
-Route::get('/articles/search', [ArticleController::class, 'search']);
+Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/{title}', [ArticleController::class, 'show']);
 Route::get('/listings',[ListingController::class, 'index']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
