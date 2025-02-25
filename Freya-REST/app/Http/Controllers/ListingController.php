@@ -33,12 +33,6 @@ class ListingController extends Controller
 
             return response()->json(['data' => $listings]);
         }
-        // Pagination and search parameters
-        $pageSize = $request->query('pageSize', 5);
-        $page = $request->query('page', 1);
-        $search = $request->query('search', '');
-        $plantType = $request->query('plantType');
-        $stage = $request->query('stage');
 
         // Query builder with necessary joins
         $query = DB::table('listings')
@@ -53,30 +47,67 @@ class ListingController extends Controller
                 'listings.media',
                 'listings.sell',
                 'listings.price',
-                'users.username as author',
-                'plants.name as plant_name',
-                'types.name as plant_type',
+                'users.username as user',
+                'plants.name as plant',
+                'types.name as type',
                 'stages.name as stage'
             );
 
+        // Pagination and search parameters
+        $pageSize = $request->query('pageSize', 5);
+        $page = $request->query('page', 1);
+
+        //approximate search
+        $title = $request->query('title', '');
+        $plant = $request->query('plant', '');
+
+        if (!empty($title)) {
+        $query->where('listings.title', 'LIKE', "%$title%");
+        }
+                
+        if (!empty($plant)) {
+            $query->where('plants.name', 'LIKE', "%$plant%");
+        }
+
+        //filters
+        $sell = $request->query('sell');
+
+        $user = $request->query('user');
+        $type = $request->query('type');
+        $stage = $request->query('stage');
+
+        // $price
+        $minprice = $request->query('minprice');
+        $maxprice = $request->query('maxprice');
+        
+        
         if (!empty($sell)) {
             $query->where('listings.sell', '=', $sell);
         }
-            
-        // Apply search filter
-        if (!empty($search)) {
-            $query->where('listings.title', 'LIKE', "%$search%");
+
+
+        if (!empty($user)) {
+            $query->where('users.username', '=', $user);
         }
 
-        // Apply plant type filter
-        if (!empty($plantType)) {
-            $query->where('types.name', '=', $plantType);
+        if (!empty($type)) {
+            $query->where('types.name', '=', $type);
         }
 
-        // Apply state filter
         if (!empty($stage)) {
             $query->where('stages.name', '=', $stage);
         }
+
+
+        // Price range filter
+        if (!empty($minprice)) {
+            $query->where('listings.price', '>=', $minprice);
+        }
+        
+        if (!empty($maxprice)) {
+            $query->where('listings.price', '<=', $maxprice);
+        }
+
 
         // Paginate results
         $listings = $query->paginate($pageSize, ['*'], 'page', $page);
@@ -100,6 +131,7 @@ class ListingController extends Controller
             ->join('users', 'user_plants.user_id', '=', 'users.id')
             ->join('plants', 'user_plants.plant_id', '=', 'plants.id')
             ->join('types', 'plants.type_id', '=', 'types.id')
+            ->join('stages', 'user_plants.stage_id', '=', 'stages.id')
             ->select(
                 'listings.id',
                 'listings.title',
@@ -107,19 +139,28 @@ class ListingController extends Controller
                 'listings.media',
                 'listings.sell',
                 'listings.price',
-                'users.username as user_name',
+                'users.username as user',
                 'users.email',
                 'stages.name as stage',
-                'plants.name as plant_name',
-                'types.name as plant_type'
+                'plants.name as plant',
+                'types.name as type'
             )
             ->where('listings.id', '=', $id)
             ->first();
-
+    
         if (!$listing) {
-            return response()->json(['message' => 'Listing not found'], 404);
+            return response()->json([
+                'status' => 404,
+                'message' => 'Listing not found',
+                'data' => []
+            ], 404);
         }
-
-        return response()->json(['data' => $listing]);
+    
+        return response()->json([
+            'status' => 200,
+            'message' => 'Listing found',
+            'data' => $listing
+        ]);
     }
+    
 }
