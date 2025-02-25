@@ -23,14 +23,14 @@ Route::resource('userplants', UserPlantController::class);
 
 Route::get('/articles/search', [ArticleController::class, 'search']);
 Route::get('/articles/{title}', [ArticleController::class, 'show']);
-
+Route::get('/listings',[ListingController::class, 'index']);
+Route::get('/listings/{id}',[ListingController::class, 'show']);
 
 
 //requires users abilities 
-Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
-    Route::get('/listings',[ListingController::class, 'index']);
-    Route::get('/listings/{id}',[ListingController::class, 'show']);
-});
+// Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
+
+// });
 
 //Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
 //requires stats abilities

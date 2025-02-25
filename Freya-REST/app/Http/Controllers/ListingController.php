@@ -113,6 +113,7 @@ class ListingController extends Controller
         $listings = $query->paginate($pageSize, ['*'], 'page', $page);
 
         return response()->json([
+            'status' => 200,
             'data' => $listings->items(),
             'pagination' => [
                 'total' => $listings->total(),
