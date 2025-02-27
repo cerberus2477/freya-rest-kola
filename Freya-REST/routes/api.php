@@ -28,18 +28,16 @@ Route::get('/listings/{id}',[ListingController::class, 'show']);
 
 
 //requires users abilities 
-// Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
+Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
-// });
+});
 
-//Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
+
 //requires stats abilities
-
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     
 });
 
-//Tesztelés miatt vannak kikkommentelve, hogy ne kelljen hozzá token ideiglenesen
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::get('/users', [UserController::class, 'index']);
