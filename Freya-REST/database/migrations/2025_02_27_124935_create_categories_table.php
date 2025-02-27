@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stages', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_plants');
-        Schema::dropIfExists('stages');
+        Schema::dropIfExists('articles');
+        Schema::dropIfExists('categories');
     }
 };
