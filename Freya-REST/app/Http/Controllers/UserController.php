@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -52,12 +53,13 @@ class UserController extends Controller
  *         "message": "Invalid credentials"
  *     }
  */
-    public function login(Request $request)
+    public function login(UserRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        if($request->validated()){
+            return response()->json([
+                'message' => validator()->errors()
+            ], 400);
+        }
     
         $email = $request->input('email');
         $password = $request->input('password');
@@ -148,18 +150,12 @@ class UserController extends Controller
     *         }
     *     }
     */
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'username'=>['required','max:255'],
-            'email' => ['required','email','max:255','unique:users'],
-            'password' => ['required','min:6','confirmed'],
-        ]);
-
-        if ($validator->fails()) {
+        if ($request->validated()) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => validator()->errors()
             ], 422);
         }
 
@@ -200,10 +196,20 @@ class UserController extends Controller
         return response()->json(User::findOrFail($id));
     }
 
+    public function showSelf(UserRequest $request){//TODO not at all finished
+        $user = $request->user();
+        $response = DB::table()
+            ->Join('user_plants', 'users.id', '=', 'user_plants.user_id');
+
+
+
+        return response()->json($user);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
 
         $user = User::create($request->validated());
@@ -212,14 +218,22 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * validation dies if you send in the same username/email as you have
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, string $username = null)
     {
-        $user = User::findOrFail($id);
+        if ($username) {
+            $user = User::where('username', $username)->firstOrFail();
+        } else {
+            $user = $request->user();
+        }
 
         $user->update($request->validated());
-        return response()->json($user);
+
+        return response()->json($user, 200);
+    
     }
+
 
     /**
      * Remove the specified resource from storage.

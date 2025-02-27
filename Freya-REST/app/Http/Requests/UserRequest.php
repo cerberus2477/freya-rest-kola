@@ -8,23 +8,73 @@ class UserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Adjust authorization logic as needed
+        return true;
     }
 
-    public function rules(): array
-    {
-        return [
-            'username' => 'required|string|unique:users,username|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
-            'city' => 'required|string|max:255',
-            'birthdate' => 'required|date|before:today',
-            'password' => 'required|string|min:8|confirmed',
-            'role_id' => 'required|exists:roles,id',
-            'active' => 'boolean',
-        ];
+//All the posible fields with most likely     
+// return [
+//     'username' => 'required|string|unique:users,username|max:255',
+//     'email' => 'required|email|unique:users,email|max:255',
+//     'city' => 'required|string|max:255',
+//     'birthdate' => 'required|date|before:today',
+//     'password' => 'required|string|min:8|confirmed',
+//     'role_id' => 'required|exists:roles,id',
+//     'active' => 'boolean',
+// ];
+
+public function rules(): array
+{
+    // Determine which rules to use based on the route or request purpose
+    if ($this->routeIs('register')) {
+        return $this->rulesForRegister();
+    } elseif ($this->routeIs('login')) {
+        return $this->rulesForLogin();
+    } elseif ($this->isMethod('patch')) {
+        return $this->rulesForUpdate();
+    }elseif ($this->routeIs('/users/{username}/role')){
+        return $this->rulesForRolesUpdate();
     }
 
-    public function messages(): array
+    return [];
+}
+
+public function rulesForRegister(): array
+{
+    return [
+        'username' => 'required|string|unique:users,username|max:255|min:4',
+        'email' => 'required|email|unique:users,email|max:255',
+        'password' => 'required|string|min:8|confirmed',
+    ];
+}
+
+public function rulesForLogin(): array
+{
+    return [
+        'email' => 'required|email|max:255',
+        'password' => 'required|string|min:8',
+    ];
+}
+
+public function rulesForUpdate(): array
+{
+    return [
+        'username' => 'sometimes|string|unique:users,username|max:255',
+        'email' => 'sometimes|email|unique:users,email|max:255',
+        'city' => 'sometimes|string|max:255',
+        'birthdate' => 'sometimes|date|before:today',
+        'active' => 'sometimes|boolean',
+    ];
+}
+
+public function rulesForRolesUpdate(): array
+{
+    return [
+        'role_id' => 'required|exists:roles,id',
+    ];
+}
+
+
+   public function messages(): array
     {
         return [
             'username.required' => 'A felhasználónév megadása kötelező.',

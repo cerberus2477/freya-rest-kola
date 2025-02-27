@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class UserPlantRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class UserPlantRequest extends FormRequest
                 'exists:plants,id',
                 function ($attribute, $value, $fail) {
                     if (
-                        \DB::table('user_plants')
+                        DB::table('user_plants')
                             ->where('user_id', $this->user_id)
                             ->where('plant_id', $value)
                             ->exists()
