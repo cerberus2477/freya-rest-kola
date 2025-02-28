@@ -12,10 +12,12 @@ class ArticleController extends BaseController
             ->leftJoin('plants', 'articles.plant_id', '=', 'plants.id')
             ->leftJoin('users', 'articles.author_id', '=', 'users.id')
             ->join('types', 'plants.type_id', '=', 'types.id')
+            ->join('categories', 'articles.category_id', '=', 'categories.id')
             ->select(
                 'articles.id',
                 'articles.title',
-                'articles.content',
+                'categories.name as category',
+                'articles.description',
                 'articles.updated_at',
                 'plants.name as plant_name',
                 'users.username as author'
@@ -25,7 +27,7 @@ class ArticleController extends BaseController
     // GET /api/articles?all
     public function index(Request $request)
     {
-        if ($request->query('all') === 'true') {
+        if ($request->has('all')) {
             $articles = $this->baseQuery()->get();
             return $this->jsonResponse(200, 'All articles retrieved', $articles);
         }
@@ -37,31 +39,32 @@ class ArticleController extends BaseController
         return $this->jsonResponse(200, 'Articles retrieved successfully', $articles);
     }
 
-    // GET /api/articles/search?q=&author=&plant=&type=&before=&after=&all
+    // GET /api/articles/search?q=&deep?&author=&plant=&typeofplant=&category=&before=&after=&all
     public function search(Request $request)
     {
-        if ($request->has("all")) {
-            $articles = $this->baseQuery()->get();
-            return $this->jsonResponse(200, 'All articles retrieved', $articles);
-        }
-
         $query = $this->baseQuery();
-        $q = $request->query('q', '');
-        $inContent = $request->query('incontent');
 
+        //search by title, plant, optionally in content and description
+        $q = $request->query('q', '');
         if (!empty($q)) {
-            $query->where(function ($query) use ($q, $inContent) {
+            $query->where(function ($query) use ($q, $request) {
                 $query->where('articles.title', 'LIKE', "%$q%")
                     ->orWhere('plants.name', 'LIKE', "%$q%");
-                if ($inContent === 'true') {
-                    $query->orWhere('articles.content', 'LIKE', "%$q%");
+                if ($request->has("deep")) {
+                    $query->orWhere('articles.content', 'LIKE', "%$q%")
+                        ->orwhere('articles.description', 'LIKE', "%$q%");
                 }
             });
         }
 
-        // Filters
-        //TODO: add article type to db, to query result, to filter
-        $filters = ['author' => 'users.username', 'plant' => 'plants.name', 'type' => 'types.name'];
+        //filters
+        $filters = [
+            'author' => 'users.username', 
+            'plant' => 'plants.name', 
+            'typeofplant' => 'types.name', 
+            'category' => 'categories.name'
+        ];
+
         foreach ($filters as $param => $column) {
             if ($value = $request->query($param)) {
                 $query->where($column, '=', $value);
@@ -75,18 +78,23 @@ class ArticleController extends BaseController
             $query->where('articles.updated_at', '>=', $after);
         }
 
+        //return matching results
+        if ($request->has("all")) {
+            return $this->jsonResponse(200, 'Articles retrieved successfully', $query->get());
+        }
+
+        //paginated
         $pageSize = $request->query('pageSize', 5);
         $page = $request->query('page', 1);
-        $articles = $query->paginate($pageSize, ['*'], 'page', $page);
-
-        return $this->jsonResponse(200, 'Articles retrieved successfully', $articles);
+        $paginated = $query->paginate($pageSize, ['*'], 'page', $page);
+        return $this->jsonResponse(200, 'Articles retrieved successfully', $paginated);
     }
 
     // GET /api/articles/{title}
     public function show($title)
     {
         $article = $this->baseQuery()
-            ->addSelect('articles.source', 'articles.created_at')
+            ->addSelect('articles.source', 'articles.content', 'articles.created_at')
             ->where('articles.title', '=', $title)
             ->first();
 

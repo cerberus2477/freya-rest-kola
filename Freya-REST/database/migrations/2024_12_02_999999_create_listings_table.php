@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('listings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_plants_id');
-            $table->string('city');
             $table->string('title');
             $table->text('description');
+            $table->string('city');
             $table->string('media');
             $table->boolean('sell');
             $table->integer('price');

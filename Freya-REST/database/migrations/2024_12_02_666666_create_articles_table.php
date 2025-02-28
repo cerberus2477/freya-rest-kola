@@ -13,17 +13,18 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->unsignedBigInteger('plant_id')->nullable();
-            $table->unsignedBigInteger('author_id')->nullable();
+            $table->unsignedBigInteger('author_id');
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->text('description');
-            $table->text('content');
+            $table->longtext('content');
             $table->text('source');
             $table->timestamps();
             $table->foreign('plant_id')->references('id')->on('plants')->onDelete('set null');
-            $table->foreign('author_id')->references('id')->on('users')->onDelete('set null'); //on delete write deleted user?
+            $table->foreign('author_id')->references('id')->on('users'); //on delete write deleted user?
             // $table->foreign('author_id')->references('id')->on('users')->onDelete('set null')->index();
-
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 

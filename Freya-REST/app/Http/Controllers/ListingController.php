@@ -32,7 +32,7 @@ class ListingController extends BaseController
     // GET /api/articles?all
     public function index(Request $request)
     {
-        if ($request->query('all') === 'true') {
+        if ($request->has('all')) {
             $listings = $this->baseQuery()->get();
             return $this->jsonResponse(200, 'All listings retrieved', $listings);
         }
@@ -44,28 +44,24 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
     }
 
-    // GET /api/listings/search?q=&sell=&user=&plant=&type=&stage&minprice=&maxprice=&all
+    // GET /api/listings/search?q=&deep&sell=&user=&plant=&type=&stage&minprice=&maxprice=&all
     public function search(Request $request)
-    {
-        if ($request->$request->has("all")) {
-            $listings = $this->baseQuery()->get();
-            return $this->jsonResponse(200, 'All listings retrieved', $listings);
-        }
-        
+    {   
         $query = $this->baseQuery();
-        $q = $request->query('q', '');
-        $inDesc = $request->query('indesc');
 
+        //search by title, plant, optionally in description
+        $q = $request->query('q', '');
         if (!empty($q)) {
-            $query->where(function ($query) use ($q, $inDesc) {
+            $query->where(function ($query) use ($q, $request) {
                 $query->where('listings.title', 'LIKE', "%$q%")
                   ->orWhere('plants.name', 'LIKE', "%$q%");
-                if ($inDesc === 'true') {
+                if ($request->has("deep")) {
                     $query->orWhere('listings.description', 'LIKE', "%$q%");
                 }
             });
         }
 
+        //filters
         $filters = [
             'sell' => 'listings.sell',
             'user' => 'users.username',
@@ -87,10 +83,15 @@ class ListingController extends BaseController
             $query->where('listings.price', '<=', $maxPrice);
         }
 
+        //return all matching results
+        if ($request->has("all")) {
+            return $this->jsonResponse(200, 'Listings retrieved successfully', $query->get());
+        }
+
+        //return a page of matching results
         $pageSize = $request->query('pageSize', 5);
         $page = $request->query('page', 1);
         $listings = $query->paginate($pageSize, ['*'], 'page', $page);
-
         return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
     }
 
