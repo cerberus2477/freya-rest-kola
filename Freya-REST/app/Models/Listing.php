@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Listing extends Model
 {
-    protected $fillable = ['user_plant_id', 'city', 'title', 'plant', 'description', 'media', 'sell'];
+    protected $fillable = ['user_plants_id', 'city', 'title', 'description', 'media', 'sell', 'price'];
 
     public function userPlant()
     {

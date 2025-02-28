@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('title');
             $table->unsignedBigInteger('plant_id')->nullable();
             $table->unsignedBigInteger('author_id')->nullable();
-            $table->text('source');
+            $table->text('description');
             $table->text('content');
+            $table->text('source');
             $table->timestamps();
             $table->foreign('plant_id')->references('id')->on('plants')->onDelete('set null');
             $table->foreign('author_id')->references('id')->on('users')->onDelete('set null'); //on delete write deleted user?
