@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Stage extends Model
+class Category extends Model
 {
     protected $fillable = ['name'];
     public $timestamps=false;
 
-    public function userPlant()
+    public function article()
     {
-        return $this->hasMany(UserPlant::class);
+        return $this->hasMany(Article::class);
     }
 }
