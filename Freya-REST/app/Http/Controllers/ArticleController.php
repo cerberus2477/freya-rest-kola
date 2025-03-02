@@ -11,8 +11,8 @@ class ArticleController extends BaseController
         return DB::table('articles')
             ->leftJoin('plants', 'articles.plant_id', '=', 'plants.id')
             ->leftJoin('users', 'articles.author_id', '=', 'users.id')
-            ->join('types', 'plants.type_id', '=', 'types.id')
-            ->join('categories', 'articles.category_id', '=', 'categories.id')
+            ->leftJoin('types', 'plants.type_id', '=', 'types.id')
+            ->leftJoin('categories', 'articles.category_id', '=', 'categories.id')
             ->select(
                 'articles.id',
                 'articles.title',

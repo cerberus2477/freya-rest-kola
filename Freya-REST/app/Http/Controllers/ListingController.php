@@ -10,11 +10,11 @@ class ListingController extends BaseController
     private function baseQuery()
     {
         return DB::table('listings')
-            ->join('user_plants', 'listings.user_plants_id', '=', 'user_plants.id')
-            ->join('users', 'user_plants.user_id', '=', 'users.id')
-            ->join('plants', 'user_plants.plant_id', '=', 'plants.id')
-            ->join('types', 'plants.type_id', '=', 'types.id')
-            ->join('stages', 'user_plants.stage_id', '=', 'stages.id')
+            ->leftJoin('user_plants', 'listings.user_plants_id', '=', 'user_plants.id')
+            ->leftJoin('users', 'user_plants.user_id', '=', 'users.id')
+            ->leftJoin('plants', 'user_plants.plant_id', '=', 'plants.id')
+            ->leftJoin('types', 'plants.type_id', '=', 'types.id')
+            ->leftJoin('stages', 'user_plants.stage_id', '=', 'stages.id')
             ->select(
                 'listings.id',
                 'listings.title',
