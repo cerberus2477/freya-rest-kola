@@ -9,7 +9,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPlantController;
 use App\Http\Middleware\Abilities;
 use App\Http\Controllers\ArticleController;
-
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TypeController;
 //No need for bearer token
 //login
 Route::post('/login', [UserController::class,'login']);
@@ -28,6 +29,9 @@ Route::get('/articles/{title}', [ArticleController::class, 'show']);
 Route::get('/listings',[ListingController::class, 'index']);
 Route::get('/listings/search', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
+
+Route::resource('types', TypeController::class);
+Route::resource('categories', CategoryController::class);
 
 
 //requires users abilities 

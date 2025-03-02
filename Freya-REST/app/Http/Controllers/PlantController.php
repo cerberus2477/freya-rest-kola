@@ -6,14 +6,14 @@ use App\Models\Plant;
 use App\Http\Requests\PlantRequest;
 // use Symfony\Component\HttpFoundation\Response;
 
-class PlantController extends Controller
+class PlantController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return response()->json(Plant::all());
+        return $this->jsonResponse(200, "Plants retrieved successfully", Plant::all());
     }
 
 
