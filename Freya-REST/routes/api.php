@@ -36,7 +36,7 @@ Route::resource('categories', CategoryController::class);
 
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
-    Route::get('/profile', [UserController::class, 'showSelf']);//TODO implement
+    Route::get('/profile', [UserController::class, 'showMyPlants']);
     Route::patch('/profile', [UserController::class, 'update']);
     Route::get('/users/{username}', [UserController::class, 'show']);
 });
