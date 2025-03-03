@@ -18,8 +18,9 @@ class ArticleController extends BaseController
                 'articles.title',
                 'categories.name as category',
                 'articles.description',
-                'articles.updated_at',
+                DB::raw('DATE(articles.updated_at) as updated_at'), // Extract only the date
                 'plants.name as plant_name',
+                'types.name as type',
                 'users.username as author'
             );
     }
@@ -61,7 +62,7 @@ class ArticleController extends BaseController
         $filters = [
             'author' => 'users.username', 
             'plant' => 'plants.name', 
-            'typeofplant' => 'types.name', 
+            'type' => 'types.name', 
             'category' => 'categories.name'
         ];
 
@@ -94,12 +95,12 @@ class ArticleController extends BaseController
     public function show($title)
     {
         $article = $this->baseQuery()
-            ->addSelect('articles.source', 'articles.content', 'articles.created_at')
+            ->addSelect('articles.source', 'articles.content', DB::raw('DATE(articles.created_at) as created_at'))
             ->where('articles.title', '=', $title)
             ->first();
 
         if (!$article) {
-            return response()->json(['status' => 404, 'message' => 'Article not found', 'data' => []], 404);
+            return $this->jsonResponse(404, 'Article not found');
         }
 
         return $this->jsonResponse(200, 'Article found', $article);
