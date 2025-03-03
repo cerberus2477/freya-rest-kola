@@ -55,12 +55,6 @@ class UserController extends Controller
  */
     public function login(UserRequest $request)
     {
-        if($request->validated()){
-            return response()->json([
-                'message' => validator()->errors()
-            ], 400);
-        }
-    
         $email = $request->input('email');
         $password = $request->input('password');
     
@@ -152,15 +146,7 @@ class UserController extends Controller
     */
     public function register(UserRequest $request)
     {
-        if ($request->validated()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => validator()->errors()
-            ], 422);
-        }
 
-
-        // Create the user
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
@@ -191,9 +177,15 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $username)
     {
-        return response()->json(User::findOrFail($id));
+        $user = User::where('username',$username)->first();
+
+        if($user){
+            return response()->json($user);
+        } else{
+            return response()->json(['message' => 'Nem talált felhasználó'],404);
+        }
     }
 
     public function showSelf(UserRequest $request){//TODO not at all finished
@@ -220,7 +212,7 @@ class UserController extends Controller
      * Update the specified resource in storage.
      * validation dies if you send in the same username/email as you have
      */
-    public function update(UserRequest $request, string $username = null)
+    public function update(UserRequest $request, ?string $username = null)
     {
         if ($username) {
             $user = User::where('username', $username)->firstOrFail();

@@ -29,10 +29,10 @@ public function rules(): array
         return $this->rulesForRegister();
     } elseif ($this->routeIs('login')) {
         return $this->rulesForLogin();
-    } elseif ($this->isMethod('patch')) {
-        return $this->rulesForUpdate();
-    }elseif ($this->routeIs('/users/{username}/role')){
+    } elseif ($this->routeIs('role-update')){
         return $this->rulesForRolesUpdate();
+    }elseif ($this->isMethod('patch')) {
+        return $this->rulesForUpdate();
     }
 
     return [];
