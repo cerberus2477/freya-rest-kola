@@ -16,8 +16,8 @@ Route::post('/login', [UserController::class,'login'])->name('login');
 //register
 Route::post('/register', [UserController::class, 'register'])->name('register');
 //password reset
-Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forgot-password');
-Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password-reset');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forgot-password');
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password-reset');
 
 Route::resource('plants', PlantController::class);
 Route::resource('userplants', UserPlantController::class);
