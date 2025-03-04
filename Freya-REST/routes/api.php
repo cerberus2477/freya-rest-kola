@@ -49,6 +49,6 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::get('/users', [UserController::class, 'index']);
-    Route::patch('/users/{username}', [UserController::class, 'update']); //TODO finish
+    Route::patch('/users/{username}', [UserController::class, 'update']);
     Route::patch('/users/{username}/role', [UserController::class, 'role'])->name('role-update');//TODO finish
 });
