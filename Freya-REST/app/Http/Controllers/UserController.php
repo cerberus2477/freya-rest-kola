@@ -61,10 +61,10 @@ class UserController extends BaseController
         $user = User::where('email', $email)->first();
     
         if (!$user || !Hash::check($password, $user->password)) {
-            return response()->jsonResponse([
+            return $this->jsonResponse(
                 401,
                 'Helytelen hitelesítő adatok'
-            ]);
+            );
         }
     
         // Revoke old tokens
@@ -88,7 +88,7 @@ class UserController extends BaseController
 
         // Create new token, with abilities
         $token = $user->createToken('access', $abilities)->plainTextToken;
-        return response()->json(
+        return $this->jsonResponse(
             200,
             "sikeres bejelentkezés",
             ['user' => $user,
@@ -160,7 +160,7 @@ class UserController extends BaseController
         // Create a token for the newly registered user
         $token = $user->createToken('access', ['user'])->plainTextToken;
 
-        return response()->jsonResponse(201,
+        return $this->jsonResponse(201,
             'User registered successfully',
             ['user' => $user,
             'token' => $token]
@@ -173,7 +173,10 @@ class UserController extends BaseController
      */
     public function index()
     {
-        return response()->json(User::all());
+        return $this->jsonResponse(
+            200,
+            "Sikeres lekérdezés",
+            User::all());
     }
 
     /**
@@ -184,24 +187,24 @@ class UserController extends BaseController
         $user = User::where('username', $username)->first();
 
         if($user == $request->user()){
-            return response()->jsonResponse(200, 'Saját felhasználó', $user);
+            return $this->jsonResponse(200, 'Saját felhasználó sikeres lekérdezése', $user);
         }elseif($user){
-            return response()->jsonResponse($user);
+            return $this->jsonResponse(200, 'Sikeres lekérdezés', $user);
         } 
         else{
-            return response()->jsonResponse(['message' => 'Nem talált felhasználó'],404);
+            return response()->jsonResponse(404, 'Nem talált felhasználó');
         }
     }
 
     public function showMyPlants(UserRequest $request){//TODO not at all finished
         $user = $request->user();
-        $response = DB::table()
+        $response = DB::table('users')
             ->LeftJoin('user_plants', 'users.id', '=', 'user_plants.user_id')
-            ->Leftjoin('plants', 'userplants.plant_id', '=', 'plants.id')
+            ->Leftjoin('plants', 'user_plants.plant_id', '=', 'plants.id')
             ->leftJoin('types', 'plants.type_id', '=', 'types.id')
             ->leftJoin('stages', 'user_plants.stage_id', '=', 'stages.id')
             ->select(
-                'user.name as username',
+                'users.username as username',
                 'plants.name as plant',
                 'plants.latin_name as latin_name',
                 'types.name as type_name',
@@ -211,9 +214,10 @@ class UserController extends BaseController
                 'user_plants.updated_at as updated_at',
 
                 )
-            ->where($user->id, '=', 'user.id');
+            ->where('users.id','=',$user->id)
+            ->get();
 
-        return response()->jsonResponse(200,
+        return $this->jsonResponse(200,
         'Sikeres lekérdezés',
         $response);
     }
@@ -232,7 +236,7 @@ class UserController extends BaseController
 
         $user->update($request->validated());
 
-        return response()->jsonResponse(200, 'Felhasznév sikeresen frissítve',$user);
+        return $this->jsonResponse(200, 'Felhasználó sikeresen frissítve',$user);
     }
 }
 
