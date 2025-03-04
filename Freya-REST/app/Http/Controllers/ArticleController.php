@@ -22,7 +22,8 @@ class ArticleController extends BaseController
                 'plants.name as plant_name',
                 'types.name as type',
                 'users.username as author'
-            );
+            )
+            ->orderByDesc('articles.created_at'); // Sort by newest first
     }
 
     // GET /api/articles?all
