@@ -36,7 +36,7 @@ Route::resource('categories', CategoryController::class);
 
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
-    Route::get('/profile', [UserController::class, 'showSelf']);//TODO implement
+    Route::get('/profile', [UserController::class, 'showMyPlants']);
     Route::patch('/profile', [UserController::class, 'update']);
     Route::get('/users/{username}', [UserController::class, 'show']);
 });
@@ -49,6 +49,6 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::get('/users', [UserController::class, 'index']);
-    Route::patch('/users/{username}', [UserController::class, 'update']); //TODO finish
+    Route::patch('/users/{username}', [UserController::class, 'update']);
     Route::patch('/users/{username}/role', [UserController::class, 'role'])->name('role-update');//TODO finish
 });

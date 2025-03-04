@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     /**
  * @api {post} /login Log in with email and password
@@ -61,9 +61,10 @@ class UserController extends Controller
         $user = User::where('email', $email)->first();
     
         if (!$user || !Hash::check($password, $user->password)) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
+            return $this->jsonResponse(
+                401,
+                'Helytelen hitelesítő adatok'
+            );
         }
     
         // Revoke old tokens
@@ -87,10 +88,11 @@ class UserController extends Controller
 
         // Create new token, with abilities
         $token = $user->createToken('access', $abilities)->plainTextToken;
-        return response()->json([
-            'user' => $user,
-            'token' => $token
-        ], 200);
+        return $this->jsonResponse(
+            200,
+            "sikeres bejelentkezés",
+            ['user' => $user,
+            'token' => $token]);
     }
     
 
@@ -158,11 +160,11 @@ class UserController extends Controller
         // Create a token for the newly registered user
         $token = $user->createToken('access', ['user'])->plainTextToken;
 
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => $user,
-            'token' => $token
-        ], 201);
+        return $this->jsonResponse(201,
+            'User registered successfully',
+            ['user' => $user,
+            'token' => $token]
+        );
     }
 
 
@@ -171,41 +173,53 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all());
+        return $this->jsonResponse(
+            200,
+            "Sikeres lekérdezés",
+            User::all());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $username)
+    public function show(UserRequest $request, string $username)
     {
-        $user = User::where('username',$username)->first();
+        $user = User::where('username', $username)->first();
 
-        if($user){
-            return response()->json($user);
-        } else{
-            return response()->json(['message' => 'Nem talált felhasználó'],404);
+        if($user == $request->user()){
+            return $this->jsonResponse(200, 'Saját felhasználó sikeres lekérdezése', $user);
+        }elseif($user){
+            return $this->jsonResponse(200, 'Sikeres lekérdezés', $user);
+        } 
+        else{
+            return response()->jsonResponse(404, 'Nem talált felhasználó');
         }
     }
 
-    public function showSelf(UserRequest $request){//TODO not at all finished
+    public function showMyPlants(UserRequest $request){//TODO not at all finished
         $user = $request->user();
-        $response = DB::table()
-            ->Join('user_plants', 'users.id', '=', 'user_plants.user_id');
+        $response = DB::table('users')
+            ->LeftJoin('user_plants', 'users.id', '=', 'user_plants.user_id')
+            ->Leftjoin('plants', 'user_plants.plant_id', '=', 'plants.id')
+            ->leftJoin('types', 'plants.type_id', '=', 'types.id')
+            ->leftJoin('stages', 'user_plants.stage_id', '=', 'stages.id')
+            ->select(
+                'users.username as username',
+                'plants.name as plant',
+                'plants.latin_name as latin_name',
+                'types.name as type_name',
+                'stages.name as stage_name',
+                'user_plants.count as count',
+                'user_plants.created_at as added_at',
+                'user_plants.updated_at as updated_at',
 
+                )
+            ->where('users.id','=',$user->id)
+            ->get();
 
-
-        return response()->json($user);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(UserRequest $request)
-    {
-
-        $user = User::create($request->validated());
-        return response()->json($user);
+        return $this->jsonResponse(200,
+        'Sikeres lekérdezés',
+        $response);
     }
 
     /**
@@ -222,20 +236,7 @@ class UserController extends Controller
 
         $user->update($request->validated());
 
-        return response()->json($user, 200);
-    
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-
-        return response()->json(null, 204); // 204 No Content response to indicate deletion
+        return $this->jsonResponse(200, 'Felhasználó sikeresen frissítve',$user);
     }
 }
 
