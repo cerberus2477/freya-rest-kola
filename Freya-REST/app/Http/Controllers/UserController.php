@@ -192,7 +192,7 @@ class UserController extends BaseController
             return $this->jsonResponse(200, 'Sikeres lekérdezés', $user);
         } 
         else{
-            return response()->jsonResponse(404, 'Nem talált felhasználó');
+            return $this->jsonResponse(404, 'Nem talált felhasználó');
         }
     }
 

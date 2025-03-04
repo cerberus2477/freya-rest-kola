@@ -80,7 +80,7 @@ public function rulesForRolesUpdate(): array
 public function rulesForForgotPassword(): array
 {
     return [
-        'email' => 'required|email',
+        'email' => 'required|email|exists:users,email',
     ];
 }
 
@@ -103,6 +103,7 @@ public function rulesForPasswordReset(): array
             'email.required' => 'Az email megadása kötelező.',
             'email.email' => 'Az email formátuma érvénytelen.',
             'email.unique' => 'Ez az email már használatban van.',
+            'amail.exists' => 'A megott email címmel nem létezik fehasználónk',
             'email.max' => 'Az email legfeljebb 255 karakter hosszú lehet.',
             'city.required' => 'A város megadása kötelező.',
             'city.max' => 'A város neve legfeljebb 255 karakter hosszú lehet.',
