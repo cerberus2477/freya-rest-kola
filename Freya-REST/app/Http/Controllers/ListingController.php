@@ -22,6 +22,7 @@ class ListingController extends BaseController
                 'listings.media',
                 'listings.sell',
                 'listings.price',
+                'listings.created_at',
                 'users.username as user',
                 'plants.name as plant',
                 'types.name as type',
