@@ -33,6 +33,8 @@ public function rules(): array
         return $this->rulesForRolesUpdate();
     }elseif ($this->isMethod('patch')) {
         return $this->rulesForUpdate();
+    }elseif($this->routeIs('forgot-password')){
+        return $this->rulesForForgotPassword();
     }
 
     return [];
@@ -70,6 +72,13 @@ public function rulesForRolesUpdate(): array
 {
     return [
         'role_id' => 'required|exists:roles,id',
+    ];
+}
+
+public function rulesForForgotPassword(): array
+{
+    return [
+        'email' => 'required|email',
     ];
 }
 

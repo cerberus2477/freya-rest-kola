@@ -1,23 +1,23 @@
 <?php
 
 use App\Http\Controllers\ListingController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Sanctum\PersonalAccessToken;
 use App\Http\Controllers\PlantController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPlantController;
-use App\Http\Middleware\Abilities;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TypeController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 //No need for bearer token
 //login
 Route::post('/login', [UserController::class,'login'])->name('login');
 //register
 Route::post('/register', [UserController::class, 'register'])->name('register');
 //password reset
-//TODO
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('reset-password', [ResetPasswordController::class, 'reset']);
 
 Route::resource('plants', PlantController::class);
 Route::resource('userplants', UserPlantController::class);
