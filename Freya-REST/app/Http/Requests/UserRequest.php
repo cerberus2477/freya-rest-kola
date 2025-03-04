@@ -35,6 +35,8 @@ public function rules(): array
         return $this->rulesForUpdate();
     }elseif($this->routeIs('forgot-password')){
         return $this->rulesForForgotPassword();
+    }elseif($this->routeIs('password-reset')){
+        return $this->rulesForPassworReset();
     }
 
     return [];
@@ -79,6 +81,15 @@ public function rulesForForgotPassword(): array
 {
     return [
         'email' => 'required|email',
+    ];
+}
+
+public function rulesForPasswordReset(): array
+{
+    return [
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|confirmed|min:8',
     ];
 }
 
