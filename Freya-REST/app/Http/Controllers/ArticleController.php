@@ -95,16 +95,17 @@ class ArticleController extends BaseController
     // GET /api/articles/{title}
     public function show($title)
     {
+        $title = urldecode($title);
         $article = $this->baseQuery()
             ->addSelect('articles.source', 'articles.content', DB::raw('DATE(articles.created_at) as created_at'))
             ->where('articles.title', '=', $title)
             ->first();
 
         if (!$article) {
-            return $this->jsonResponse(404, 'Article not found');
+            return $this->jsonResponse(404, "\"$title\" article not found");
         }
 
-        return $this->jsonResponse(200, 'Article found', $article);
+        return $this->jsonResponse(200, "\"$title\" article found", $article);
     }
 
 }
