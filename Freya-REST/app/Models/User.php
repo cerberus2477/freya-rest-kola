@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\CanResetPassword;
+use App\Notifications\CustomResetPassword;
 
 class User extends Authenticatable
 {
@@ -60,4 +60,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        // Customize the reset URL to point to your frontend
+        $url = 'http://127.0.0.1:8000/reset-password?token=' . $token . '&email=' . $this->email;
+
+        // Send the notification with the custom URL
+        $this->notify(new CustomResetPassword($url));
+    }
+
 }

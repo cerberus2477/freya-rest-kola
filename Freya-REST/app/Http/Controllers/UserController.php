@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Password;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 
@@ -167,6 +167,41 @@ class UserController extends BaseController
         );
     }
 
+    /**
+     * send password reset email
+     */
+    public function sendResetLinkEmail(UserRequest $request)
+    {
+        // Send the password reset link
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        // Return a JSON response based on the status
+        return $status === Password::RESET_LINK_SENT
+            ? $this->jsonResponse(200, $status)
+            : $this->jsonResponse(400, $status);
+    }
+
+    /**
+     * Resets the users password to the password geve with a password reset token
+     */
+    public function passwordReset(UserRequest $request){
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => bcrypt($password), // Hash the password
+                ])->save();
+            }
+        );
+
+        // Return a JSON response based on the status
+        return $status === Password::PASSWORD_RESET
+            ? $this->jsonResponse(200, __($status))
+            : $this->jsonResponse(400, __($status));
+
+    }
 
     /**
      * Display a listing of the resource.
