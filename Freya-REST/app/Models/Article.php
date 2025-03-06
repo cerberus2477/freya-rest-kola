@@ -12,4 +12,19 @@ class Article extends Model
     {
         return $this->belongsTo(Plant::class);
     }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'user_id'); // Assuming there's a 'user_id' foreign key
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
