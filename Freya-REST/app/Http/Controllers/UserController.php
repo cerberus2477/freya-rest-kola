@@ -161,7 +161,7 @@ class UserController extends BaseController
         $token = $user->createToken('access', ['user'])->plainTextToken;
 
         return $this->jsonResponse(201,
-            'User registered successfully',
+            'Sikeres regisztráció',
             ['user' => $user,
             'token' => $token]
         );
@@ -179,8 +179,8 @@ class UserController extends BaseController
 
         // Return a JSON response based on the status
         return $status === Password::RESET_LINK_SENT
-            ? $this->jsonResponse(200, $status)
-            : $this->jsonResponse(400, $status);
+            ? $this->jsonResponse(200, "Email küldése sikeres")
+            : $this->jsonResponse(400, "Email küldés sikertelen: $status");
     }
 
     /**
@@ -198,8 +198,8 @@ class UserController extends BaseController
 
         // Return a JSON response based on the status
         return $status === Password::PASSWORD_RESET
-            ? $this->jsonResponse(200, __($status))
-            : $this->jsonResponse(400, __($status));
+            ? $this->jsonResponse(200, "Sikeres módosítás")
+            : $this->jsonResponse(400, "Sikertelen módosítás");
 
     }
 
