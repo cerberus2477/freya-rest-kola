@@ -36,7 +36,7 @@ public function rules(): array
     }elseif($this->routeIs('forgot-password')){
         return $this->rulesForForgotPassword();
     }elseif($this->routeIs('password-reset')){
-        return $this->rulesForPassworReset();
+        return $this->rulesForPasswordReset();
     }
 
     return [];
