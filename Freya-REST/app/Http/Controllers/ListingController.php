@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Listing;
+use App\Http\Requests\ListingRequest;
 
 class ListingController extends BaseController
 {
@@ -109,4 +111,31 @@ class ListingController extends BaseController
 
         return $this->jsonResponse(200, 'Listing found', $listing);
     }
+
+    public function create(ListingRequest $request)
+    {
+        $listing = Listing::create($request->validated());
+        return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
+    }
+
+    /**
+     * Update an existing listing.
+     */
+    public function update(ListingRequest $request, $id)
+    {
+        $listing = Listing::findOrFail($id);
+        $listing->update($request->validated());
+        return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);
+    }
+
+    /**
+     * Delete a listing.
+     */
+    public function delete($id)
+    {
+        $listing = Listing::findOrFail($id);
+        $listing->delete();
+        return $this->jsonResponse(200, 'Hirdetés sikeresen törölve');
+    }
+
 }

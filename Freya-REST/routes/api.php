@@ -37,18 +37,23 @@ Route::resource('categories', CategoryController::class);
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::get('/profile', [UserController::class, 'showMyPlants']);
-    Route::patch('/profile', [UserController::class, 'update']);
+    Route::patch('/profile', [UserController::class, 'update'])->name('update');
     Route::get('/users/{username}', [UserController::class, 'show']);
 });
 
 //requires stats abilities
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
-    
+    Route::post('/listing', [ListingController::class, 'create']);
+    Route::post('/article', [ArticleController::class, 'create']);
+    Route::patch('/listing/{id}', [ListingController::class, 'update']);
+    Route::patch('/article/{title}', [ArticleController::class, 'update']);
+    Route::delete('/listing/{id}', [ListingController::class, 'delete']);
+    Route::delete('/article/{title}', [ArticleController::class, 'delete']);
 });
 
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::get('/users', [UserController::class, 'index']);
-    Route::patch('/users/{username}', [UserController::class, 'update']);
-    Route::patch('/users/{username}/role', [UserController::class, 'roleUpdate'])->name('role-update');//TODO finish
+    Route::patch('/users/{username}', [UserController::class, 'update'])->name('update');
+    Route::patch('/users/{username}/role', [UserController::class, 'roleUpdate'])->name('role-update');
 });

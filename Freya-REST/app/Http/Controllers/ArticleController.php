@@ -1,21 +1,11 @@
 <?php
 namespace App\Http\Controllers;
-// return Article::with(['plant', 'author', 'type', 'category'])  // Eager loading for better response times
-// ->select(
-//     'articles.id',
-//     'articles.title',
-//     'categories.name as category',
-//     'articles.description',
-//    'plants.name as plant_name',
-//     'types.name as plant_type',
-//     'users.username as author'
-// )
-// ->orderByDesc('articles.created_at'); // Sort by newest first
-
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use illuminate\Support\Facades\DB;
+use App\Models\Article;
+use App\Http\Requests\ArticleRequest;
 
 class ArticleController extends BaseController
 {
@@ -272,6 +262,35 @@ class ArticleController extends BaseController
         $response = $this->jsonResponse(200, "\"$title\" article found", $article);
         Cache::put($cacheKey, $response, now()->addMinutes(10));
         return $response;
+    }
+
+    /**
+     * create new article
+     */
+    public function create(ArticleRequest $request)
+    {
+        $article = Article::create($request->validated());
+        return $this->jsonResponse(201, 'Cikk sikeresen létrehozva', $article);
+    }
+
+    /**
+     * Update an existing article.
+     */
+    public function update(ArticleRequest $request, $title)
+    {
+        $article = Article::where('title', $title)->firstOrFail();
+        $article->update($request->validated());
+        return $this->jsonResponse(200, 'Cikk sikeresen frissítve', $article);
+    }
+
+    /**
+     * Delete an article.
+     */
+    public function delete($title)
+    {
+        $article = Article::where('title', $title)->firstOrFail();
+        $article->delete();
+        return $this->jsonResponse(200, 'Cikk sikeresen törölve');
     }
 
 }

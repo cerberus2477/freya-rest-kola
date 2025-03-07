@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('city');
-            $table->string('media');
+            $table->string('media')->nullable();
             $table->boolean('sell');
             $table->integer('price');
             $table->timestamps();

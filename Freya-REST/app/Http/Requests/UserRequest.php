@@ -31,7 +31,7 @@ public function rules(): array
         return $this->rulesForLogin();
     } elseif ($this->routeIs('role-update')){
         return $this->rulesForRolesUpdate();
-    }elseif ($this->isMethod('patch')) {
+    }elseif ($this->routeIs('update')) {
         return $this->rulesForUpdate();
     }elseif($this->routeIs('forgot-password')){
         return $this->rulesForForgotPassword();
