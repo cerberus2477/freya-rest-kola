@@ -112,6 +112,52 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Listing found', $listing);
     }
 
+    /**
+     * @api {post} /listing Create Listing
+     * @apiName CreateListing
+     * @apiGroup Listing
+     * @apiDescription Create a new listing.
+     *
+     * @apiBody {Integer} user_plants_id The ID of the user's plant.
+     * @apiBody {String} title The title of the listing.
+     * @apiBody {String} description The description of the listing.
+     * @apiBody {String} city The city where the listing is located.
+     * @apiBody {String} [media] Optional media file or URL.
+     * @apiBody {Boolean} sell Whether the listing is for sale.
+     * @apiBody {Integer} price The price of the listing.
+     *
+     * @apiSuccess {Integer} status HTTP status code.
+     * @apiSuccess {String} message Success message.
+     * @apiSuccess {Object} data The created listing.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 201 Created
+     *     {
+     *         "status": 201,
+     *         "message": "Hirdetés sikeresen létrehozva",
+     *         "data": {
+     *             "id": 1,
+     *             "user_plants_id": 5,
+     *             "title": "Beautiful Plant",
+     *             "description": "A very healthy plant.",
+     *             "city": "Budapest",
+     *             "media": "plant.jpg",
+     *             "sell": true,
+     *             "price": 1000,
+     *             "created_at": "2023-10-01T12:00:00.000000Z",
+     *             "updated_at": "2023-10-01T12:00:00.000000Z"
+     *         }
+     *     }
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 422 Unprocessable Entity
+     *     {
+     *         "message": "The given data was invalid.",
+     *         "errors": {
+     *             "title": ["A cím megadása kötelező."]
+     *         }
+     *     }
+     */
     public function create(ListingRequest $request)
     {
         $listing = Listing::create($request->validated());
@@ -119,7 +165,49 @@ class ListingController extends BaseController
     }
 
     /**
-     * Update an existing listing.
+     * @api {patch} /listing/{id} Update Listing
+     * @apiName UpdateListing
+     * @apiGroup Listing
+     * @apiDescription Update an existing listing.
+     *
+     * @apiParam {Integer} id The ID of the listing to update.
+     *
+     * @apiBody {Integer} [user_plants_id] Optional ID of the user's plant.
+     * @apiBody {String} [title] Optional title of the listing.
+     * @apiBody {String} [description] Optional description of the listing.
+     * @apiBody {String} [city] Optional city where the listing is located.
+     * @apiBody {String} [media] Optional media file or URL.
+     * @apiBody {Boolean} [sell] Optional whether the listing is for sale.
+     * @apiBody {Integer} [price] Optional price of the listing.
+     *
+     * @apiSuccess {Integer} status HTTP status code.
+     * @apiSuccess {String} message Success message.
+     * @apiSuccess {Object} data The updated listing.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *         "status": 200,
+     *         "message": "Hirdetés sikeresen módosítva",
+     *         "data": {
+     *             "id": 1,
+     *             "user_plants_id": 5,
+     *             "title": "Updated Plant Title",
+     *             "description": "Updated description.",
+     *             "city": "Budapest",
+     *             "media": "plant.jpg",
+     *             "sell": true,
+     *             "price": 1200,
+     *             "created_at": "2023-10-01T12:00:00.000000Z",
+     *             "updated_at": "2023-10-01T12:30:00.000000Z"
+     *         }
+     *     }
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *         "message": "Listing not found."
+     *     }
      */
     public function update(ListingRequest $request, $id)
     {
@@ -128,9 +216,31 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);
     }
 
-    /**
-     * Delete a listing.
+/**
+     * @api {delete} /listing/{id} Delete Listing
+     * @apiName DeleteListing
+     * @apiGroup Listing
+     * @apiDescription Delete an existing listing.
+     *
+     * @apiParam {Integer} id The ID of the listing to delete.
+     *
+     * @apiSuccess {Integer} status HTTP status code.
+     * @apiSuccess {String} message Success message.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *         "status": 200,
+     *         "message": "Hirdetés sikeresen törölve"
+     *     }
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *         "message": "Listing not found."
+     *     }
      */
+
     public function delete($id)
     {
         $listing = Listing::findOrFail($id);

@@ -17,6 +17,12 @@ php artisan serve --port 8069
 4. Az api megnyitása a `http://127.0.0.1:8069/` címen.  Ajánlott pl. Postman használata. Enjoy :)
 
 (`composer update`)
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
 
 Magyarázat parancsonként:
 - a projekthez szükséges függőségek telepítése
