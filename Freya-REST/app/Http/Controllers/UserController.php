@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends BaseController
 {
@@ -90,7 +91,7 @@ class UserController extends BaseController
         $token = $user->createToken('access', $abilities)->plainTextToken;
         return $this->jsonResponse(
             200,
-            "sikeres bejelentkezés",
+            "Sikeres bejelentkezés",
             ['user' => $user,
             'token' => $token]);
     }
@@ -269,9 +270,22 @@ class UserController extends BaseController
             $user = $request->user();
         }
 
-        $user->update($request->validated());
+        $user->update($request);
 
         return $this->jsonResponse(200, 'Felhasználó sikeresen frissítve',$user);
+    }
+
+    /**
+     * update specified users role
+     */
+    public function roleUpdate(UserRequest $request, string $username){
+        try{
+            $user = User::where('username', $username)->firstOrFail();
+            $user->role_id = $request->input('role_id');
+            return $this->jsonResponse(200, 'Felhasználó szerepköre sikeresen frissítve');
+        } catch (ModelNotFoundException $e) {
+            return $this->jsonResponse(404, 'Felhasználó nem található');
+        }
     }
 }
 
