@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends BaseController
 {
+    //TODO: write remaining apidoc comments, check the ones i did (i may be dumdum)
+
     /**
  * @api {post} /login Log in with email and password
  * @apiName LoginUser
@@ -288,4 +290,3 @@ class UserController extends BaseController
         }
     }
 }
-

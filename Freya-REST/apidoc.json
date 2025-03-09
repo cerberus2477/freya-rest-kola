@@ -1,10 +1,10 @@
 {
     "name": "Freya API",
     "version": "1.0.0",
-    "description": "A Freya REST API dokumentációja",
-    "title": "Freya API Dokumentáció",
+    "description": "Freya REST API documentation",
+    "title": "Freya REST API Documentation",
     "url": "http://127.0.0.1:8069/api",
     "template": {
-        "forceLanguage": "hu"
+        "forceLanguage": "en"
     }
 }

@@ -33,6 +33,50 @@ class ListingController extends BaseController
     }
 
     // GET /api/articles?all
+    /**
+ * @api {get} /listings Get Listings
+ * @apiName GetListings
+ * @apiGroup Listing
+ * @apiDescription Retrieve a paginated list of listings or all listings.
+ *
+ * @apiParam {Boolean} [all] If set, retrieves all listings without pagination.
+ * @apiParam {Integer} [pageSize=5] Number of listings per page.
+ * @apiParam {Integer} [page=1] Page number for pagination.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object[]} data Array of listings.
+ * @apiSuccess {Object} pagination Pagination metadata.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Listings retrieved successfully",
+ *         "data": [
+ *             {
+ *                 "id": 1,
+ *                 "title": "Culpa ab a quibusdam est debitis rerum.",
+ *                 "description": "Aut odio facere consequatur incidunt minus iste.",
+ *                 "media": "https://example.com/image.jpg",
+ *                 "sell": 1,
+ *                 "price": 16200,
+ *                 "created_at": "2025-03-03 19:29:45",
+ *                 "user": "mable.brakus",
+ *                 "plant": "Gránátalma",
+ *                 "type": "gyümölcs",
+ *                 "stage": "palánta"
+ *             }
+ *         ],
+ *         "pagination": {
+ *             "total": 15,
+ *             "page": 1,
+ *             "pageSize": 5,
+ *             "totalPages": 3
+ *         }
+ *     }
+ */
+
     public function index(Request $request)
     {
         if ($request->has('all')) {
@@ -48,6 +92,61 @@ class ListingController extends BaseController
     }
 
     // GET /api/listings/search?q=&deep&sell=&user=&plant=&type=&stage&minprice=&maxprice=&all
+
+    /**
+ * @api {get} /listings/search Search Listings
+ * @apiName SearchListings
+ * @apiGroup Listing
+ * @apiDescription Search listings based on filters.
+ *
+ * @apiParam {String} [q] Search query for title and plant name.
+ * @apiParam {Boolean} [deep] If set, also searches in descriptions.
+ * @apiParam {String} [sell] Filter by sell status.
+ * @apiParam {String} [user] Filter by username.
+ * @apiParam {String} [plant] Filter by plant name.
+ * @apiParam {String} [type] Filter by plant type.
+ * @apiParam {String} [stage] Filter by plant stage.
+ * @apiParam {Integer} [minprice] Filter by minimum price.
+ * @apiParam {Integer} [maxprice] Filter by maximum price.
+ * @apiParam {Boolean} [all] If set, retrieves all matching results without pagination.
+ * @apiParam {Integer} [pageSize=5] Number of listings per page.
+ * @apiParam {Integer} [page=1] Page number for pagination.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object[]} data Array of matching listings.
+ * @apiSuccess {Object} pagination Pagination metadata.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Listings retrieved successfully",
+ *         "data": [
+ *             {
+ *                 "id": 1,
+ *                 "title": "Culpa ab a quibusdam est debitis rerum.",
+ *                 "description": "Aut odio facere consequatur incidunt minus iste.",
+ *                 "media": "https://example.com/image.jpg",
+ *                 "sell": 1,
+ *                 "price": 16200,
+ *                 "created_at": "2025-03-03 19:29:45",
+ *                 "user": "mable.brakus",
+ *                 "plant": "Gránátalma",
+ *                 "type": "gyümölcs",
+ *                 "stage": "palánta"
+ *             }
+ *         ],
+ *         "pagination": {
+ *             "total": 1,
+ *             "page": 1,
+ *             "pageSize": 5,
+ *             "totalPages": 1
+ *         }
+ *     }
+ */
+
+ 
     public function search(Request $request)
     {   
         $query = $this->baseQuery();
@@ -98,6 +197,41 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
     }
 
+    
+    /**
+ * @api {get} /listings/:id Get Single Listing
+ * @apiName GetListing
+ * @apiGroup Listing
+ * @apiDescription Retrieve details of a single listing.
+ *
+ * @apiParam {Integer} id The ID of the listing to retrieve.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object} data The listing details.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Listing found",
+ *         "data": {
+ *             "id": 2,
+ *             "title": "Assumenda et repudiandae est laboriosam vitae nihil.",
+ *             "description": "Et dolores aliquid delectus reprehenderit sunt distinctio molestias exercitationem.",
+ *             "media": "http://example.com/image.jpg",
+ *             "sell": 1,
+ *             "price": 6000,
+ *             "created_at": "2025-03-03 19:29:45",
+ *             "user": "lenna20",
+ *             "plant": "Málna",
+ *             "type": "gyümölcs",
+ *             "stage": "növény",
+ *             "email": "user@example.com"
+ *         }
+ *     }
+ */
+
     public function show($id)
     {
         $listing = $this->baseQuery()
@@ -112,6 +246,7 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Listing found', $listing);
     }
 
+    //TODO: check apicomments below this line. 
     /**
      * @api {post} /listing Create Listing
      * @apiName CreateListing
@@ -151,96 +286,102 @@ class ListingController extends BaseController
      *
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 422 Unprocessable Entity
-     *     {
-     *         "message": "The given data was invalid.",
-     *         "errors": {
-     *             "title": ["A cím megadása kötelező."]
-     *         }
-     *     }
+    //TODO: example here
      */
+
     public function create(ListingRequest $request)
     {
         $listing = Listing::create($request->validated());
         return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
     }
 
-    /**
-     * @api {patch} /listing/{id} Update Listing
-     * @apiName UpdateListing
-     * @apiGroup Listing
-     * @apiDescription Update an existing listing.
-     *
-     * @apiParam {Integer} id The ID of the listing to update.
-     *
-     * @apiBody {Integer} [user_plants_id] Optional ID of the user's plant.
-     * @apiBody {String} [title] Optional title of the listing.
-     * @apiBody {String} [description] Optional description of the listing.
-     * @apiBody {String} [city] Optional city where the listing is located.
-     * @apiBody {String} [media] Optional media file or URL.
-     * @apiBody {Boolean} [sell] Optional whether the listing is for sale.
-     * @apiBody {Integer} [price] Optional price of the listing.
-     *
-     * @apiSuccess {Integer} status HTTP status code.
-     * @apiSuccess {String} message Success message.
-     * @apiSuccess {Object} data The updated listing.
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *         "status": 200,
-     *         "message": "Hirdetés sikeresen módosítva",
-     *         "data": {
-     *             "id": 1,
-     *             "user_plants_id": 5,
-     *             "title": "Updated Plant Title",
-     *             "description": "Updated description.",
-     *             "city": "Budapest",
-     *             "media": "plant.jpg",
-     *             "sell": true,
-     *             "price": 1200,
-     *             "created_at": "2023-10-01T12:00:00.000000Z",
-     *             "updated_at": "2023-10-01T12:30:00.000000Z"
-     *         }
-     *     }
-     *
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 404 Not Found
-     *     {
-     *         "message": "Listing not found."
-     *     }
-     */
+/**
+ * @api {patch} /listing/:id Update Listing
+ * @apiName UpdateListing
+ * @apiGroup Listing
+ * @apiDescription Update an existing listing.
+ *
+ * @apiParam {Integer} id The ID of the listing to update.
+ *
+ * @apiBody {Integer} [user_plants_id] Optional ID of the user's plant.
+ * @apiBody {String} [title] Optional title of the listing.
+ * @apiBody {String} [description] Optional description of the listing.
+ * @apiBody {String} [city] Optional city where the listing is located.
+ * @apiBody {String} [media] Optional media file or URL.
+ * @apiBody {Boolean} [sell] Optional whether the listing is for sale.
+ * @apiBody {Integer} [price] Optional price of the listing.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object} data The updated listing.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Hirdetés sikeresen módosítva",
+ *         "data": {
+ *             "id": 1,
+ *             "user_plants_id": 5,
+ *             "title": "Updated Plant Title",
+ *             "description": "Updated description.",
+ *             "city": "Budapest",
+ *             "media": "plant.jpg",
+ *             "sell": true,
+ *             "price": 1200,
+ *             "created_at": "2023-10-01T12:00:00.000000Z",
+ *             "updated_at": "2023-10-01T12:30:00.000000Z"
+ *         }
+ *     }
+ *
+ //TODO: implement this 
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *         "status": 404,
+ *         "message": "Listing not found."
+ *         "data": []
+ *     }
+ */
+
+ //TODO: check for not existing listing
     public function update(ListingRequest $request, $id)
     {
         $listing = Listing::findOrFail($id);
         $listing->update($request->validated());
         return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);
+
+        // try {
+        //     $listing = Listing::findOrFail($id);
+        //     $listing->update($request->validated());
+        //     return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);
+        // } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) { //gondolom hogy ha nem jó a validation akkor az megy vissza, az már máshol meg van írva
+        //     return $this->jsonResponse(404, "Listing not found");
+        // }
     }
 
 /**
-     * @api {delete} /listing/{id} Delete Listing
-     * @apiName DeleteListing
-     * @apiGroup Listing
-     * @apiDescription Delete an existing listing.
-     *
-     * @apiParam {Integer} id The ID of the listing to delete.
-     *
-     * @apiSuccess {Integer} status HTTP status code.
-     * @apiSuccess {String} message Success message.
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *         "status": 200,
-     *         "message": "Hirdetés sikeresen törölve"
-     *     }
-     *
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 404 Not Found
-     *     {
-     *         "message": "Listing not found."
-     *     }
-     */
+ * @api {delete} /listing/:id Delete Listing
+ * @apiName DeleteListing
+ * @apiGroup Listing
+ * @apiDescription Delete an existing listing.
+ *
+ * @apiParam {Integer} id The ID of the listing to delete.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Hirdetés sikeresen törölve"
+ *     }
+ *
+//TODO: implemnt error
+ */
 
+ //TODO: check for not existing listing
     public function delete($id)
     {
         $listing = Listing::findOrFail($id);
