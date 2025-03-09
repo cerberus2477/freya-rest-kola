@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\CustomResetPassword;
@@ -12,7 +13,7 @@ use App\Notifications\CustomResetPassword;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +21,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
-    protected $fillable = ['username', 'email', 'city', 'birthdate', 'password', 'active', 'role_id'];
+    protected $fillable = ['username', 'email', 'city', 'birthdate', 'password', 'role_id'];
 
     public function role()
     {
@@ -45,7 +46,7 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'email_verified_at',
-        'active',
+        'deleted_at',
     ];
 
     /**
