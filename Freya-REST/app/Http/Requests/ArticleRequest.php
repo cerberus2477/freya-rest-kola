@@ -46,7 +46,7 @@ class ArticleRequest extends FormRequest
 public function rulesForUpdate(): array
 {
     return [
-        'title' => 'sometimes|string|unique:articles,title,' . $this->article->id . '|max:255|min:2',
+        'title' => 'sometimes|string|unique:articles,title',
         'plant_id' => 'nullable|integer|exists:plants,id',
         'author_id' => 'sometimes|integer|exists:users,id',
         'category_id' => 'nullable|integer|exists:categories,id',
