@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Listing;
 use App\Http\Requests\ListingRequest;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ListingController extends BaseController
 {
@@ -246,6 +249,7 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Listing found', $listing);
     }
 
+    //TODO modyfy apidoc to current version
     //TODO: check apicomments below this line. 
     /**
      * @api {post} /listing Create Listing
@@ -289,11 +293,92 @@ class ListingController extends BaseController
     //TODO: example here
      */
 
-    public function create(ListingRequest $request)
+    public function create(ListingRequest $request)//TODO test the image upload function
+
     {
+         // Initialize the ImageManager with the GD driver
+         $manager = new ImageManager(new Driver());
+
+         // Handle image uploads
+         $imagePaths = [];
+         if ($request->hasFile('images')) {
+             foreach ($request->file('images') as $image) {
+                 // Create an image instance
+                 $imageInstance = $manager->read($image->getRealPath());
+ 
+                 // Resize the image
+                 $imageInstance->resize(800, 600, function ($constraint) {
+                     $constraint->aspectRatio(); // Maintain aspect ratio
+                     $constraint->upsize(); // Prevent upsizing
+                 });
+ 
+                 // Encode the image to JPEG with 75% quality
+                 $encodedImage = $imageInstance->toJpeg(75);
+ 
+                 // Generate a unique filename
+                 $filename = 'listing_' . uniqid() . '.jpg';
+ 
+                 // Save the resized image to the storage
+                 $path = 'public/listings/' . $filename;
+                 Storage::put($path, $encodedImage);
+ 
+                 // Store the public URL
+                 $imagePaths[] = Storage::url($path);
+             }
+         }
+
         $listing = Listing::create($request->validated());
         return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
     }
+
+    //TODO modifi for current version
+    /**
+     * @api {patch} /listing/{id} Update Listing
+     * @apiName UpdateListing
+     * @apiGroup Listing
+     * @apiDescription Update an existing listing.
+     *
+     * @apiParam {Integer} id The ID of the listing to update.
+     *
+     * @apiBody {Integer} [user_plants_id] Optional ID of the user's plant.
+     * @apiBody {String} [title] Optional title of the listing.
+     * @apiBody {String} [description] Optional description of the listing.
+     * @apiBody {String} [city] Optional city where the listing is located.
+     * @apiBody {String} [media] Optional media file or URL.
+     * @apiBody {Boolean} [sell] Optional whether the listing is for sale.
+     * @apiBody {Integer} [price] Optional price of the listing.
+     *
+     * @apiSuccess {Integer} status HTTP status code.
+     * @apiSuccess {String} message Success message.
+     * @apiSuccess {Object} data The updated listing.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *         "status": 200,
+     *         "message": "Hirdetés sikeresen módosítva",
+     *         "data": {
+     *             "id": 1,
+     *             "user_plants_id": 5,
+     *             "title": "Updated Plant Title",
+     *             "description": "Updated description.",
+     *             "city": "Budapest",
+     *             "media": "plant.jpg",
+     *             "sell": true,
+     *             "price": 1200,
+     *             "created_at": "2023-10-01T12:00:00.000000Z",
+     *             "updated_at": "2023-10-01T12:30:00.000000Z"
+     *         }
+     *     }
+     *
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *         "message": "Listing not found."
+     *     }
+     */
+    public function update(ListingRequest $request, $id)//TODO test the image modify function
+
 
 /**
  * @api {patch} /listing/:id Update Listing
@@ -347,6 +432,37 @@ class ListingController extends BaseController
  //TODO: check for not existing listing
     public function update(ListingRequest $request, $id)
     {
+         // Initialize the ImageManager with the GD driver
+         $manager = new ImageManager(new Driver());
+
+         // Handle image uploads
+         $imagePaths = [];
+         if ($request->hasFile('images')) {
+             foreach ($request->file('images') as $image) {
+                 // Create an image instance
+                 $imageInstance = $manager->read($image->getRealPath());
+ 
+                 // Resize the image
+                 $imageInstance->resize(800, 600, function ($constraint) {
+                     $constraint->aspectRatio(); // Maintain aspect ratio
+                     $constraint->upsize(); // Prevent upsizing
+                 });
+ 
+                 // Encode the image to JPEG with 75% quality
+                 $encodedImage = $imageInstance->toJpeg(75);
+ 
+                 // Generate a unique filename
+                 $filename = 'listing_' . uniqid() . '.jpg';
+ 
+                 // Save the resized image to the storage
+                 $path = 'public/listings/' . $filename;
+                 Storage::put($path, $encodedImage);
+ 
+                 // Store the public URL
+                 $imagePaths[] = Storage::url($path);
+             }
+         }
+
         $listing = Listing::findOrFail($id);
         $listing->update($request->validated());
         return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);

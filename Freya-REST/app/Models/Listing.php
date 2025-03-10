@@ -8,6 +8,10 @@ class Listing extends Model
 {
     protected $fillable = ['user_plants_id', 'city', 'title', 'description', 'media', 'sell', 'price'];
 
+    protected $casts = [
+        'media' => 'array',
+    ];
+
     public function userPlant()
     {
         return $this->belongsTo(UserPlant::class);
