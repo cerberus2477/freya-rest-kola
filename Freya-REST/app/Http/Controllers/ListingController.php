@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Listing;
 use App\Http\Requests\ListingRequest;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ListingController extends BaseController
 {
@@ -111,7 +114,7 @@ class ListingController extends BaseController
 
         return $this->jsonResponse(200, 'Listing found', $listing);
     }
-
+    //TODO modyfy apidoc to current version
     /**
      * @api {post} /listing Create Listing
      * @apiName CreateListing
@@ -158,12 +161,43 @@ class ListingController extends BaseController
      *         }
      *     }
      */
-    public function create(ListingRequest $request)
+    public function create(ListingRequest $request)//TODO test the image upload function
     {
+         // Initialize the ImageManager with the GD driver
+         $manager = new ImageManager(new Driver());
+
+         // Handle image uploads
+         $imagePaths = [];
+         if ($request->hasFile('images')) {
+             foreach ($request->file('images') as $image) {
+                 // Create an image instance
+                 $imageInstance = $manager->read($image->getRealPath());
+ 
+                 // Resize the image
+                 $imageInstance->resize(800, 600, function ($constraint) {
+                     $constraint->aspectRatio(); // Maintain aspect ratio
+                     $constraint->upsize(); // Prevent upsizing
+                 });
+ 
+                 // Encode the image to JPEG with 75% quality
+                 $encodedImage = $imageInstance->toJpeg(75);
+ 
+                 // Generate a unique filename
+                 $filename = 'listing_' . uniqid() . '.jpg';
+ 
+                 // Save the resized image to the storage
+                 $path = 'public/listings/' . $filename;
+                 Storage::put($path, $encodedImage);
+ 
+                 // Store the public URL
+                 $imagePaths[] = Storage::url($path);
+             }
+         }
+
         $listing = Listing::create($request->validated());
         return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
     }
-
+    //TODO modifi for current version
     /**
      * @api {patch} /listing/{id} Update Listing
      * @apiName UpdateListing
@@ -209,8 +243,39 @@ class ListingController extends BaseController
      *         "message": "Listing not found."
      *     }
      */
-    public function update(ListingRequest $request, $id)
+    public function update(ListingRequest $request, $id)//TODO test the image modify function
     {
+         // Initialize the ImageManager with the GD driver
+         $manager = new ImageManager(new Driver());
+
+         // Handle image uploads
+         $imagePaths = [];
+         if ($request->hasFile('images')) {
+             foreach ($request->file('images') as $image) {
+                 // Create an image instance
+                 $imageInstance = $manager->read($image->getRealPath());
+ 
+                 // Resize the image
+                 $imageInstance->resize(800, 600, function ($constraint) {
+                     $constraint->aspectRatio(); // Maintain aspect ratio
+                     $constraint->upsize(); // Prevent upsizing
+                 });
+ 
+                 // Encode the image to JPEG with 75% quality
+                 $encodedImage = $imageInstance->toJpeg(75);
+ 
+                 // Generate a unique filename
+                 $filename = 'listing_' . uniqid() . '.jpg';
+ 
+                 // Save the resized image to the storage
+                 $path = 'public/listings/' . $filename;
+                 Storage::put($path, $encodedImage);
+ 
+                 // Store the public URL
+                 $imagePaths[] = Storage::url($path);
+             }
+         }
+
         $listing = Listing::findOrFail($id);
         $listing->update($request->validated());
         return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);

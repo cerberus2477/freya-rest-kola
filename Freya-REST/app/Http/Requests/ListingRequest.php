@@ -37,7 +37,7 @@ class ListingRequest extends FormRequest
         'title' => 'required|string|max:255|min:2',
         'description' => 'required|string|max:1000',
         'city' => 'required|string|max:100',
-        'media' => 'nullable|string|max:255',
+        'media.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'sell' => 'required|boolean',
         'price' => 'required|integer|min:0',
     ];
@@ -50,7 +50,7 @@ public function rulesForUpdate(): array
         'title' => 'sometimes|string|max:255|min:2',
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',
-        'media' => 'nullable|string|max:255',
+        'media.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'sell' => 'sometimes|boolean',
         'price' => 'sometimes|integer|min:0',
     ];
