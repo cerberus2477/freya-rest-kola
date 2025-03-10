@@ -23,11 +23,10 @@ class UserSeeder extends Seeder
             'birthdate' => $faker->date(),
             'password' => bcrypt('admin123'),
             'role_id' => 1,
-            'active' => true,
         ]);
 
         
-        foreach (range(1, 10) as $index) {
+        foreach (range(1, 100) as $index) {
             DB::table('users')->insert([
                 'username' => $faker->userName,
                 'email' => $faker->email,
@@ -35,7 +34,6 @@ class UserSeeder extends Seeder
                 'birthdate' => $faker->date(),
                 'password' => bcrypt('password'),
                 'role_id' => $faker->numberBetween(1, 3),
-                'active' => $faker->boolean,
             ]);
         }
     }

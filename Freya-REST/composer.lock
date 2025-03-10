@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "09fecd11ffef7def1b51251a23bdba14",
+
     "packages": [
         {
             "name": "brick/math",
@@ -8571,12 +8572,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

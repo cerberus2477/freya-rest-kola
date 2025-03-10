@@ -24,6 +24,18 @@ php artisan route:clear
 php artisan view:clear
 ```
 
+## apidoc
+Step 6: Automate API Docs Generation (Optional)
+To regenerate the docs every time you update them, add a script in composer.json. - done
+
+```bash
+npm install -g apidoc
+composer require --dev barryvdh/laravel-ide-helper
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass) - suliban ha nincs jogod
+apidoc -i app/Http/Controllers -o public/apidoc
+
+```
+
 Magyarázat parancsonként:
 - a projekthez szükséges függőségek telepítése
 - adatbázis táblák létrehozása a laravelen belül (migration) és feltöltés adatokkal (seedelés)

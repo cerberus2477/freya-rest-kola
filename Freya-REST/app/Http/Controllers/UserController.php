@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends BaseController
 {
+    //TODO: write remaining apidoc comments, check the ones i did (i may be dumdum)
+
     /**
  * @api {post} /login Log in with email and password
  * @apiName LoginUser
@@ -287,5 +289,36 @@ class UserController extends BaseController
             return $this->jsonResponse(404, 'Felhasználó nem található');
         }
     }
-}
 
+    //TODO: test, this is untested. or modify if you wanna, yk
+    //there should be a route that deletes the logged in users account
+    public function destroy(UserRequest $request, string $username)
+    {
+        try {
+            $user = User::where('username', $username)->firstOrFail();
+
+            // Perform the soft delete
+            $user->delete();
+
+            return $this->jsonResponse(200, 'Felhasználó sikeresen törölve');
+        } catch (ModelNotFoundException $e) {
+            return $this->jsonResponse(404, 'Felhasználó nem található');
+        }
+    }
+
+    //admins could do this or the user itself ig
+    //untested
+    public function restore(UserRequest $request, string $username)
+    {
+        try {
+            $user = User::onlyTrashed()->where('username', $username)->firstOrFail();
+
+            // Restore the user
+            $user->restore();
+
+            return $this->jsonResponse(200, 'Felhasználó sikeresen visszaállítva');
+        } catch (ModelNotFoundException $e) {
+            return $this->jsonResponse(404, 'Felhasználó nem található');
+        }
+    }
+}
