@@ -14,6 +14,6 @@ class Listing extends Model
 
     public function userPlant()
     {
-        return $this->belongsTo(UserPlant::class);
+        return $this->belongsTo(UserPlant::class, 'user_plants_id');
     }
 }
