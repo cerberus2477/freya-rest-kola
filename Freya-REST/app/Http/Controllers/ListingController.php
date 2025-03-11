@@ -322,23 +322,24 @@ public function show($id)
 
          // Handle image uploads
         $imagePaths = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $image) {
                 // Create an image instance, scale down-if needed, and comress
                 $imageInstance = $manager->read($image->getRealPath());
                 $imageInstance->scaleDown(1920, 1080);
-                $encodedImage = $imageInstance->toWebp(70);
+                $encodedImage = $imageInstance->toWebp(80);
  
                 // Generate a unique filename with proper file format, save to public/listings/
-                $filename = 'listing_' . uniqid() . '.Webp';
+                $filename = 'listing_' . uniqid() . '.webp';
                 $path = 'public/listings/' . $filename;
-                Storage::put($path, $encodedImage);
+                Storage::disk('public')->put($path, $encodedImage);
                 // Store the public URL
                 $imagePaths[] = Storage::url($path);
             }
         }
 
-        $listing = Listing::create($request->validated());
+        $data = array_merge($request->validated(), ['media' => $imagePaths]);
+        $listing = Listing::create($data);
         return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
     }
 
@@ -396,39 +397,32 @@ public function show($id)
     {
         $manager = new ImageManager(new Driver());
 
-         // Handle image uploads
-        $imagePaths = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                // Create an image instance, scale down-if needed, and comress
-                $imageInstance = $manager->read($image->getRealPath());
-                $imageInstance->scaleDown(1920, 1080);
-                $encodedImage = $imageInstance->toWebp(70);
- 
-                // Generate a unique filename with proper file format, save to public/listings/
-                $filename = 'listing_' . uniqid() . '.Webp';
-                $path = 'public/listings/' . $filename;
-                Storage::put($path, $encodedImage);
-                // Store the public URL
-                $imagePaths[] = Storage::url($path);
-            }
+    // Handle image uploads
+    $imagePaths = [];
+    if ($request->hasFile('media')) {
+        foreach ($request->file('media') as $image) {
+            // Create an image instance, scale down if needed, and compress
+            $imageInstance = $manager->read($image->getRealPath());
+            $imageInstance->scaleDown(1920, 1080);
+            $encodedImage = $imageInstance->toWebp(80);
+
+            // Generate a unique filename with proper file format, save to public/listings/
+            $filename = 'listing_' . uniqid() . '.webp';
+            $path = 'public/listings/' . $filename;
+            Storage::disk('public')->put($path, $encodedImage);
+
+            // Store the public URL
+            $imagePaths[] = Storage::url($path);
         }
-        $listing = Listing::find($id);
-        if ($listing === null) {
-            return $this->jsonResponse(404, 'Nem talált hirdetés');
-        }
-        $listing->update($request->validated());
+    }
 
+    // Merge the image paths with the validated request data
+    $data = array_merge($request->validated(), ['media' => $imagePaths]);
 
-        return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);
+    // Create the listing with the merged data
+    $listing = Listing::create($data);
 
-        // try {
-        //     $listing = Listing::findOrFail($id);
-        //     $listing->update($request->validated());
-        //     return $this->jsonResponse(200, 'Hirdetés sikeresen módosítva', $listing);
-        // } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) { //gondolom hogy ha nem jó a validation akkor az megy vissza, az már máshol meg van írva
-        //     return $this->jsonResponse(404, "Listing not found");
-        // }
+    return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
     }
 
 /**
