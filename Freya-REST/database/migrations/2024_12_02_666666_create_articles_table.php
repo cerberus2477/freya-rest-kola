@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id')->nullable();
             $table->text('description');
             $table->longtext('content');
+            $table->json('image')->nullable();
             $table->text('source');
             $table->timestamps();
             $table->foreign('plant_id')->references('id')->on('plants')->onDelete('set null');

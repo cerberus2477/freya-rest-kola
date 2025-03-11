@@ -39,6 +39,7 @@ class ArticleRequest extends FormRequest
         'category_id' => 'nullable|integer|exists:categories,id',
         'description' => 'required|string|max:300',
         'content' => 'required|string|max:50000',
+        'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'source' => 'nullable|string|max:1000',
     ];
 }
@@ -52,6 +53,7 @@ public function rulesForUpdate(): array
         'category_id' => 'nullable|integer|exists:categories,id',
         'description' => 'sometimes|string|max:300',
         'content' => 'sometimes|string|max:50000',
+        'image.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'source' => 'nullable|string|max:1000',
     ];
 }

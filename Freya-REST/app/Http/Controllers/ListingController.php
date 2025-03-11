@@ -320,7 +320,7 @@ public function show($id)
     {
         $manager = new ImageManager(new Driver());
 
-         // Handle image uploads
+        // Handle image uploads
         $imagePaths = [];
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $image) {
@@ -340,7 +340,7 @@ public function show($id)
 
         $data = array_merge($request->validated(), ['media' => $imagePaths]);
         $listing = Listing::create($data);
-        return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
+        return $this->jsonResponse(201, 'Listing created succesfully', $listing);
     }
 
 /**
@@ -419,10 +419,10 @@ public function show($id)
     // Merge the image paths with the validated request data
     $data = array_merge($request->validated(), ['media' => $imagePaths]);
 
-    // Create the listing with the merged data
-    $listing = Listing::create($data);
+    $listing = Listing::where('title', $id)->firstOrFail();
+    $listing->update($data);
 
-    return $this->jsonResponse(201, 'Hirdetés sikeresen létrehozva', $listing);
+    return $this->jsonResponse(201, 'Listing updated succesfully', $listing);
     }
 
 /**
@@ -451,10 +451,10 @@ public function show($id)
     {
         $listing = Listing::find($id);
         if ($listing === null) {
-            return $this->jsonResponse(404, 'Nem talált hirdetés');
+            return $this->jsonResponse(404, 'Listing not found');
         }
         $listing->delete();
-        return $this->jsonResponse(200, 'Hirdetés sikeresen törölve');
+        return $this->jsonResponse(200, 'Listing deleted succesfully');
     }
 
 }

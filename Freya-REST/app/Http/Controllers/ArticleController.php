@@ -7,6 +7,9 @@ use illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ArticleController extends BaseController
 {
@@ -330,8 +333,29 @@ class ArticleController extends BaseController
 
      public function create(ArticleRequest $request)
      {
-         $article = Article::create($request->validated());
-         return $this->jsonResponse(201, 'Cikk sikeresen létrehozva', $article);
+        $manager = new ImageManager(new Driver());
+
+        // Handle image uploads
+        $imagePaths = [];
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $image) {
+                // Create an image instance, scale down-if needed, and comress
+                $imageInstance = $manager->read($image->getRealPath());
+                $imageInstance->scaleDown(1920, 1080);
+                $encodedImage = $imageInstance->toJpeg(85);
+ 
+                // Generate a unique filename with proper file format, save to public/listings/
+                $filename = 'article_' . uniqid() . '.webp';
+                $path = 'public/listings/' . $filename;
+                Storage::disk('public')->put($path, $encodedImage);
+                // Store the public URL
+                $imagePaths[] = Storage::url($path);
+            }
+        }
+
+        $data = array_merge($request->validated(), ['image' => $imagePaths]);
+        $listing = Article::create($data);
+        return $this->jsonResponse(201, 'Article succesfully created', $listing);
      }
 
     /**
@@ -386,8 +410,30 @@ class ArticleController extends BaseController
 
     public function update(ArticleRequest $request, $title)
     {
+        $manager = new ImageManager(new Driver());
+
+        // Handle image uploads
+        $imagePaths = [];
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $image) {
+                // Create an image instance, scale down-if needed, and comress
+                $imageInstance = $manager->read($image->getRealPath());
+                $imageInstance->scaleDown(1920, 1080);
+                $encodedImage = $imageInstance->toJpeg(85);
+ 
+                // Generate a unique filename with proper file format, save to public/listings/
+                $filename = 'article_' . uniqid() . '.webp';
+                $path = 'public/listings/' . $filename;
+                Storage::disk('public')->put($path, $encodedImage);
+                // Store the public URL
+                $imagePaths[] = Storage::url($path);
+            }
+        }
+
+        $data = array_merge($request->validated(), ['image' => $imagePaths]);
+
         $article = Article::where('title', $title)->firstOrFail();
-        $article->update($request->validated());
+        $article->update($data);
         return $this->jsonResponse(200, 'Cikk sikeresen frissítve', $article);
     }
 
@@ -415,7 +461,7 @@ class ArticleController extends BaseController
     {
         $article = Article::where('title', $title)->firstOrFail();
         $article->delete();
-        return $this->jsonResponse(200, 'Cikk sikeresen törölve');
+        return $this->jsonResponse(200, 'Article deleted succesfully');
     }
 
 }
