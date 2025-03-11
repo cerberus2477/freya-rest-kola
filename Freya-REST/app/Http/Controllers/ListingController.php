@@ -9,6 +9,8 @@ use App\Http\Requests\ListingRequest;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
 
 class ListingController extends BaseController
 {
@@ -235,15 +237,39 @@ class ListingController extends BaseController
  *     }
  */
 
-    public function show($id)
-    {
-        $listing = Listing::find($id);
-        if ($listing === null) {
-            return $this->jsonResponse(404, 'Nem talált hirdetés');
-        }
 
-        return $this->jsonResponse(200, 'Hirdetés sikeresen viszaküldve', $listing);
+
+public function show($id)
+{
+    $cacheKey = 'listings_show_' . $id;
+    if (Cache::has($cacheKey)) {
+        return Cache::get($cacheKey);
     }
+
+    // Retrieve listing with related user_plant, user, and plant using Eloquent
+    $listing = Listing::with([
+        'userPlant' => function ($query) {
+            $query->select('id', 'user_id', 'plant_id')
+                ->with([
+                    'user:id,username',
+                    'plant:id,name'
+                ]);
+        }
+    ])->find($id, [
+        'id', 'user_plants_id', 'title', 'description', 'city', 'media', 'sell', 'price', 'created_at', 'updated_at'
+    ]);
+
+    if (!$listing) {
+        return $this->jsonResponse(404, "$id. listing not found");
+    }
+
+    // Response format
+    $response = $this->jsonResponse(200, "$id. listing found", $listing);
+
+    Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+    return $response;
+}
+
 
     //TODO modyfy apidoc to current version
     //TODO: check apicomments below this line. 
