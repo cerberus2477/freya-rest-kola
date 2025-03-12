@@ -12,9 +12,16 @@ class UserPlantController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserPlantRequest $request)
     {
-        return response()->json(UserPlant::with('user', 'plant')->get());
+        return $this->jsonResponse(200, "Data retrived succesfully", UserPlant::with([
+            'user'=> function ($query) {$query->select('username');},
+            'plant'=> function ($query) {$query->select('id', 'name');},
+            'stage'=> function ($query) {$query->select('name');}
+            ])
+            ->where('active', true)
+            ->where('username', $request->user())
+            ->get(['count']));
     }
 
     /**
@@ -22,7 +29,7 @@ class UserPlantController extends BaseController
      */
     public function show(string $id)
     {
-        return response()->json(UserPlant::findOrFail($id)::with('user', 'plant')->get());
+        return response()->json(UserPlant::findOrFail($id)::with('user', 'plant, stage')->get());
     }
 
     /**
