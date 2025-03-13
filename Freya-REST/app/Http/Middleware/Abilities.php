@@ -19,6 +19,10 @@ class Abilities
         return $next($request);
     }
 
-    return response()->jsonResponse(403, 'A felhasználó nem rendelkezik a megfelelő jogokkal');
+    return Response()->json([
+        'status' => 403,
+        'message'=>'The user does not have the required abilities',
+        'data'=>[],
+    ]);
 }
 }
