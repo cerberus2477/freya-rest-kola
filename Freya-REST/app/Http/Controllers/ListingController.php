@@ -392,7 +392,6 @@ public function show($id)
  *     }
  */
 
- //TODO: check for not existing listing
     public function update(ListingRequest $request, $id)
     {
         $manager = new ImageManager(new Driver());
@@ -419,10 +418,17 @@ public function show($id)
     // Merge the image paths with the validated request data
     $data = array_merge($request->validated(), ['media' => $imagePaths]);
 
-    $listing = Listing::where('title', $id)->firstOrFail();
-    $listing->update($data);
-
-    return $this->jsonResponse(201, 'Listing updated succesfully', $listing);
+    $listing = Listing::where('title', $id)->first();
+    $user = $request->user();
+    if($listing){
+        if($user->abilities('admin') && $user->id == $listing->userid){
+            $listing->update($data);
+            return $this->jsonResponse(201, 'Listing updated succesfully', $listing);
+        } else{
+            return $this->jsonResponse(403, "You don't have permission to modify this listing");
+        }
+    }
+    return $this->jsonResponse(404, 'Listing not found');
     }
 
 /**
@@ -446,15 +452,30 @@ public function show($id)
 //TODO: implemnt error
  */
 
- //TODO: check for not existing listing
-    public function delete($id)
+    public function delete(ListingRequest $request, $id)
     {
-        $listing = Listing::find($id);
-        if ($listing === null) {
+        // Fetch the listing with the userPlant relationship
+        $listing = Listing::with('userPlants')->find($id);
+        $user = $request->user();
+
+        // If the listing doesn't exist, return a 404 response
+        if (!$listing) {
             return $this->jsonResponse(404, 'Listing not found');
         }
-        $listing->delete();
-        return $this->jsonResponse(200, 'Listing deleted succesfully');
-    }
 
+        // Check if the user is an admin
+        if ($user->tokenCan('admin')) {
+            $listing->delete();
+            return $this->jsonResponse(201, 'Listing deleted successfully');
+        }
+
+        // If the user is not an admin, check if they own the listing
+        if ($user->id == $listing->UserPlant->user_id) {//TODO find correct connection to userplants_user_id
+            $listing->delete();
+            return $this->jsonResponse(201, 'Listing deleted successfully');
+        }
+
+        // If the user doesn't have permission, return a 403 response
+        return $this->jsonResponse(403, "You don't have permission to modify this listing");
+    }
 }

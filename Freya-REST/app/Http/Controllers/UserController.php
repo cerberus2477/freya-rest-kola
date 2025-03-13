@@ -295,8 +295,12 @@ class UserController extends BaseController
     public function destroy(UserRequest $request, string $username)
     {
         try {
-            $user = User::where('username', $username)->firstOrFail();
-
+            if($username){
+                $user = User::where('username', $username)->firstOrFail();
+            }
+            elseif($request->user()){
+                $user = $request->user();
+            }
             // Perform the soft delete
             $user->delete();
 
@@ -308,7 +312,7 @@ class UserController extends BaseController
 
     //admins could do this or the user itself ig
     //untested
-    public function restore(UserRequest $request, string $username)
+    public function restore(string $username)
     {
         try {
             $user = User::onlyTrashed()->where('username', $username)->firstOrFail();

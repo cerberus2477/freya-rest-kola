@@ -42,22 +42,24 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
     Route::get('/users/{username}', [UserController::class, 'show']);
     Route::post('/listing', [ListingController::class, 'create']);
-    Route::patch('/listing/{id}', [ListingController::class, 'update']);//TODO just own shit
-    Route::delete('/listing/{id}', [ListingController::class, 'delete']);//TODO just own shit
+    Route::patch('/listings/{id}', [ListingController::class, 'update']);
+    Route::delete('/listings/{id}', [ListingController::class, 'delete']);
 });
 
 //requires stats abilities
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
-    Route::post('/article', [ArticleController::class, 'create']);
-    Route::patch('/article/{title}', [ArticleController::class, 'update']);
-    Route::delete('/article/{title}', [ArticleController::class, 'delete']);
+    Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
+    Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
+    Route::delete('/article/{title}', [ArticleController::class, 'delete']);//TODO not tested
 });
 
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
-    Route::patch('/listing/{id}', [ListingController::class, 'update']);
-    Route::delete('/listing/{id}', [ListingController::class, 'delete']);
+    Route::patch('/listings/{id}/admin', [ListingController::class, 'update']);//TODO image modyfiing, can i just add images?
+    Route::delete('/listings/{id}/admin', [ListingController::class, 'delete']);//TODO what happens when deleting from database with the files
     Route::get('/users', [UserController::class, 'index']);
     Route::patch('/users/{username}', [UserController::class, 'update'])->name('update');
+    Route::delete('/users/{username}', [UserController::class, 'destroy']);//TODO to be tested
+    Route::patch('/users/{username}/restore', [UserController::class, 'restore']);//TODO to be tested
     Route::patch('/users/{username}/role', [UserController::class, 'roleUpdate'])->name('role-update');
 });

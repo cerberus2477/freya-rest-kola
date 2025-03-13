@@ -7,16 +7,15 @@
 1. Töltsd le a projektet. 
  <a href= "https://github.com/cerberus2477/freya-rest-kola/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
     - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
-2. XAMPP indítása (Apache, MySQL)
+2. XAMPP indítása (Apache, MySQL), ki kell kommentelni a php.ini-ben az ;extensions:gd-t ha képeket akarunk tárolni.
 3. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
 ```cmd
 composer install
 php artisan migrate:refresh --seed
 php artisan serve --port 8069
 ```
-4. Az api megnyitása a `http://127.0.0.1:8069/` címen.  Ajánlott pl. Postman használata. Enjoy :)
+4. Az api megnyitása a `http://127.0.0.1:8069/` címen.  Ajánlott pl. Postman, EchoAPI használata. Enjoy :)
 
-lehet ki kell kommentelni a php.ini-ben az ;extensions:gd
 (`composer update`)
 ```bash
 php artisan cache:clear

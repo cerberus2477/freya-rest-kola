@@ -10,16 +10,16 @@ class UserPlant extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function plant()
     {
-        return $this->belongsTo(Plant::class);
+        return $this->belongsTo(Plant::class, 'plant_id');
     }
 
     public function listing()
     {
-        return $this->hasMany(Listing::class);
+        return $this->hasMany(Listing::class, 'id');
     }
 }
