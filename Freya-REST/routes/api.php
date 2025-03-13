@@ -32,12 +32,12 @@ Route::get('/articles/{title}', [ArticleController::class, 'show']);
 Route::resource('types', TypeController::class);
 Route::resource('categories', CategoryController::class);
 
-
+Route::get('/listings',[ListingController::class, 'index']);
+Route::get('/listings/search', [LIstingController::class, 'search']);
+Route::get('/listings/{id}',[ListingController::class, 'show']);
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
-    Route::get('/listings',[ListingController::class, 'index']);
-    Route::get('/listings/search', [LIstingController::class, 'search']);
-    Route::get('/listings/{id}',[ListingController::class, 'show']);
+
     Route::get('/profile', [UserController::class, 'showMyPlants']);
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
     Route::get('/users/{username}', [UserController::class, 'show']);
