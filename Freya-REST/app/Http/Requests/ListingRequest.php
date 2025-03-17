@@ -38,7 +38,6 @@ class ListingRequest extends FormRequest
         'description' => 'required|string|max:1000',
         'city' => 'required|string|max:100',
         'media.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'sell' => 'required|boolean',
         'price' => 'required|integer|min:0',
     ];
 }
@@ -51,7 +50,6 @@ public function rulesForUpdate(): array
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',
         'media.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'sell' => 'sometimes|boolean',
         'price' => 'sometimes|integer|min:0',
     ];
 }
@@ -84,10 +82,6 @@ public function messages(): array
         'media.required' => 'A médiafájl megadása kötelező.',
         'media.string' => 'A médiafájlnak szövegnek kell lennie.',
         'media.max' => 'A médiafájl elérési útja legfeljebb 255 karakter hosszú lehet.',
-
-        // Sell
-        'sell.required' => 'Az eladási státusz megadása kötelező.',
-        'sell.boolean' => 'Az eladási státusznak logikai értéknek kell lennie (igaz vagy hamis).',
 
         // Price
         'price.required' => 'Az ár megadása kötelező.',
