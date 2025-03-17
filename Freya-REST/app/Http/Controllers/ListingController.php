@@ -455,7 +455,7 @@ public function show($id)
     public function delete(ListingRequest $request, $id)
     {
         // Fetch the listing with the userPlant relationship
-        $listing = Listing::with('userPlants')->find($id);
+        $listing = Listing::with('UserPlant')->find($id);
         $user = $request->user();
 
         // If the listing doesn't exist, return a 404 response
