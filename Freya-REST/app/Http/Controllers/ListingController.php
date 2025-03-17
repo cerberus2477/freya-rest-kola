@@ -449,13 +449,13 @@ public function show($id)
  *         "message": "Hirdetés sikeresen törölve"
  *     }
  *
-//TODO: implemnt error
+//TODO: implement error
  */
 
-    public function delete(ListingRequest $request, $id)
+    public function destroy(ListingRequest $request, $id)
     {
         // Fetch the listing with the userPlant relationship
-        $listing = Listing::with('userPlants')->find($id);
+        $listing = Listing::with('userPlant')->find($id);
         $user = $request->user();
 
         // If the listing doesn't exist, return a 404 response
@@ -470,7 +470,7 @@ public function show($id)
         }
 
         // If the user is not an admin, check if they own the listing
-        if ($user->id == $listing->UserPlant->user_id) {//TODO find correct connection to userplants_user_id
+        if ($user->id == $listing->userPlant->user_id) {//TODO find correct connection to userplants_user_id
             $listing->delete();
             return $this->jsonResponse(201, 'Listing deleted successfully');
         }

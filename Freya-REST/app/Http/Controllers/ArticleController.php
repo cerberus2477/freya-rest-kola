@@ -457,7 +457,10 @@ class ArticleController extends BaseController
      * }
      */
 
-    public function delete($title)
+
+     //TODO: make it check admin or user abilities (like in listings)
+
+    public function destroy($title)
     {
         $article = Article::where('title', $title)->firstOrFail();
         $article->delete();

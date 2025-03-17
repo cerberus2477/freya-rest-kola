@@ -18,8 +18,14 @@ class UserPlant extends Model
         return $this->belongsTo(Plant::class, 'plant_id');
     }
 
+    // public function listing()
+    // {
+    //     return $this->hasMany(Listing::class, 'id');
+    // }
+
     public function listing()
     {
-        return $this->hasMany(Listing::class, 'id');
+        // return $this->belongsTo(Listing::class, 'listing_id');
+        return $this->hasMany(Listing::class, 'user_plants_id');
     }
 }

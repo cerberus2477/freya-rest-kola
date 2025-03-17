@@ -17,3 +17,9 @@ class CategoryController extends BaseController
 
       //TODO: copy from plantcontroller when it's is done
 }
+
+// GET /resource (index)
+// POST /resource (store)
+// GET /resource/{id} (show)
+// PATCH /resource/{id} (update)
+// DELETE /resource/{id} (destroy)

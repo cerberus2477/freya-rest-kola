@@ -12,8 +12,13 @@ class Listing extends Model
         'media' => 'array',
     ];
 
+    // public function userPlant()
+    // {
+    //     return $this->belongsTo(UserPlant::class, 'user_plants_id');
+    // }
+
     public function userPlant()
     {
-        return $this->belongsTo(UserPlant::class, 'user_plants_id');
+        return $this->hasMany(UserPlant::class, 'listing_id');
     }
 }
