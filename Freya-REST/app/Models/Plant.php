@@ -8,7 +8,7 @@ class Plant extends Model
 {
     protected $fillable = ['name', 'latin_name', 'type_id'];
     public $timestamps=false;
-
+    protected $hidden = ['deleted_at'];
     public function article()
     {
         return $this->hasMany(Article::class);

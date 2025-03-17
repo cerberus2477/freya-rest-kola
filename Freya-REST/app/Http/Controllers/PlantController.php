@@ -100,14 +100,13 @@ class PlantController extends BaseController
     }
     
 //TODO: write apidoc comments
-     //TODO: check for not existing plant
     public function store(PlantRequest $request)
     {
         $plant = Plant::create($request->validated());
         return $this->jsonResponse(201, "Plant created successfully", $plant); 
     }
 
-      //TODO: check for not existing plant
+
     public function update(PlantRequest $request, $id)
     {
         $plant = Plant::findOrFail($id);
@@ -115,11 +114,23 @@ class PlantController extends BaseController
         return $this->jsonResponse(200, "Plant updated successfully", $plant);
     }
 
-        //TODO: check for not existing plant
+
     public function destroy($id)
     {
         $plant = Plant::findOrFail($id);
         $plant->delete();
         return $this->jsonResponse(204, "Plant deleted successfully");  // 204 for successful deletion with no content
+    }
+
+    //admins could do this
+    //untested
+    public function restore($id)
+    {
+       $plant = Plant::onlyTrashed()->where('id', $id)->firstOrFail();
+
+       // Restore the user
+       $plant->restore();
+
+       return $this->jsonResponse(200, 'Plant restored succesfully');
     }
 }
