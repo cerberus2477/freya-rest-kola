@@ -27,7 +27,6 @@ class ListingController extends BaseController
                 'listings.title',
                 'listings.description',
                 'listings.media',
-                'listings.sell',
                 'listings.price',
                 'listings.created_at',
                 'users.username as user',
@@ -64,7 +63,6 @@ class ListingController extends BaseController
  *                 "title": "Culpa ab a quibusdam est debitis rerum.",
  *                 "description": "Aut odio facere consequatur incidunt minus iste.",
  *                 "media": "https://example.com/image.jpg",
- *                 "sell": 1,
  *                 "price": 16200,
  *                 "created_at": "2025-03-03 19:29:45",
  *                 "user": "mable.brakus",
@@ -96,7 +94,7 @@ class ListingController extends BaseController
         return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
     }
 
-    // GET /api/listings/search?q=&deep&sell=&user=&plant=&type=&stage&minprice=&maxprice=&all
+    // GET /api/listings/search?q=&deep&&user=&plant=&type=&stage&minprice=&maxprice=&all
 
     /**
  * @api {get} /listings/search Search Listings
@@ -106,7 +104,6 @@ class ListingController extends BaseController
  *
  * @apiParam {String} [q] Search query for title and plant name.
  * @apiParam {Boolean} [deep] If set, also searches in descriptions.
- * @apiParam {String} [sell] Filter by sell status.
  * @apiParam {String} [user] Filter by username.
  * @apiParam {String} [plant] Filter by plant name.
  * @apiParam {String} [type] Filter by plant type.
@@ -133,7 +130,6 @@ class ListingController extends BaseController
  *                 "title": "Culpa ab a quibusdam est debitis rerum.",
  *                 "description": "Aut odio facere consequatur incidunt minus iste.",
  *                 "media": "https://example.com/image.jpg",
- *                 "sell": 1,
  *                 "price": 16200,
  *                 "created_at": "2025-03-03 19:29:45",
  *                 "user": "mable.brakus",
@@ -170,7 +166,6 @@ class ListingController extends BaseController
 
         //filters
         $filters = [
-            'sell' => 'listings.sell',
             'user' => 'users.username',
             'plant' => 'plants.name',
             'type' => 'types.name',
@@ -225,7 +220,6 @@ class ListingController extends BaseController
  *             "title": "Assumenda et repudiandae est laboriosam vitae nihil.",
  *             "description": "Et dolores aliquid delectus reprehenderit sunt distinctio molestias exercitationem.",
  *             "media": "http://example.com/image.jpg",
- *             "sell": 1,
  *             "price": 6000,
  *             "created_at": "2025-03-03 19:29:45",
  *             "user": "lenna20",
@@ -256,7 +250,7 @@ public function show($id)
                 ]);
         }
     ])->find($id, [
-        'id', 'user_plants_id', 'title', 'description', 'city', 'media', 'sell', 'price', 'created_at', 'updated_at'
+        'id', 'user_plants_id', 'title', 'description', 'city', 'media', 'price', 'created_at', 'updated_at'
     ]);
 
     if (!$listing) {
@@ -284,7 +278,6 @@ public function show($id)
      * @apiBody {String} description The description of the listing.
      * @apiBody {String} city The city where the listing is located.
      * @apiBody {String} [media] Optional media file or URL.
-     * @apiBody {Boolean} sell Whether the listing is for sale.
      * @apiBody {Integer} price The price of the listing.
      *
      * @apiSuccess {Integer} status HTTP status code.
@@ -303,7 +296,6 @@ public function show($id)
      *             "description": "A very healthy plant.",
      *             "city": "Budapest",
      *             "media": "plant.jpg",
-     *             "sell": true,
      *             "price": 1000,
      *             "created_at": "2023-10-01T12:00:00.000000Z",
      *             "updated_at": "2023-10-01T12:00:00.000000Z"
@@ -356,7 +348,6 @@ public function show($id)
  * @apiBody {String} [description] Optional description of the listing.
  * @apiBody {String} [city] Optional city where the listing is located.
  * @apiBody {String} [media] Optional media file or URL.
- * @apiBody {Boolean} [sell] Optional whether the listing is for sale.
  * @apiBody {Integer} [price] Optional price of the listing.
  *
  * @apiSuccess {Integer} status HTTP status code.
@@ -375,7 +366,6 @@ public function show($id)
  *             "description": "Updated description.",
  *             "city": "Budapest",
  *             "media": "plant.jpg",
- *             "sell": true,
  *             "price": 1200,
  *             "created_at": "2023-10-01T12:00:00.000000Z",
  *             "updated_at": "2023-10-01T12:30:00.000000Z"
@@ -455,7 +445,7 @@ public function show($id)
     public function delete(ListingRequest $request, $id)
     {
         // Fetch the listing with the userPlant relationship
-        $listing = Listing::with('UserPlant')->find($id);
+        $listing = Listing::with('userPlant')->find($id);
         $user = $request->user();
 
         // If the listing doesn't exist, return a 404 response
@@ -463,14 +453,7 @@ public function show($id)
             return $this->jsonResponse(404, 'Listing not found');
         }
 
-        // Check if the user is an admin
-        if ($user->tokenCan('admin')) {
-            $listing->delete();
-            return $this->jsonResponse(201, 'Listing deleted successfully');
-        }
-
-        // If the user is not an admin, check if they own the listing
-        if ($user->id == $listing->UserPlant->user_id) {//TODO find correct connection to userplants_user_id
+        if ($user->tokenCan('admin') || $user->id == $listing->userPlant->user_id) {
             $listing->delete();
             return $this->jsonResponse(201, 'Listing deleted successfully');
         }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\UserPlant;
 use Tests\TestCase;
 use App\Models\Listing;
 use App\Models\User;
@@ -40,7 +41,7 @@ class ListingControllerTest extends TestCase
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
-                     'data' => [['id', 'title', 'media', 'sell', 'price', 'user', 'plant', 'type', 'stage']],
+                     'data' => [['id', 'title', 'media', 'price', 'user', 'plant', 'type', 'stage']],
                      'pagination' => ['total', 'page', 'pageSize', 'totalPages']
                  ]);
     }
@@ -99,5 +100,38 @@ class ListingControllerTest extends TestCase
                      'message' => 'Listing not found',
                      'data' => []
                  ]);
+    }
+
+    public function a_user_can_delete_their_own_listing()
+    {
+        // Create a user and authenticate
+        $user = User::factory()->create();
+
+        // Create a UserPlant associated with the user
+        $userPlant = UserPlant::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        // Create a Listing associated with the UserPlant
+        $listing = Listing::factory()->create([
+            'user_plants_id' => $userPlant->id,
+        ]);
+
+        // Authenticate the user
+        dump($user);
+        $this->actingAs($user);
+
+        // Send DELETE request to remove the listing
+        $response = $this->deleteJson(route('listings.destroy', $listing->id));
+
+        // Assert the response is successful (200 OK)
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'status' => 200,
+                     'message' => 'Listing deleted successfully',
+                 ]);
+
+        // Assert the listing is deleted from the database
+        $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
     }
 }

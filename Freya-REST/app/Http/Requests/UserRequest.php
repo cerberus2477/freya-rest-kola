@@ -116,6 +116,8 @@ public function rulesForPasswordReset(): array
             'role_id.required' => 'A szerepkör kiválasztása kötelező.',
             'role_id.exists' => 'A megadott szerepkör nem létezik.',
             'active.boolean' => 'Az aktív mező értéke csak igaz vagy hamis lehet.',
+            'token.required' => 'A token megadása kötelező.',
+            'exists' => 'A megadott email címmel nem létezik felhasználó.',
         ];
     }
 }
