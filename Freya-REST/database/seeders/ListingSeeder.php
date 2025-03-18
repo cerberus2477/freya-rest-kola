@@ -19,7 +19,6 @@ class ListingSeeder extends Seeder
                 'title' => $faker->sentence,
                 'description' => $faker->paragraph,
                 'media' => $faker->url, 
-                'sell' => $faker->boolean, // 0 = Buy, 1 = Sell
                 'price' => $faker->numberBetween(5, 500)*100
             ]);
         }

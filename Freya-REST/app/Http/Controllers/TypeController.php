@@ -94,7 +94,6 @@ class TypeController extends BaseController
         $type = Type::create($request->validated());
         return $this->jsonResponse(201, "Type created successfully", $type);
     }
-
     /**
      * @api {put} /api/types/:id Update Type
      * @apiName UpdateType

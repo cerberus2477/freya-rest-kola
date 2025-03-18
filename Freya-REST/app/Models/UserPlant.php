@@ -20,6 +20,7 @@ class UserPlant extends Model
 
     public function listing()
     {
-        return $this->hasMany(Listing::class, 'id');
+        return $this->hasOne(Listing::class, 'user_plants_id');
     }
-}
+    
+    }
