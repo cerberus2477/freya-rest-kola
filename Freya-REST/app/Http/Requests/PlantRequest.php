@@ -21,8 +21,35 @@ class PlantRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isMethod('patch')) {
+            return $this->updateRules();
+        }
+
+        return $this->storeRules();
+    }
+
+    /**
+     * Get the validation rules that apply to the store request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    protected function storeRules(): array
+    {
         return [
-            'name' => 'required|string|max:255|min:4',
+            'name' => 'required|string|unique:plants,name|max:255|min:4',
+            'latin_name' => 'nullable|string|max:100|min:4',
+        ];
+    }
+
+    /**
+     * Get the validation rules that apply to the update request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    protected function updateRules(): array
+    {
+        return [
+            'name' => 'sometimes|string|unique:plants,name|max:255|min:4',
             'latin_name' => 'nullable|string|max:100|min:4',
         ];
     }
@@ -38,7 +65,5 @@ class PlantRequest extends FormRequest
             'latin_name.max' => 'A növény latin neve túl hosszú, maximum 255 karakter.',
         ];
     }
-
-
 }
 

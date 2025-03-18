@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('latin_name');
             $table->unsignedBigInteger('type_id');
+            $table->softDeletes();
             $table->foreign('type_id')->references('id')->on('types')->onDelete('restrict');
         });
         

@@ -447,6 +447,7 @@ public function show($id)
     {
         // Fetch the listing with the userPlant relationship
         $listing = Listing::with('userPlant')->find($id);
+
         $user = $request->user();
 
         // If the listing doesn't exist, return a 404 response

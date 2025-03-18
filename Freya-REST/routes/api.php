@@ -8,28 +8,28 @@ use App\Http\Controllers\UserPlantController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TypeController;
-use App\Http\Controllers\ForgotPasswordController;
-use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\StageController;
 
-//No need for bearer token
+//No need for token
 //login
 Route::post('/login', [UserController::class,'login'])->name('login');
+
 //register
 Route::post('/register', [UserController::class, 'register'])->name('register');
+
 //password reset
 Route::post('/forgot-password', [UserController::class, 'sendResetLinkEmail'])->name('forgot-password');
 Route::post('/reset-password', [UserController::class, 'passwordReset'])->name('password-reset');
 
-Route::apiResource('plants', PlantController::class);
-Route::apiResource('userplants', UserPlantController::class);
-Route::apiResource('types', TypeController::class);
-Route::apiResource('categories', CategoryController::class);
+Route::resource('userplants', UserPlantController::class);
 
-
+//articles
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/search', [ArticleController::class, 'search']);
 Route::get('/articles/{title}', [ArticleController::class, 'show']);
 
+
+//listings
 Route::get('/listings',[ListingController::class, 'index']);
 Route::get('/listings/search', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
@@ -47,23 +47,57 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
 //requires stats abilities
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
+    Route::get('/stats', [UserPlantController::class, 'get-stats']);//TODO to be written
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
     Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
     Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
+    Route::delete('/article/{title}', [ArticleController::class, 'delete']);//TODO not tested
+
+    //dictionay tables index/show
+    Route::get('/stages', [StageController::class, 'index']);
+    Route::get('/stages/{id}', [StageController::class, 'show']);
+    Route::get('/types', [TypeController::class, 'index']);
+    Route::get('/types/{id}', [TypeController::class, 'show']);
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::get('/plants', [PlantController::class, 'index']);
+    Route::get('/plants/{id}', [PlantController::class, 'show']);
 });
 
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
-    Route::patch('/listings/{id}/admin', [ListingController::class, 'update']);//TODO image modyfiing, can i just add images?
-    Route::delete('/listings/{id}/admin', [ListingController::class, 'destroy']);//TODO what happens when deleting from database with the files
+    //listings
+    Route::patch('/listings/{id}', [ListingController::class, 'update']);//TODO image modyfiing, can i just add images?
+    Route::delete('/listings/{id}', [ListingController::class, 'delete']);//TODO what happens when deleting from database with the files
+  
+    //users
     Route::get('/users', [UserController::class, 'index']);
     Route::patch('/users/{username}', [UserController::class, 'update'])->name('update');
     Route::delete('/users/{username}', [UserController::class, 'destroy']);//TODO to be tested
     Route::patch('/users/{username}/restore', [UserController::class, 'restore']);//TODO to be tested
     Route::patch('/users/{username}/role', [UserController::class, 'roleUpdate'])->name('role-update');
-    Route::delete('/users/{username}', [UserController::class, 'destroy'])->middleware(['auth:sanctum', 'abilities:admin']);
-    Route::patch('/users/{username}/restore', [UserController::class, 'restore'])->middleware(['auth:sanctum', 'abilities:admin']);
-    //ez volt nálam a gépemen, csak nem volt mentve a fájl amikor pusholtam, ezért nem ment fel. szerintem nem kell a middleware mert ott az 56.sorban
-    // Route::delete('/users/{username}', [UserController::class, 'destroy']);//TODO to be tested
-    // Route::patch('/users/{username}/restore', [UserController::class, 'restore']);//TODO to be tested
+    
+    //categories
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::patch('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+    Route::patch('/categories/{id}/restore', [CategoryController::class, 'restore']);
+
+    //plants
+    Route::post('/plants', [PlantController::class, 'store']);
+    Route::patch('/plants/{id}', [PlantController::class, 'update']);
+    Route::delete('/plants/{id}', [PlantController::class, 'destroy']);
+    Route::patch('/plant/{id}/restore', [PlantController::class, 'restore']);
+
+    //types
+    Route::post('/types', [TypeController::class, 'store']);
+    Route::patch('/types/{id}', [TypeController::class, 'update']);
+    Route::delete('/types/{id}', [TypeController::class, 'destroy']);
+    Route::patch('/types/{id}/restore', [TypeController::class, 'restore']);
+
+    //stages
+    Route::post('/stages', [StageController::class, 'store']);
+    Route::patch('/stages/{id}', [StageController::class, 'update']);
+    Route::delete('/stages/{id}', [StageController::class, 'destroy']);
+    Route::patch('/stages/{id}/restore', [StageController::class, 'restore']);
 });
