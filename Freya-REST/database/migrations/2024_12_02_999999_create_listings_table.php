@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('listings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_plants_id')->unique();
+            $table->unsignedBigInteger('user_plants_id');
+            // $table->unsignedBigInteger('user_plants_id')->unique();
             $table->string('title');
             $table->text('description');
             $table->string('city');
             $table->json('media')->nullable();
+            $table->boolean('sell');
             $table->integer('price');
             $table->timestamps();
             $table->foreign('user_plants_id')->references('id')->on('user_plants')->onDelete('cascade');
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('listings');
+        Schema::dropIfExists('listing');
     }
 };

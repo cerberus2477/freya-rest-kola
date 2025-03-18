@@ -28,7 +28,6 @@ Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/search', [ArticleController::class, 'search']);
 Route::get('/articles/{title}', [ArticleController::class, 'show']);
 
-
 //listings
 Route::get('/listings',[ListingController::class, 'index']);
 Route::get('/listings/search', [LIstingController::class, 'search']);
@@ -42,7 +41,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::get('/users/{username}', [UserController::class, 'show']);
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
-    Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
+    Route::delete('/listings/{id}', [ListingController::class, 'delete']);
 });
 
 //requires stats abilities
@@ -50,7 +49,6 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     Route::get('/stats', [UserPlantController::class, 'get-stats']);//TODO to be written
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
     Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
-    Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
     Route::delete('/article/{title}', [ArticleController::class, 'delete']);//TODO not tested
 
     //dictionay tables index/show
@@ -69,7 +67,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     //listings
     Route::patch('/listings/{id}', [ListingController::class, 'update']);//TODO image modyfiing, can i just add images?
     Route::delete('/listings/{id}', [ListingController::class, 'delete']);//TODO what happens when deleting from database with the files
-  
+    
     //users
     Route::get('/users', [UserController::class, 'index']);
     Route::patch('/users/{username}', [UserController::class, 'update'])->name('update');
@@ -77,6 +75,7 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     Route::patch('/users/{username}/restore', [UserController::class, 'restore']);//TODO to be tested
     Route::patch('/users/{username}/role', [UserController::class, 'roleUpdate'])->name('role-update');
     
+
     //categories
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::patch('/categories/{id}', [CategoryController::class, 'update']);
