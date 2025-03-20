@@ -275,7 +275,7 @@ class ArticleController extends BaseController
             ->first();
 
         if (!$article) {
-            return $this->jsonResponse(404, "\"$title\" article not found");
+            return $this->jsonResponse(404, "Article not found");
         }
         
         $response = $this->jsonResponse(200, "\"$title\" article found", $article);

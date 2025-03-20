@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Plant extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'latin_name', 'type_id'];
     public $timestamps=false;
     protected $hidden = ['deleted_at'];

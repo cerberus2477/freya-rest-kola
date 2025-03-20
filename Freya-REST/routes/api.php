@@ -26,7 +26,7 @@ Route::resource('userplants', UserPlantController::class);
 //articles
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/search', [ArticleController::class, 'search']);
-Route::get('/articles/{title}', [ArticleController::class, 'show']);
+Route::get('/articles/{title}', [ArticleController::class, 'show'])->where('title', '.*');
 
 //listings
 Route::get('/listings',[ListingController::class, 'index']);

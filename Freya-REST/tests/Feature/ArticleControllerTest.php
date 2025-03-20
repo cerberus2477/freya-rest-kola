@@ -6,10 +6,15 @@ use App\Models\Article;
 use App\Models\User;
 use App\Models\Plant;
 use App\Models\Category;
+use Database\Seeders\PlantSeeder;
+use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\TypeSeeder;
+
+use function PHPSTORM_META\type;
 
 class ArticleControllerTest extends TestCase
 {
@@ -19,6 +24,9 @@ class ArticleControllerTest extends TestCase
     {
         parent::setUp();
         $this->seed(RoleSeeder::class); // Seed roles before each test
+        $this->seed(TypeSeeder::class); // Seed categories before each test
+        $this->seed(CategorySeeder::class); // Seed plants before each test
+        $this->seed(PlantSeeder::class); // Seed plants before each test
     }
 
     // Test for retrieving all articles
@@ -27,7 +35,7 @@ class ArticleControllerTest extends TestCase
         // Create dummy articles with necessary related models
         $user = User::factory()->create(['role_id' => 3]);
         $category = Category::factory()->create();
-        $plant = Plant::factory()->create();
+        $plant = Plant::inRandomOrder()->first();
 
         Article::factory()->count(3)->create([
             'author_id' => $user->id,
@@ -40,7 +48,7 @@ class ArticleControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'status', 'message', 'data' => [
-                '*' => ['id', 'title', 'name', 'description', 'updated_at', 'plant_name', 'author']
+                '*' => ['id', 'title', 'category', 'description', 'updated_at', 'plant_name', 'type', 'author']
             ]
         ]);
     }
@@ -48,10 +56,9 @@ class ArticleControllerTest extends TestCase
    // Test for paginated articles
    public function test_index_paginated_articles()
    {
-       $roles = ['admin', 'stats', 'user'];
-       $user = User::factory()->create();
+       $user = User::factory()->create(['role_id' => 3]);
        $category = Category::factory()->create();
-       $plant = Plant::factory()->create();
+       $plant = Plant::inRandomOrder()->first();
 
        Article::factory()->count(10)->create([
            'author_id' => $user->id,
@@ -59,15 +66,16 @@ class ArticleControllerTest extends TestCase
            'plant_id' => $plant->id
        ]);
 
-       $response = $this->get('/api/articles?page=1&pageSize=5');
+       $response = $this->get('/api/articles?pageSize=5&page=1');
 
        $response->assertStatus(200);
        $response->assertJsonStructure([
-           'status', 'message', 'data' => [
-               'current_page', 'data' => [
-                   '*' => ['id', 'title', 'name', 'description', 'updated_at', 'plant_name', 'author']
-               ]
-           ]
+               'status', 'message', 'data' => [
+                '*' => ['id', 'title', 'category', 'description', 'updated_at', 'plant_name', 'type', 'author']
+            ],
+            'pagination' => [
+                'total', 'page', 'pageSize', 'totalPages'
+            ]
        ]);
    }
 
@@ -118,7 +126,7 @@ class ArticleControllerTest extends TestCase
             'status',
             'message',
             'data' => [
-                '*' => ['id', 'title', 'name', 'description', 'updated_at', 'plant_name', 'author']
+                '*' => ['id', 'title', 'category', 'description', 'updated_at', 'plant_name', 'author']
             ]
         ]);
 
@@ -126,20 +134,20 @@ class ArticleControllerTest extends TestCase
         $response->assertJsonFragment([
             'title' => 'Test Article 1',
             'author' => 'JohnDoe',
-            'name' => 'Science',
+            'category' => 'Science',
         ]);
 
         $response->assertJsonFragment([
             'title' => 'Test Article 3',
             'author' => 'JohnDoe',
-            'name' => 'Science',
+            'category' => 'Science',
         ]);
         
         // Assert the returned data does not contain an article that shouldn't be included
         $response->assertJsonMissing([
             'title' => 'Test Article 2',
             'author' => 'JaneDoe',
-            'name' => 'Technology',
+            'category' => 'Technology',
         ]);
     }
 
@@ -159,7 +167,7 @@ class ArticleControllerTest extends TestCase
  
          $response->assertStatus(200);
          $response->assertJsonStructure([
-             'status', 'message', 'data' => ['id', 'title', 'name', 'description', 'content', 'created_at']
+             'status', 'message', 'data' => ['id', 'title', 'category', 'description', 'content', 'created_at']
          ]);
      }
 
@@ -167,7 +175,7 @@ class ArticleControllerTest extends TestCase
     // Test for article not found
     public function test_show_article_not_found()
     {
-        $response = $this->get('/api/articles/Non-Existent-Article');
+        $response = $this->get('/api/articles/'.urlencode('Non-Existent-Article'));
 
         $response->assertStatus(404);
         $response->assertJson([
