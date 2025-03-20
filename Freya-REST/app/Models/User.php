@@ -76,5 +76,4 @@ class User extends Authenticatable
         // Send the notification with the custom URL
         $this->notify(new CustomResetPassword($url));
     }
-
 }

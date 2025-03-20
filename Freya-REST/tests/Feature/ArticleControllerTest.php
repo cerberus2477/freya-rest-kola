@@ -9,16 +9,23 @@ use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Database\Seeders\RoleSeeder;
 
 class ArticleControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class); // Seed roles before each test
+    }
+
     // Test for retrieving all articles
     public function test_index_all_articles()
     {
         // Create dummy articles with necessary related models
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role_id' => 3]);
         $category = Category::factory()->create();
         $plant = Plant::factory()->create();
 
@@ -41,6 +48,7 @@ class ArticleControllerTest extends TestCase
    // Test for paginated articles
    public function test_index_paginated_articles()
    {
+       $roles = ['admin', 'stats', 'user'];
        $user = User::factory()->create();
        $category = Category::factory()->create();
        $plant = Plant::factory()->create();

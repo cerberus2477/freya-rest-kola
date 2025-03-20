@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('stage_id');
             $table->unsignedBigInteger('count')->default(1);
             $table->timestamps();
-            $table->primary('id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('plant_id')->references('id')->on('plants')->onDelete('cascade');
             $table->foreign('stage_id')->references('id')->on('stages')->onDelete('restrict');
