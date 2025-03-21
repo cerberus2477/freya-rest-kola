@@ -182,12 +182,12 @@ public function search(Request $request)
     $q = $request->query('q', '');
     if (!empty($q)) {
         $query->where(function ($query) use ($q, $request) {
-            $query->where('listings.title', 'LIKE', "%$q%")
+            $query->where('title', 'LIKE', "%$q%")
                   ->orWhereHas('userPlant.plant', function ($plantQuery) use ($q) {
                       $plantQuery->where('name', 'LIKE', "%$q%");
                   });
             if ($request->has("deep")) {
-                $query->orWhere('listings.description', 'LIKE', "%$q%");
+                $query->orWhere('description', 'LIKE', "%$q%");
             }
         });
     }
@@ -202,7 +202,7 @@ public function search(Request $request)
 
     foreach ($filters as $param => $filter) {
         if ($value = $request->query($param)) {
-            $query->whereHas($filter['relationship'], function ($relationshipQuery) use ($filter, $value) {//TODO look into $filter's problem
+            $query->whereHas($filter['relationship'], function ($relationshipQuery) use ($filter, $value) {
                 $relationshipQuery->where($filter['column'], '=', $value);
             });
         }
@@ -228,11 +228,17 @@ public function search(Request $request)
     $page = $request->query('page', 1);
     $listings = $query->paginate($pageSize, ['*'], 'page', $page);
 
-    // Format the paginated listings
-    $formattedListings = $this->formatListings($listings->getCollection());
-    $listings->setCollection($formattedListings);
+        // Format the paginated listings
+        $formattedListings = $this->formatListings($listings->items());
+        $paginatedListings = new \Illuminate\Pagination\LengthAwarePaginator(
+            $formattedListings,
+            $listings->total(),
+            $listings->perPage(),
+            $listings->currentPage(),
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
-    return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
+    return $this->jsonResponse(200, 'Listings retrieved successfully', $paginatedListings);
 }
 
     

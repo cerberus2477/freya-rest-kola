@@ -9,8 +9,13 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\StageController;
+use App\Http\Controllers\HardCodedController;
 
 //No need for token
+//fixed file paths
+Route::get('/documentation', [HardCodedController::class, 'documentation']);
+Route::get('/placeholders', HardCodedController::class, 'placeholders');
+
 //login
 Route::post('/login', [UserController::class,'login'])->name('login');
 

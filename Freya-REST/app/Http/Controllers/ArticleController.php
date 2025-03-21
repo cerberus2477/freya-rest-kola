@@ -412,9 +412,20 @@ class ArticleController extends BaseController
     {
         $manager = new ImageManager(new Driver());
 
+        $article = Article::where('title', $title)->firstOrFail();
         // Handle image uploads
         $imagePaths = [];
         if ($request->hasFile('image')) {
+            $images = $article->images;
+            if ($images) {
+                foreach ($images as $file) {
+                    $filePath = storage_path('app/public/public/articles/' . $file->filename);
+                    if (file_exists($filePath)) {
+                        unlink($filePath); // Delete the file from storage
+                    }
+                }
+            }
+
             foreach ($request->file('image') as $image) {
                 // Create an image instance, scale down-if needed, and comress
                 $imageInstance = $manager->read($image->getRealPath());
@@ -432,7 +443,6 @@ class ArticleController extends BaseController
 
         $data = array_merge($request->validated(), ['image' => $imagePaths]);
 
-        $article = Article::where('title', $title)->firstOrFail();
         $article->update($data);
         return $this->jsonResponse(200, 'Cikk sikeresen frissítve', $article);
     }
@@ -460,6 +470,16 @@ class ArticleController extends BaseController
     public function delete($title)
     {
         $article = Article::where('title', $title)->firstOrFail();
+        
+        $images = $article->images;
+        if ($images) {
+            foreach ($images as $file) {
+                $filePath = storage_path('app/public/public/articles/' . $file->filename);
+                if (file_exists($filePath)) {
+                    unlink($filePath); // Delete the file from storage
+                }
+            }
+        }
         $article->delete();
         return $this->jsonResponse(200, 'Article deleted succesfully');
     }
