@@ -33,13 +33,17 @@ class ListingController extends BaseController
                 'listing_id' => $listing->id,
                 'title' => $listing->title,
                 'description' => $listing->description,
-                'media' => $listing->media,
+                'media' => $listing->media ? array_map(function ($media) {
+                return Storage::url($media);
+                }, $listing->media) : [],
                 'price' => $listing->price,
                 'created_at' => $listing->created_at,
                 'user' => [
+                    'id' => $listing->userPlant->user->id,
                     'username' => $listing->userPlant->user->username,
                 ],
                 'plant' => [
+                    'id' => $listing->userPlant->plant->id,
                     'name' => $listing->userPlant->plant->name,
                     'type' => $listing->userPlant->plant->type->name,
                 ],
