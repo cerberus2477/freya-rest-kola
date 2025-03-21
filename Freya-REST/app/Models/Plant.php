@@ -21,4 +21,9 @@ class Plant extends Model
     {
         return $this->belongsToMany(User::class, 'user_plants');
     }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class, 'type_id');
+    }
 }

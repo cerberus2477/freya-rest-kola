@@ -33,6 +33,8 @@ Route::get('/listings',[ListingController::class, 'index']);
 Route::get('/listings/search', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
 
+Route::get('/userplants', [UserPlantController::class, 'index']);
+
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
@@ -47,6 +49,8 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 //requires stats abilities
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     Route::get('/stats', [UserPlantController::class, 'get-stats']);//TODO to be written
+
+    //article
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
     Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
     Route::delete('/article/{title}', [ArticleController::class, 'delete']);//TODO not tested

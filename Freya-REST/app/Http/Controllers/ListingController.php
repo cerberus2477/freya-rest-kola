@@ -14,27 +14,43 @@ use Illuminate\Support\Carbon;
 
 class ListingController extends BaseController
 {
-    private function baseQuery()
+    protected function baseQuery()
     {
-        return DB::table('listings')
-            ->leftJoin('user_plants', 'listings.user_plants_id', '=', 'user_plants.id')
-            ->leftJoin('users', 'user_plants.user_id', '=', 'users.id')
-            ->leftJoin('plants', 'user_plants.plant_id', '=', 'plants.id')
-            ->leftJoin('types', 'plants.type_id', '=', 'types.id')
-            ->leftJoin('stages', 'user_plants.stage_id', '=', 'stages.id')
-            ->select(
-                'listings.id',
-                'listings.title',
-                'listings.description',
-                'listings.media',
-                'listings.price',
-                'listings.created_at',
-                'users.username as user',
-                'plants.name as plant',
-                'types.name as type',
-                'stages.name as stage'
-            );
+        return Listing::with([
+            'userPlant.user',
+            'userPlant.plant.type',
+            'userPlant.stage'
+        ]);
     }
+
+    /**
+     * Format listings with the required structure.
+     */
+    protected function formatListings($listings)
+    {
+        return $listings->map(function ($listing) {
+            return [
+                'listing_id' => $listing->id,
+                'title' => $listing->title,
+                'description' => $listing->description,
+                'media' => $listing->media,
+                'price' => $listing->price,
+                'created_at' => $listing->created_at,
+                'user' => [
+                    'username' => $listing->userPlant->user->username,
+                ],
+                'plant' => [
+                    'name' => $listing->userPlant->plant->name,
+                    'type' => $listing->userPlant->plant->type->name,
+                ],
+                'stage' => [
+                    'name' => $listing->userPlant->stage->name,
+                ],
+            ];
+        });
+    }
+
+    //TODO modify apidoc for current responses
 
     // GET /api/articles?all
     /**
@@ -80,19 +96,28 @@ class ListingController extends BaseController
  *     }
  */
 
-    public function index(Request $request)
-    {
-        if ($request->has('all')) {
-            $listings = $this->baseQuery()->get();
-            return $this->jsonResponse(200, 'All listings retrieved', $listings);
-        }
+public function index(Request $request)
+{
+    if ($request->has('all')) {
+        // Fetch all listings with related data
+        $listings = $this->baseQuery()->get();
 
-        $pageSize = $request->query('pageSize', 5);
-        $page = $request->query('page', 1);
-        $listings = $this->baseQuery()->paginate($pageSize, ['*'], 'page', $page);
+        // Format the listings
+        $response = $this->formatListings($listings);
 
-        return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
+        return $this->jsonResponse(200, 'All listings retrieved', $response);
     }
+
+    // Paginate the listings
+    $pageSize = $request->query('pageSize', 5);
+    $page = $request->query('page', 1);
+    $listings = $this->baseQuery()->paginate($pageSize, ['*'], 'page', $page);
+
+    // Format the paginated listings
+    $formattedListings = $this->formatListings($listings);
+
+    return $this->jsonResponse(200, 'Listings retrieved successfully', $formattedListings);
+}
 
     // GET /api/listings/search?q=&deep&&user=&plant=&type=&stage&minprice=&maxprice=&all
 
@@ -148,54 +173,67 @@ class ListingController extends BaseController
  */
 
  
-    public function search(Request $request)
-    {   
-        $query = $this->baseQuery();
+public function search(Request $request)
+{
+    // Start with the base query
+    $query = $this->baseQuery();
 
-        //search by title, plant, optionally in description
-        $q = $request->query('q', '');
-        if (!empty($q)) {
-            $query->where(function ($query) use ($q, $request) {
-                $query->where('listings.title', 'LIKE', "%$q%")
-                  ->orWhere('plants.name', 'LIKE', "%$q%");
-                if ($request->has("deep")) {
-                    $query->orWhere('listings.description', 'LIKE', "%$q%");
-                }
+    // Search by title, plant, and optionally in description
+    $q = $request->query('q', '');
+    if (!empty($q)) {
+        $query->where(function ($query) use ($q, $request) {
+            $query->where('listings.title', 'LIKE', "%$q%")
+                  ->orWhereHas('userPlant.plant', function ($plantQuery) use ($q) {
+                      $plantQuery->where('name', 'LIKE', "%$q%");
+                  });
+            if ($request->has("deep")) {
+                $query->orWhere('listings.description', 'LIKE', "%$q%");
+            }
+        });
+    }
+
+    // Filters
+    $filters = [
+        'user' => ['column' => 'users.username', 'relationship' => 'userPlant.user'],
+        'plant' => ['column' => 'plants.name', 'relationship' => 'userPlant.plant'],
+        'type' => ['column' => 'types.name', 'relationship' => 'userPlant.plant.type'],
+        'stage' => ['column' => 'stages.name', 'relationship' => 'userPlant.stage'],
+    ];
+
+    foreach ($filters as $param => $filter) {
+        if ($value = $request->query($param)) {
+            $query->whereHas($filter['relationship'], function ($relationshipQuery) use ($filter, $value) {//TODO look into $filter's problem
+                $relationshipQuery->where($filter['column'], '=', $value);
             });
         }
-
-        //filters
-        $filters = [
-            'user' => 'users.username',
-            'plant' => 'plants.name',
-            'type' => 'types.name',
-            'stage' => 'stages.name',
-        ];
-
-        foreach ($filters as $param => $column) {
-            if ($value = $request->query($param)) {
-                $query->where($column, '=', $value);
-            }
-        }
-
-        if ($minPrice = $request->query('minprice')) {
-            $query->where('listings.price', '>=', $minPrice);
-        }
-        if ($maxPrice = $request->query('maxprice')) {
-            $query->where('listings.price', '<=', $maxPrice);
-        }
-
-        //return all matching results
-        if ($request->has("all")) {
-            return $this->jsonResponse(200, 'Listings retrieved successfully', $query->get());
-        }
-
-        //return a page of matching results
-        $pageSize = $request->query('pageSize', 5);
-        $page = $request->query('page', 1);
-        $listings = $query->paginate($pageSize, ['*'], 'page', $page);
-        return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
     }
+
+    // Price filters
+    if ($minPrice = $request->query('minprice')) {
+        $query->where('listings.price', '>=', $minPrice);
+    }
+    if ($maxPrice = $request->query('maxprice')) {
+        $query->where('listings.price', '<=', $maxPrice);
+    }
+
+    // Return all matching results
+    if ($request->has("all")) {
+        $listings = $query->get();
+        $formattedListings = $this->formatListings($listings);
+        return $this->jsonResponse(200, 'Listings retrieved successfully', $formattedListings);
+    }
+
+    // Return a page of matching results
+    $pageSize = $request->query('pageSize', 5);
+    $page = $request->query('page', 1);
+    $listings = $query->paginate($pageSize, ['*'], 'page', $page);
+
+    // Format the paginated listings
+    $formattedListings = $this->formatListings($listings->getCollection());
+    $listings->setCollection($formattedListings);
+
+    return $this->jsonResponse(200, 'Listings retrieved successfully', $listings);
+}
 
     
     /**
@@ -240,32 +278,23 @@ public function show($id)
         return Cache::get($cacheKey);
     }
 
-    // Retrieve listing with related user_plant, user, and plant using Eloquent
-    $listing = Listing::with([
-        'userPlant' => function ($query) {
-            $query->select('id', 'user_id', 'plant_id')
-                ->with([
-                    'user:id,username',
-                    'plant:id,name'
-                ]);
-        }
-    ])->find($id, [
-        'id', 'user_plants_id', 'title', 'description', 'city', 'media', 'price', 'created_at', 'updated_at'
-    ]);
+    // Retrieve listing with related data using the baseQuery
+    $listing = $this->baseQuery()->find($id);
 
     if (!$listing) {
         return $this->jsonResponse(404, "$id. listing not found");
     }
 
-    // Response format
-    $response = $this->jsonResponse(200, "$id. listing found", $listing);
+    // Format the listing
+    $formattedListing = $this->formatListings(collect([$listing]))->first();
 
+    // Cache the response
+    $response = $this->jsonResponse(200, "$id. listing found", $formattedListing);
     Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+
     return $response;
 }
 
-
-    //TODO modyfy apidoc to current version
     //TODO: check apicomments below this line. 
     /**
      * @api {post} /listing Create Listing
@@ -387,8 +416,19 @@ public function show($id)
         $manager = new ImageManager(new Driver());
 
     // Handle image uploads
+    $listing = Listing::where('title', $id)->first();
     $imagePaths = [];
     if ($request->hasFile('media')) {
+        $images = $listing->media;
+            if ($images) {
+                foreach ($images as $file) {
+                    $filePath = storage_path('app/public/public/listings/' . $file->filename);
+                    if (file_exists($filePath)) {
+                        unlink($filePath); // Delete the file from storage
+                    }
+                }
+            }
+
         foreach ($request->file('media') as $image) {
             // Create an image instance, scale down if needed, and compress
             $imageInstance = $manager->read($image->getRealPath());
@@ -408,10 +448,9 @@ public function show($id)
     // Merge the image paths with the validated request data
     $data = array_merge($request->validated(), ['media' => $imagePaths]);
 
-    $listing = Listing::where('title', $id)->first();
     $user = $request->user();
     if($listing){
-        if($user->abilities('admin') && $user->id == $listing->userid){
+        if($user->abilities('admin') && $user->$id == $listing->userPlant()->user()->id){
             $listing->update($data);
             return $this->jsonResponse(201, 'Listing updated succesfully', $listing);
         } else{
@@ -453,7 +492,16 @@ public function show($id)
             return $this->jsonResponse(404, 'Listing not found');
         }
 
-        if ($user->tokenCan('admin') || $user->id == $listing->userPlant->user_id) {
+        if ($user->tokenCan('admin') || $user->$id == $listing->userPlant()->user()->id) {
+            $images = $listing->media();
+            if ($images) {
+                foreach ($images as $file) {
+                    $filePath = storage_path('app/public/public/listings/' . $file->filename);
+                    if (file_exists($filePath)) {
+                        unlink($filePath); // Delete the file from storage
+                    }
+                }
+            }
             $listing->delete();
             return $this->jsonResponse(201, 'Listing deleted successfully');
         }

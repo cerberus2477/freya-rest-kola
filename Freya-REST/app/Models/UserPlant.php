@@ -22,4 +22,9 @@ class UserPlant extends Model
     {
         return $this->hasOne(Listing::class, 'user_plants_id');
     }
+
+    public function stage()
+    {
+        return $this->belongsTo(Stage::class, 'stage_id');
+    }
 }

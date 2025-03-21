@@ -23,8 +23,7 @@ return new class extends Migration
             $table->text('source');
             $table->timestamps();
             $table->foreign('plant_id')->references('id')->on('plants')->onDelete('set null');
-            $table->foreign('author_id')->references('id')->on('users'); //on delete write deleted user?
-            // $table->foreign('author_id')->references('id')->on('users')->onDelete('set null')->index();
+            $table->foreign('author_id')->references('id')->on('users');
             $table->foreign('category_id')->references('id')->on('categories');
         });
     }

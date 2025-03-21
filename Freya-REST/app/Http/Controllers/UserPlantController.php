@@ -19,7 +19,7 @@ class UserPlantController extends BaseController
             'plant'=> function ($query) {$query->select('id', 'name');},
             'stage'=> function ($query) {$query->select('name');}
             ])
-            ->where('active', true)
+            ->where('deleted_at', null)
             ->where('username', $request->user())
             ->get(['count']));
     }
@@ -29,7 +29,7 @@ class UserPlantController extends BaseController
      */
     public function show(string $id)
     {
-        return $this->jsonResponse(200, 'User plant retrived succesfully',UserPlant::findOrFail($id)::with('user', 'plant, stage')->get());
+        return $this->jsonResponse(200, 'User plant retrived succesfully',UserPlant::findOrFail($id)::with('user', 'plant', 'stage')->get());
     }
 
     /**
