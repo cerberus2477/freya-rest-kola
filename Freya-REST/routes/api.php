@@ -14,7 +14,7 @@ use App\Http\Controllers\HardCodedController;
 //No need for token
 //fixed file paths
 Route::get('/documentation', [HardCodedController::class, 'documentation']);
-Route::get('/placeholders', HardCodedController::class, 'placeholders');
+Route::get('/placeholders', [HardCodedController::class, 'placeholders']);
 
 //login
 Route::post('/login', [UserController::class,'login'])->name('login');
