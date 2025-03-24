@@ -19,6 +19,8 @@ return new class extends Migration
             $table->date('birthdate')->nullable();
             $table->string('password');
             $table->unsignedBigInteger('role_id')->default(3);
+            $table->string('picture');
+            $table->string('description')->nullable();
 
             $table->timestamps();
             $table->rememberToken();
