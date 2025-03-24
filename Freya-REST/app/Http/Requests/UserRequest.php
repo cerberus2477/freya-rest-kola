@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\IsPlaceholderImage;
 
 class UserRequest extends FormRequest
 {
@@ -66,7 +67,8 @@ public function rulesForUpdate(): array
         'email' => 'sometimes|email|unique:users,email|max:255',
         'city' => 'sometimes|string|max:255',
         'birthdate' => 'sometimes|date|before:today',
-        'active' => 'sometimes|boolean',
+        'picture' => ['sometimes','string','max:255', new IsPlaceholderImage],//should be one of the placeholders
+        'description' => 'sometimes|string|max255'
     ];
 }
 
