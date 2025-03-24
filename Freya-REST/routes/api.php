@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::get('/users/{username}', [UserController::class, 'show']);
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
-    Route::delete('/listings/{id}', [ListingController::class, 'delete']);
+    Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
 });
 
 //requires stats abilities
@@ -58,7 +58,7 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     //article
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
     Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
-    Route::delete('/article/{title}', [ArticleController::class, 'delete']);//TODO not tested
+    Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
 
     //dictionay tables index/show
     Route::get('/stages', [StageController::class, 'index']);
@@ -73,10 +73,6 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
 
 //requires admin abilities
 Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
-    //listings
-    Route::patch('/listings/{id}', [ListingController::class, 'update']);//TODO image modyfiing, can i just add images?
-    Route::delete('/listings/{id}', [ListingController::class, 'delete']);//TODO what happens when deleting from database with the files
-    
     //users
     Route::get('/users', [UserController::class, 'index']);
     Route::patch('/users/{username}', [UserController::class, 'update'])->name('update');
