@@ -17,7 +17,7 @@ class ArticleFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'plant_id' =>Plant::inRandomOrder()->first()->id??Plant::factory()->create()->id,
-            'author_id' => User::factory()->create()->id,
+            'author_id' => User::inRandomOrder()->whereIn('role_id', [1, 2])->first()->id ?? User::factory()->create(['role_id' => 2])->id,
             'category_id' => Category::inRandomOrder()->first()->id??Category::factory()->create()->id,
             'description' => $this->faker->text(200),
             'content' => $this->generateMarkdown(),

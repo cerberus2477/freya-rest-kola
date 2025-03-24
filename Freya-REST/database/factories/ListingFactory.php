@@ -19,7 +19,7 @@ class ListingFactory extends Factory
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'media' => $this->generateRandomImages(),
-            'price' => $this->faker->randomFloat(2, 10, 1000),
+            'price' => $this->faker->randomNumber(1, 100000)
         ];
     }
 
@@ -35,7 +35,7 @@ class ListingFactory extends Factory
 
         for ($i = 0; $i < $numberOfImages; $i++) {
             // Generate a random image and save it to the storage
-            $imagePath = $this->faker->image(storage_path('app/public/listings'), 640, 480, null, false);
+            $imagePath = $this->faker->picsumStaticRandomUrl(400, 400);
             $images[] = Storage::url('public/listings/' . $imagePath);
         }
 

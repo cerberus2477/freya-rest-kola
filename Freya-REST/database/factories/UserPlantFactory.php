@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Plant;
+use App\Models\User;
+use App\Models\Stage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +20,10 @@ class UserPlantFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::inRandomOrder()->first()->id??User::factory()->create()->id,
+            'plant_id' =>Plant::inRandomOrder()->first()->id??Plant::factory()->create()->id,
+            'stage_id' => Stage::inRandomOrder()->first()->id??Plant::factory()->create()->id,
+            'count'=> $this->faker->randomNumber(1, 4),
         ];
     }
 }

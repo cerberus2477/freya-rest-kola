@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Plant;
+use App\Models\Type;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PlantFactory extends Factory
@@ -14,7 +15,7 @@ class PlantFactory extends Factory
         return [
             'name' => $this->faker->word,
             'latin_name' => $this->faker->word,
-            'type_id' => \App\Models\Type::inRandomOrder()->first()->id ?? \App\Models\Type::factory()->create()->id,
+            'type_id' => Type::inRandomOrder()->first()->id
         ];
     }
 }
