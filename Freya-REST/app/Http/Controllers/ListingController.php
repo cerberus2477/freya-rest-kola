@@ -33,9 +33,10 @@ class ListingController extends BaseController
                 'listing_id' => $listing->id,
                 'title' => $listing->title,
                 'description' => $listing->description,
-                'media' => $listing->media ? array_map(function ($media) {
-                return Storage::url($media);
-                }, $listing->media) : [],
+                //the json array stored in db is decoded, and each filename gets turned into the full path of the image
+                'media' => $listing->media 
+                ? array_map(fn($file) => Storage::url("public/listings/" . $file), json_decode($listing->media, true) ?? []) 
+                : [],
                 'price' => $listing->price,
                 'created_at' => $listing->created_at,
                 'user' => [
@@ -346,33 +347,40 @@ public function show($id)
     //TODO: example here
      */
 
-    public function create(ListingRequest $request)//TODO test the image upload function
-
+    public function create(ListingRequest $request)     //TODO test the image upload function
     {
         $manager = new ImageManager(new Driver());
-
-        // Handle image uploads
         $imagePaths = [];
+    
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $image) {
-                // Create an image instance, scale down-if needed, and comress
+                // Resize and compress
                 $imageInstance = $manager->read($image->getRealPath());
                 $imageInstance->scaleDown(1920, 1080);
                 $encodedImage = $imageInstance->toWebp(80);
- 
-                // Generate a unique filename with proper file format, save to public/listings/
+    
+                // Generate a unique filename and store image in 'storage/app/public/listings'
                 $filename = 'listing_' . uniqid() . '.webp';
                 $path = 'public/listings/' . $filename;
                 Storage::disk('public')->put($path, $encodedImage);
-                // Store the public URL
-                $imagePaths[] = Storage::url($path);
+    
+                // Store only the filename (not the full URL)
+                $imagePaths[] = $filename;
             }
         }
-
-        $data = array_merge($request->validated(), ['media' => $imagePaths]);
+        else{
+            //TODO
+            //throw error, request should either have one placeholder image or 1-10 uploaded images
+            //an if else block is probably not the best way to implement this (e.g request validation)
+        }
+    
+        // Store filenames (only filename, without path) in the DB as JSON
+        $data = array_merge($request->validated(), ['media' => json_encode($imagePaths)]);
         $listing = Listing::create($data);
-        return $this->jsonResponse(201, 'Listing created succesfully', $listing);
+        return $this->jsonResponse(201, 'Listing created successfully', $listing);
     }
+    
+
 
 /**
  * @api {patch} /listing/:id Update Listing
@@ -429,10 +437,10 @@ public function show($id)
     $listing = Listing::where('title', $id)->first();
     $imagePaths = [];
     if ($request->hasFile('media')) {
-        $images = $listing->media;
+        $images = json_decode($listing->media, true);
             if ($images) {
                 foreach ($images as $file) {
-                    $filePath = storage_path('app/public/public/listings/' . $file->filename);
+                    $filePath = storage_path('app/public/listings/' . $file->filename);
                     if (file_exists($filePath)) {
                         unlink($filePath); // Delete the file from storage
                     }
@@ -503,7 +511,9 @@ public function show($id)
         }
 
         if ($user->tokenCan('admin') || $user->$id == $listing->userPlant()->user()->id) {
-            $images = $listing->media();
+            // Decode media JSON
+            $images = json_decode($listing->media, true);
+
             if ($images) {
                 foreach ($images as $file) {
                     $filePath = storage_path('app/public/public/listings/' . $file->filename);
@@ -512,6 +522,7 @@ public function show($id)
                     }
                 }
             }
+
             $listing->delete();
             return $this->jsonResponse(201, 'Listing deleted successfully');
         }
@@ -519,4 +530,3 @@ public function show($id)
         // If the user doesn't have permission, return a 403 response
         return $this->jsonResponse(403, "You don't have permission to modify this listing");
     }
-}
