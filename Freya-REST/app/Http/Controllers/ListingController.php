@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Listing;
 use App\Http\Requests\ListingRequest;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
 
@@ -24,7 +22,8 @@ class ListingController extends BaseController
         ]);
     }
 
-
+    
+    //TODO: format datetime if necessary (we need both date and time)
     protected function formatListings($listings)
     {
         return $listings->map(function ($listing) {
@@ -53,35 +52,14 @@ class ListingController extends BaseController
             ];
         });
     }
-
-
-    //functions that handle CRUD operations
-    public function index(Request $request)
-    {
-        if ($request->has('all')) {
-            // Fetch all listings with related data
-            $listings = $this->baseQuery()->get();
-
-            // Format the listings
-            $response = $this->formatListings($listings);
-
-            return $this->jsonResponse(200, 'All listings retrieved', $response);
-        }
-
-        // Paginate the listings
-        $pageSize = $request->query('pageSize', 5);
-        $page = $request->query('page', 1);
-        $listings = $this->baseQuery()->paginate($pageSize, ['*'], 'page', $page);
-
-        // Format the paginated listings
-        $formattedListings = $this->formatListings($listings);
-
-        return $this->jsonResponse(200, 'Listings retrieved successfully', $formattedListings);
-    }
-
  
     public function search(Request $request)
     {
+        $cacheKey = 'listings_search_' . md5($request->fullUrl());
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+
         // Start with the base query
         $query = $this->baseQuery();
 
@@ -100,6 +78,7 @@ class ListingController extends BaseController
         }
 
         // Filters
+        //TODO: warning here, correct this or test if it works really
         $filters = [
             'user' => ['column' => 'users.username', 'relationship' => 'userPlant.user'],
             'plant' => ['column' => 'plants.name', 'relationship' => 'userPlant.plant'],
@@ -123,18 +102,24 @@ class ListingController extends BaseController
             $query->where('listings.price', '<=', $maxPrice);
         }
 
+
+        $pageSize = $request->query('pageSize', 5);
+
         // Return all matching results
-        if ($request->has("all")) {
+        if ($pageSize === 'all') 
+        {
             $listings = $query->get();
             $formattedListings = $this->formatListings($listings);
-            return $this->jsonResponse(200, 'Listings retrieved successfully', $formattedListings);
-        }
+            $response = $this->jsonResponse(200, 'Listings retrieved successfully', $formattedListings);
+        } 
+        else{
+            //TODO: test this, refactor
+            // TODO: $articles = $query->paginate($pageSize, ['*'], 'page', $page); lehet e pl, kell e az a hosszú  $paginatedListings
 
-        // Return a page of matching results
-        $pageSize = $request->query('pageSize', 5);
-        $page = $request->query('page', 1);
-        $listings = $query->paginate($pageSize, ['*'], 'page', $page);
-
+            // Return a page of matching results
+            $pageSize = intval($pageSize); // make sure that pagesize is a number
+            $page = $request->query('page', 1);
+            $listings = $query->paginate($pageSize, ['*'], 'page', $page);
             // Format the paginated listings
             $formattedListings = $this->formatListings($listings->items());
             $paginatedListings = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -145,7 +130,11 @@ class ListingController extends BaseController
                 ['path' => $request->url(), 'query' => $request->query()]
             );
 
-        return $this->jsonResponse(200, 'Listings retrieved successfully', $paginatedListings);
+            $response = $this->jsonResponse(200, 'Listings retrieved successfully', $paginatedListings);
+        }
+
+        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+        return $response;
     }
 
     
@@ -226,9 +215,13 @@ class ListingController extends BaseController
         }
 
         // If the user doesn't have permission, return a 403 response
-        if(!$user->tokenCan('admin') && $user->$id != $listing->userPlant()->user()->id){
+        if(!$user->tokenCan('admin') && $user->id != $listing->userPlant()->user()->id){
             return $this->jsonResponse(403, "You don't have permission to modify this listing");
         }
+
+        // if (!$user->tokenCan('admin') && $user->id !== $listing->userPlant->user->id) {
+        //     return $this->jsonResponse(403, "You don't have permission to modify this listing");
+        // }
 
         $this->deleteMediaFromApi($listing, 'listings');
         $listing->delete();

@@ -35,6 +35,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'role_id' => 3,
             'picture' => $pictures[array_rand($pictures)],
+
         ];
     }
 

@@ -29,13 +29,11 @@ Route::post('/reset-password', [UserController::class, 'passwordReset'])->name('
 Route::resource('userplants', UserPlantController::class);
 
 //articles
-Route::get('/articles', [ArticleController::class, 'index']);
-Route::get('/articles/search', [ArticleController::class, 'search']);
-Route::get('/articles/{title}', [ArticleController::class, 'show'])->where('title', '.*');
+Route::get('/articles', [ArticleController::class, 'search']);
+Route::get('/articles/{title}', [ArticleController::class, 'show']);
 
 //listings
-Route::get('/listings',[ListingController::class, 'index']);
-Route::get('/listings/search', [LIstingController::class, 'search']);
+Route::get('/listings', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
 
 Route::get('/userplants', [UserPlantController::class, 'index']);

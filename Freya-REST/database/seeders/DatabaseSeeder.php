@@ -9,15 +9,32 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            //hard coded, fix data. this is recommended for the application to work properly.
             TypeSeeder::class,
             StagesSeeder::class,
             RoleSeeder::class,
-            UserSeeder::class,
-            PlantSeeder::class,
             CategorySeeder::class,
-            ArticleSeeder::class,
+            PlantSeeder::class,
+
+            //these simulate having an actual userbase. this is test data.
+            UserSeeder::class,
             UserPlantSeeder::class,
             ListingSeeder::class,
+            ArticleSeeder::class,
         ]);
     }
 }
+
+//0. fix dolgok: stage, category, type, role
+//1. plants: random type
+//2. user: random role (jó lenne paraméterrel) 
+
+//3. userplant factory:  választ egy növényt, usert (generál újat ha nincs), staget 
+// ebből legyen x darab, ehhez nem lesz listing
+
+//4. listingek generálása : letrehoz mindehez egy új userplantet (nem választ, hogy minden userplanthez csak egy listing legyen)
+// (vagy userplantet választ azok közül, amire nem hivatkozik listing. ha nincs generál)
+// kép !!!
+
+//5. articles - kiválasztunk (ha nincs generálsz) usert, akinek a roleja 'where 1 or 2', választunk categoryt 
+// - legyen kép benne

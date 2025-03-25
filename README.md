@@ -7,22 +7,46 @@
 1. Töltsd le a projektet. 
  <a href= "https://github.com/cerberus2477/freya-rest-kola/archive/refs/heads/master.zip"><img src="http://img.shields.io/badge/Download_ZIP_green?style=for-the-badge" alt="Download ZIP"></a>
     - Csomagold ki a fájlt a `C:\xampp\htdocs\` mappába.
-2. XAMPP indítása (Apache, MySQL), ki kell kommentelni a php.ini-ben az ;extensions:gd-t ha képeket akarunk tárolni.
+2. XAMPP indítása (Apache, MySQL)
+    - ki kell kommentelni a php.ini-ben az ;extensions:gd-t ha képeket akarunk tárolni.
 3. Futtasd a Laravel működéséhez szükséges parancsokat a projekt mappájában.
 ```cmd
-composer install
+composer install (composer update)
 php artisan migrate:refresh --seed
 php artisan serve --port 8069
 ```
-4. Az api megnyitása a `http://127.0.0.1:8069/` címen.  Ajánlott pl. Postman, EchoAPI használata. Enjoy :)
+4. Az api megnyitása a `http://127.0.0.1:8069/` címen.  Ajánlott pl. Postman, EchoAPI használata teszteléshez. Enjoy :)
+
+
+
+### egyéb parancsok
+#### Ha már egyszer leszedted a dolgokat, és újra elindítanád
+
+xampp
+```cmd
+(git switch master)
+git pull origin master
+cd .\Freya-REST\
+(composer update)
+php artisan migrate:refresh --seed
+php artisan serve --port 8069
+```
 
 (`composer update`)
+`php artisan route:list`
+#### Tesztek
+`php artisan test`
+`php artisan make:test ...`
+#### dolgok frissítése
 ```bash
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 ```
+#### Undo git add 
+The proper way to undo the git add command is to use git restore.
+`git restore –staged file.py`
 
 ## apidoc
 Step 6: Automate API Docs Generation (Optional)
