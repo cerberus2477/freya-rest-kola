@@ -31,91 +31,65 @@ class ArticleController extends BaseController
                 'users.username as author'
             )
             ->orderByDesc('articles.created_at'); // Sort by newest first
-    }
+    } 
 
-
-    public function index(Request $request)
-    {
-        // Attempt to fetch data from cache
-        $cacheKey = 'articles_index_' . md5($request->fullUrl());
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
-
-        $query = $this->baseQuery();
-        if ($request->has('all')) {
-            $articles = $query->get();
-        }
-        else {
-            $pageSize = $request->query('pageSize', 5);
-            $page = $request->query('page', 1);
-            $articles = $query->paginate($pageSize, ['*'], 'page', $page);
-        }
-
-        $response = $this->jsonResponse(200, 'Articles retrieved successfully', $articles);
-        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
-        return $response;
-    }
-
- 
-
- public function search(Request $request)
-    {
-        $cacheKey = 'articles_search_' . md5($request->fullUrl());
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
-
-        $query = $this->baseQuery();
-
-        //search by title, plant, optionally in content and description
-        $q = $request->query('q', '');
-        if (!empty($q)) {
-            $query->where(function ($query) use ($q, $request) {
-                $query->where('articles.title', 'LIKE', "%$q%")
-                    ->orWhere('plants.name', 'LIKE', "%$q%");
-                if ($request->has("deep")) {
-                    $query->orWhere('articles.content', 'LIKE', "%$q%")
-                        ->orwhere('articles.description', 'LIKE', "%$q%");
-                }
-            });
-        }
-
-        //filters
-        $filters = [
-            'author' => 'users.username', 
-            'plant' => 'plants.name', 
-            'type' => 'types.name', 
-            'category' => 'categories.name'
-        ];
-
-        foreach ($filters as $param => $column) {
-            if ($value = $request->query($param)) {
-                $query->where($column, '=', $value);
+    public function search(Request $request)
+        {
+            $cacheKey = 'articles_search_' . md5($request->fullUrl());
+            if (Cache::has($cacheKey)) {
+                return Cache::get($cacheKey);
             }
-        }
 
-        if ($before = $request->query('before')) {
-            $query->where('articles.updated_at', '<=', $before);
-        }
-        if ($after = $request->query('after')) {
-            $query->where('articles.updated_at', '>=', $after);
-        }
+            $query = $this->baseQuery();
 
-        //return matching results and cache
-        if ($request->has('all')) {
-            $articles = $query->get();
-        }
-        else {
-            $pageSize = $request->query('pageSize', 5);
-            $page = $request->query('page', 1);
-            $articles = $query->paginate($pageSize, ['*'], 'page', $page);
-        }
+            //search by title, plant, optionally in content and description
+            $q = $request->query('q', '');
+            if (!empty($q)) {
+                $query->where(function ($query) use ($q, $request) {
+                    $query->where('articles.title', 'LIKE', "%$q%")
+                        ->orWhere('plants.name', 'LIKE', "%$q%");
+                    if ($request->has("deep")) {
+                        $query->orWhere('articles.content', 'LIKE', "%$q%")
+                            ->orwhere('articles.description', 'LIKE', "%$q%");
+                    }
+                });
+            }
 
-        $response = $this->jsonResponse(200, 'Matching articles retrieved successfully', $articles);
-        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
-        return $response;
-    }
+            //filters
+            $filters = [
+                'author' => 'users.username', 
+                'plant' => 'plants.name', 
+                'type' => 'types.name', 
+                'category' => 'categories.name'
+            ];
+
+            foreach ($filters as $param => $column) {
+                if ($value = $request->query($param)) {
+                    $query->where($column, '=', $value);
+                }
+            }
+
+            if ($before = $request->query('before')) {
+                $query->where('articles.updated_at', '<=', $before);
+            }
+            if ($after = $request->query('after')) {
+                $query->where('articles.updated_at', '>=', $after);
+            }
+
+            //return matching results and cache
+            if ($request->has('all')) {
+                $articles = $query->get();
+            }
+            else {
+                $pageSize = $request->query('pageSize', 5);
+                $page = $request->query('page', 1);
+                $articles = $query->paginate($pageSize, ['*'], 'page', $page);
+            }
+
+            $response = $this->jsonResponse(200, 'Matching articles retrieved successfully', $articles);
+            Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+            return $response;
+        }
 
     
     public function show($title)
@@ -216,7 +190,7 @@ class ArticleController extends BaseController
 
 
 
-     //TODO: no.
+     //TODO: test listings, if listings work, implement destroy, update, create image handling similarly
     public function destroy($title)
     {
         // $article = Article::where('title', $title)->firstOrFail();
