@@ -16,15 +16,19 @@ class ArticleFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'plant_id' =>Plant::inRandomOrder()->first()->id??Plant::factory()->create()->id,
+            'plant_id' =>Plant::inRandomOrder()->first()->id,
             'author_id' => User::inRandomOrder()->whereIn('role_id', [1, 2])->first()->id ?? User::factory()->create(['role_id' => 2])->id,
+            //optional
             'category_id' => Category::inRandomOrder()->first()->id??Category::factory()->create()->id,
             'description' => $this->faker->text(200),
             'content' => $this->generateMarkdown(),
+            //fix image, van egyáltalán image mező
+            //TODO: implement properly or delete
             'image' => $this->faker->imageUrl(),
             'source' => $this->faker->url,
         ];
     }
+
 
     private function generateMarkdown()
     {

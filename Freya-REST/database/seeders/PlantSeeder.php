@@ -15,15 +15,6 @@ class PlantSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
-        //TODO daddin actual plants, connecting it with type id
-        // foreach (range(1, 10) as $index) {
-        //     Plant::create([
-        //         'name' => $faker->word,
-        //         'latin_name' => $faker->words(2, true),
-        //     ]);
-        // }
-
         DB::table('plants')->insert([
             //Gyümölcs
             ['name' => 'Alma', 'latin_name' => 'Malus', 'type_id' => '1'],
