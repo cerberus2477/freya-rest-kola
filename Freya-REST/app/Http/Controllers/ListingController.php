@@ -102,9 +102,10 @@ class ListingController extends BaseController
             $query->where('listings.price', '<=', $maxPrice);
         }
 
-        // Return all matching results
+
         $pageSize = $request->query('pageSize', 5);
 
+        // Return all matching results
         if ($pageSize === 'all') 
         {
             $listings = $query->get();
@@ -214,9 +215,13 @@ class ListingController extends BaseController
         }
 
         // If the user doesn't have permission, return a 403 response
-        if(!$user->tokenCan('admin') && $user->$id != $listing->userPlant()->user()->id){
+        if(!$user->tokenCan('admin') && $user->id != $listing->userPlant()->user()->id){
             return $this->jsonResponse(403, "You don't have permission to modify this listing");
         }
+
+        // if (!$user->tokenCan('admin') && $user->id !== $listing->userPlant->user->id) {
+        //     return $this->jsonResponse(403, "You don't have permission to modify this listing");
+        // }
 
         $this->deleteMediaFromApi($listing, 'listings');
         $listing->delete();
