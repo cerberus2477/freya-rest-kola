@@ -77,16 +77,17 @@ class ArticleController extends BaseController
             }
 
             //return matching results and cache
-            if ($request->has('all')) {
+            $pageSize = $request->query('pageSize', 5);
+            if ($pageSize === 'all') {
                 $articles = $query->get();
             }
             else {
-                $pageSize = $request->query('pageSize', 5);
+                $pageSize = intval($pageSize);
                 $page = $request->query('page', 1);
                 $articles = $query->paginate($pageSize, ['*'], 'page', $page);
             }
 
-            $response = $this->jsonResponse(200, 'Matching articles retrieved successfully', $articles);
+            $response = $this->jsonResponse(200, 'Articles retrieved successfully', $articles);
             Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
             return $response;
         }
