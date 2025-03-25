@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ListingFactory extends Factory
 {
+    //creates a userplant with it
     protected $model = Listing::class;
 
     public function definition()
@@ -35,6 +36,7 @@ class ListingFactory extends Factory
 
         for ($i = 0; $i < $numberOfImages; $i++) {
             // Generate a random image and save it to the storage
+            //TODO: dont use faker->image
             $imagePath = $this->faker->image(storage_path('app/public/listings'), 640, 480, null, false);
             Storage::disk('public')->put('listings/', $imagePath);
 
