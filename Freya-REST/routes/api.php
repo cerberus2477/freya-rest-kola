@@ -41,9 +41,12 @@ Route::get('/userplants', [UserPlantController::class, 'index']);
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
+    //users/profile
     Route::get('/profile', [UserController::class, 'showMyPlants']);
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
     Route::get('/users/{username}', [UserController::class, 'show']);
+
+    //listings
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);

@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -16,6 +17,7 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
+    
     /**
      * Define the model's default state.
      *
@@ -23,6 +25,8 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $pictures = Storage::disk('public')->allFiles('placeholders');
+
         return [
             'username' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
@@ -30,7 +34,8 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'role_id' => 3,
-            'picture' => storage_path('app/public/placeholders/GyümölcsBig.png'),
+            'picture' => $pictures[array_rand($pictures)],
+
         ];
     }
 
@@ -41,6 +46,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    //set role
+    // Create user with role_id = 1 example:
+    //$user = User::factory()->withRole(1)->create();
+    public function withRole(int $roleId): static
+    {
+        return $this->state(fn (array $attributes) =>  [
+            'role_id' => $roleId
         ]);
     }
 }
