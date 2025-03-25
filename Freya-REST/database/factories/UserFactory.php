@@ -49,13 +49,17 @@ class UserFactory extends Factory
         ]);
     }
 
-    //set role
+    //TODO: set role in seeder
     // Create user with role_id = 1 example:
     //$user = User::factory()->withRole(1)->create();
     public function withRole(int $roleId): static
     {
-        return $this->state(fn (array $attributes) =>  [
-            'role_id' => $roleId
+        //if admin, have shovel as profile pic
+        return $this->state(fn (array $attributes) => [
+            'role_id' => $roleId,
+            'picture' => $roleId === 1 
+                ? 'placeholders/Shovel.png'
+                : $attributes['picture'],
         ]);
     }
 }
