@@ -25,16 +25,16 @@ class DatabaseSeeder extends Seeder
     }
 }
 
-//0. fix dolgok: stage, category, type, role
-//1. plants: random type
-//2. user: random role (jó lenne paraméterrel) 
+// 1. fix dolgok: stage, category, type, role, plants (typera hagyatkozik) done
 
-//3. userplant factory:  választ egy növényt, usert (generál újat ha nincs), staget 
+// 2. user: random role (jó lenne paraméterrel) 
+
+// 3. userplant factory:  választ egy növényt, usert (generál újat ha nincs), staget 
 // ebből legyen x darab, ehhez nem lesz listing
 
-//4. listingek generálása : letrehoz mindehez egy új userplantet (nem választ, hogy minden userplanthez csak egy listing legyen)
+// 4. listingek generálása : letrehoz mindehez egy új userplantet (nem választ, hogy minden userplanthez csak egy listing legyen)
 // (vagy userplantet választ azok közül, amire nem hivatkozik listing. ha nincs generál)
 // kép !!!
 
-//5. articles - kiválasztunk (ha nincs generálsz) usert, akinek a roleja 'where 1 or 2', választunk categoryt 
-// - legyen kép benne
+// 5. articles - kiválasztunk (ha nincs generálsz) usert, akinek a roleja 'where 1 or 2', választunk categoryt (vagy null), választunk plantet (vagy null)
+// - legyen kép a markdownban

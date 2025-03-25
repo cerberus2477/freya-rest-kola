@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id')->nullable();
             $table->text('description');
             $table->longtext('content');
+            //TODO: implement properly or delete
             $table->json('image')->nullable();
             $table->text('source');
             $table->timestamps();
