@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
             'birthdate' => $faker->date(),
             'password' => bcrypt('admin123'),
             'role_id' => 1,
+            'picture' => storage_path('app/public/placeholders/Shovel.png'),
         ]);
 
         
@@ -34,6 +35,7 @@ class UserSeeder extends Seeder
                 'birthdate' => $faker->date(),
                 'password' => bcrypt('password'),
                 'role_id' => $faker->numberBetween(1, 3),
+                'picture' => storage_path('app/public/placeholders/GyümölcsBig.png'),
             ]);
         }
     }

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserPlant extends Model
 {
+    use HasFactory;
+
     protected $table = 'user_plants';
 
     public function user()

@@ -14,7 +14,7 @@ class ListingFactory extends Factory
     public function definition()
     {
         return [
-            'user_plants_id' => UserPlant::factory(),
+            'user_plants_id' => UserPlant::factory()->create()->id,
             'city' => $this->faker->city,
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
@@ -35,8 +35,10 @@ class ListingFactory extends Factory
 
         for ($i = 0; $i < $numberOfImages; $i++) {
             // Generate a random image and save it to the storage
-            $imagePath = $this->faker->picsumStaticRandomUrl(400, 400);
-            $images[] = Storage::url('public/listings/' . $imagePath);
+            $imagePath = $this->faker->image(storage_path('app/public/listings'), 640, 480, null, false);
+            Storage::disk('public')->put('listings/', $imagePath);
+
+            $images[] = $imagePath;
         }
 
         return $images;
