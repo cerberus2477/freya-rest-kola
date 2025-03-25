@@ -8,32 +8,48 @@ use Illuminate\Support\Facades\Storage;
 class HardCodedController extends Controller
 {
     public function documentation()
-    {
-        $filePath = 'app/public/public/documentation/FreyasDocu.docx'; //TODO: remove gitignore from the folder
-
-        if (!Storage::exists($filePath)) {
-            return response()->json(['message' => 'Documentation not found'], 404);
-        }
-
-        $content = Storage::get($filePath);
-        return response()->json(['documentation' => $content], 200);
+{
+    $filename = 'FreyasGardenDocumentation.docx';
+    $relativePath = "documentation/{$filename}";
+    
+    if (!Storage::disk('public')->exists($relativePath)) {
+        return response()->json([
+            'message' => 'Documentation file not found',
+            'path' => $relativePath
+        ], 404);
     }
 
-    public function placeholders()
-    {
-        $directoryPath = 'app/public/public/placeholders/'; //TODO: remove gitignore from the folder
+    return response()->json([
+        'download_url' => asset("storage/documentation/{$filename}"),
+        'message' => 'Documentation available at the provided URL'
+    ]);
+}
 
-        if (!Storage::exists($directoryPath)) {
-            return response()->json(['message' => 'Placeholders not found'], 404);
-        }
-
-        $files = Storage::files($directoryPath);
-        $fileUrls = [];
-
-        foreach ($files as $file) {
-            $fileUrls[] = Storage::url($file);
-        }
-
-        return response()->json(['files' => $fileUrls], 200);
+public function placeholders()
+{
+    $directoryPath = 'placeholders'; // Relative to public disk
+    $disk = Storage::disk('public');
+    
+    if (!$disk->exists($directoryPath)) {
+        return response()->json([
+            'message' => 'Placeholders directory not found',
+            'path' => $directoryPath
+        ], 404);
     }
+
+    $files = $disk->files($directoryPath);
+    $fileUrls = [];
+
+    foreach ($files as $file) {
+        // Remove any 'public/' prefix if present
+        $cleanPath = str_replace('public/', '', $file);
+        $fileUrls[] = asset("storage/{$cleanPath}");
+    }
+
+    return response()->json([
+        'files' => $fileUrls,
+        'count' => count($fileUrls),
+        'message' => 'Placeholder images available'
+    ]);
+}
 }
