@@ -234,31 +234,31 @@ class UserController extends BaseController
         }
     }
 
-    public function showMyPlants(UserRequest $request){//TODO not at all finished
-        $user = $request->user();
-        $response = DB::table('users')
-            ->LeftJoin('user_plants', 'users.id', '=', 'user_plants.user_id')
-            ->Leftjoin('plants', 'user_plants.plant_id', '=', 'plants.id')
-            ->leftJoin('types', 'plants.type_id', '=', 'types.id')
-            ->leftJoin('stages', 'user_plants.stage_id', '=', 'stages.id')
-            ->select(
-                'users.username as username',
-                'plants.name as plant',
-                'plants.latin_name as latin_name',
-                'types.name as type_name',
-                'stages.name as stage_name',
-                'user_plants.count as count',
-                'user_plants.created_at as added_at',
-                'user_plants.updated_at as updated_at',
+    public function showMyPlants(UserRequest $request)
+{
+    $user = $request->user();
 
-                )
-            ->where('users.id','=',$user->id)
-            ->get();
+    $userPlants = $user->userPlants()->with('plant.type', 'stage')->get();
 
-        return $this->jsonResponse(200,
-        'Sikeres lekérdezés',
-        $response);
-    }
+    $response = $userPlants->map(function ($userPlant) {
+        return [
+            'id' => $userPlant->id,
+            'plant' => [
+                'id' => $userPlant->plant->id,
+                'name' => $userPlant->plant->name,
+                'latin_name' => $userPlant->plant->latin_name,
+                'type' => $userPlant->plant->type->name,
+            ],
+            'stage' => [
+                'id' => $userPlant->stage->id,
+                'name' => $userPlant->stage->name,
+            ],
+            'count' => $userPlant->count,
+        ];
+    });
+
+    return $this->jsonResponse(200, 'Succesfully returned user\'s plants', $response);
+}
 
     /**
      * Update the specified resource in storage.
@@ -310,7 +310,7 @@ class UserController extends BaseController
         }
     }
 
-    //admins could do this or the user itself ig
+    //admins could do this
     //untested
     public function restore(string $username)
     {

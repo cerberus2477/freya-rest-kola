@@ -36,8 +36,6 @@ Route::get('/articles/{title}', [ArticleController::class, 'show']);
 Route::get('/listings', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
 
-Route::get('/userplants', [UserPlantController::class, 'index']);
-
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
@@ -45,6 +43,10 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::get('/profile', [UserController::class, 'showMyPlants']);
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
     Route::get('/users/{username}', [UserController::class, 'show']);
+    Route::get('/profile/plants', [UserController::class, 'showMyPlants']);
+    Route::post('/profile/plants', [UserPlantController::class, 'create']);//TODO implement
+    Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);//TODO implement
+    Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);//TODO implement
 
     //listings
     Route::post('/listing', [ListingController::class, 'create']);

@@ -28,9 +28,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'id');
     }
 
-    public function userPlant()
+    public function userPlants()
     {
-        return $this->belongsToMany(UserPlant::class, 'user_plants');
+        return $this->hasMany(UserPlant::class, 'user_id');
     }
 
 
