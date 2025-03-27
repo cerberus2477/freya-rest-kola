@@ -14,6 +14,7 @@ class IsPlaceholderImage implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        //
+        //TODO: check if user profile pic is in placeholder folder 
+        //potentially use Helpers/StorageHelper
     }
 }
