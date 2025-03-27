@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class HardCodedController extends Controller
 {
-    public function documentation()
+    public function getDocumentation()
 {
     $filename = 'FreyasGardenDocumentation.docx';
     $relativePath = "documentation/{$filename}";
@@ -25,7 +25,7 @@ class HardCodedController extends Controller
     ]);
 }
 
-public function placeholders()
+public function getPlaceholders()
 {
     $directoryPath = 'placeholders'; // Relative to public disk
     $disk = Storage::disk('public');

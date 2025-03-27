@@ -13,8 +13,8 @@ use App\Http\Controllers\HardCodedController;
 
 //No need for token
 //fixed file paths
-Route::get('/documentation', [HardCodedController::class, 'documentation']);
-Route::get('/placeholders', [HardCodedController::class, 'placeholders']);
+Route::get('/documentation', [HardCodedController::class, 'getDocumentation']);
+Route::get('/placeholders', [HardCodedController::class, 'getPlaceholders']);
 
 //login
 Route::post('/login', [UserController::class,'login'])->name('login');
@@ -55,12 +55,13 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
     //listings
     Route::post('/listing', [ListingController::class, 'create']);
+    Route::patch('/listings/{id}', [ListingController::class, 'update']);
+    Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
     //Own resource
     Route::middleware(['ownerOrAdmin:listing'])->group(function(){
         Route::patch('/listings/{id}', [ListingController::class, 'update']);
-        Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
+        Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
     });
-    
 });
 
 //requires stats abilities

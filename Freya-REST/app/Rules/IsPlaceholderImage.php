@@ -15,6 +15,7 @@ class IsPlaceholderImage implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        //TODO: test
         // Get all files from the placeholderImages directory
         $placeholderImages = scandir(public_path('placeholders'));
         

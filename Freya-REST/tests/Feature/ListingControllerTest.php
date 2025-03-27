@@ -5,14 +5,15 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Listing;
 use App\Models\UserPlant;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Listing;
 
-use Database\Seeders\RoleSeeder;
 use Database\Seeders\TypeSeeder;
-use Database\Seeders\PlantSeeder;
+use Database\Seeders\StageSeeder;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\CategorySeeder;
+use Database\Seeders\PlantSeeder;
+
 
 class ListingControllerTest extends TestCase
 {
@@ -20,30 +21,30 @@ class ListingControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(RoleSeeder::class); // Seed roles before each test
-        $this->seed(TypeSeeder::class); // Seed categories before each test
-        $this->seed(CategorySeeder::class); // Seed plants before each test
-        $this->seed(PlantSeeder::class); // Seed plants before each test
+        $this->seed(TypeSeeder::class); 
+        $this->seed(StageSeeder::class); 
+        $this->seed(RoleSeeder::class); 
+        $this->seed(CategorySeeder::class); 
+        $this->seed(PlantSeeder::class); 
     }
 
-    //destroy
+    //tests for destroy
     public function test_user_can_delete_their_own_listing()
     {
-        $user = User::factory()->create();
+        //creating a listing to test with
+        $listing = Listing::factory()->create();
 
-
-        // dd($user); // Debugging: Check what is returned
-        $userPlant = UserPlant::factory()->create(['user_id' => $user->id]);
-        $listing = Listing::factory()->create(['user_plants_id' => $userPlant->id]);
+        //"loggin in" as the user who owns the listing
+        $this->actingAs($listing->userPlant->user);
         
-        // $this->actingAs($user);
-        $this->actingAs(User::find($user->id));
-        
+        //deleting the listing as the user
         $response = $this->deleteJson(route('listings.destroy', $listing->id));
         
+        //checking if the api response is as expected
         $response->assertStatus(201)
                  ->assertJson(['status' => 201, 'message' => 'Listing deleted successfully']);
         
+        //checking if the listing has been truly deleted
         $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
     }
 

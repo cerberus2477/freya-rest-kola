@@ -305,7 +305,7 @@ class ArticleController extends BaseController
      * @apiDescription Create a new article with the given data.
      *
      * @apiBody {String} title Title of the article.
-     * @apiBody {String} category Category of the article. Can be null.
+     * @apiBody {String} category Category of the article.
      * @apiBody {String} description Short description of the article.
      * @apiBody {String} content Full article content.
      * @apiBody {String} source Source URL of the article. Can be null.
@@ -360,7 +360,7 @@ class ArticleController extends BaseController
  *
  * @apiSuccess {Number} id Article ID.
  * @apiSuccess {String} title Article title.
- * @apiSuccess {String} category Category name (can be null).
+ * @apiSuccess {String} category Category name.
  * @apiSuccess {String} description Article description.
  * @apiSuccess {String} content Full article content in markdown format.
  * @apiSuccess {String} source Article source URL.
@@ -378,7 +378,7 @@ class ArticleController extends BaseController
  *   "data": {
  *     "id": 1,
  *     "title": "Occaecati nostrum aliquid ipsum earum consequuntur.",
- *     "category": null,
+ *     "category": "egyéb",
  *     "description": "Illum cupiditate qui tempore placeat sint voluptas omnis.",
  *     "updated_at": "2025-03-04",
  *     "plant_name": "Málna",
@@ -408,8 +408,8 @@ class ArticleController extends BaseController
  *
  * @apiSuccess {Number} data.id Article ID.
  * @apiSuccess {String} data.title Article title.
- * @apiSuccess {String} data.category Category name. Can be null.
- * @apiSuccess {String} data.description Article description.
+ * @apiSuccess {String} data.category Category name..
+ * @apiSuccess {String} data.description Article description
  * @apiSuccess {Date} data.updated_at Last updated date.
  * @apiSuccess {String} data.plant_name Plant name related to the article. Can be null.
  * @apiSuccess {String} data.plant_type Type of plant. Can be null.
@@ -486,7 +486,7 @@ class ArticleController extends BaseController
  *     {
  *       "id": 32,
  *       "title": "Deserunt repudiandae ut qui velit.",
- *       "category": null,
+ *       "category": "egyéb",
  *       "description": "Veritatis eaque nemo non et. Ut optio ad incidunt quibusdam.",
  *       "updated_at": "2025-03-04",
  *       "plant_name": "Alma",

@@ -20,3 +20,6 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
+
+storage/app/public/listings/
+storage/app/public/articles/

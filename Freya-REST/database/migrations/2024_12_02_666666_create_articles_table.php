@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title')->unique();
             $table->unsignedBigInteger('plant_id')->nullable();
             $table->unsignedBigInteger('author_id');
-            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('category_id');
             $table->text('description');
             $table->longtext('content');
             //TODO: implement properly or delete
