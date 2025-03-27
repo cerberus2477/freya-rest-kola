@@ -37,7 +37,6 @@ class UserPlantController extends BaseController
      */
     public function store(UserPlantRequest $request)
     {
-
         $userplant = UserPlant::create($request->validated());
         return $this->jsonResponse(200, 'User plant created succesfully', $userplant);
     }
