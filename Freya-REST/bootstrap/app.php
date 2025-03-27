@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Abilities;
+use App\Http\Middleware\OwnerOrAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'abilities' => Abilities::class,
+            'ownerOrAdmin' => OwnerOrAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

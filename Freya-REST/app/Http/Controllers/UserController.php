@@ -234,31 +234,45 @@ class UserController extends BaseController
         }
     }
 
+
     public function showMyPlants(UserRequest $request)
 {
     $user = $request->user();
 
     $userPlants = $user->userPlants()->with('plant.type', 'stage')->get();
 
-    $response = $userPlants->map(function ($userPlant) {
-        return [
-            'id' => $userPlant->id,
-            'plant' => [
-                'id' => $userPlant->plant->id,
-                'name' => $userPlant->plant->name,
-                'latin_name' => $userPlant->plant->latin_name,
-                'type' => $userPlant->plant->type->name,
-            ],
-            'stage' => [
-                'id' => $userPlant->stage->id,
-                'name' => $userPlant->stage->name,
-            ],
-            'count' => $userPlant->count,
-        ];
-    });
+    $response = [
+        'user' => [
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'city' => $user->city,
+            'birthdate' => $user->birthdate,
+            'picture' => $user->picture,
+            'description' => $user->description,
+            'role_id' => $user->role_id,
+        ],
+        'plants' => $userPlants->map(function ($userPlant) {
+            return [
+                'id' => $userPlant->id,
+                'plant' => [
+                    'id' => $userPlant->plant->id,
+                    'name' => $userPlant->plant->name,
+                    'latin_name' => $userPlant->plant->latin_name,
+                    'type' => $userPlant->plant->type->name,
+                ],
+                'stage' => [
+                    'id' => $userPlant->stage->id,
+                    'name' => $userPlant->stage->name,
+                ],
+                'count' => $userPlant->count,
+            ];
+        })
+    ];
 
-    return $this->jsonResponse(200, 'Succesfully returned user\'s plants', $response);
+    return $this->jsonResponse(200, 'Successfully returned user\'s plants and data', $response);
 }
+
 
     /**
      * Update the specified resource in storage.
@@ -290,8 +304,7 @@ class UserController extends BaseController
         }
     }
 
-    //TODO: test, this is untested. or modify if you wanna, yk
-    //there should be a route that deletes the logged in users account
+    //TODO: untested.
     public function destroy(UserRequest $request, string $username)
     {
         try {
@@ -310,14 +323,12 @@ class UserController extends BaseController
         }
     }
 
-    //admins could do this
-    //untested
+    //TODO untested
     public function restore(string $username)
     {
         try {
             $user = User::onlyTrashed()->where('username', $username)->firstOrFail();
 
-            // Restore the user
             $user->restore();
 
             return $this->jsonResponse(200, 'Felhasználó sikeresen visszaállítva');
