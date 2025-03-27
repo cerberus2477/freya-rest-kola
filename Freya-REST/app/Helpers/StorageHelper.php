@@ -74,7 +74,7 @@ class StorageHelper
     }
 
 
-    // Stores an image with a unique name and returns the filename.
+    // Stores an image with a unique name and returns the path.
     public static function storeImageWithUniqueName(string $folder, string $imageData): string
     {
         $filename = "{$folder}_" . Str::uuid() . '.webp';
@@ -82,6 +82,6 @@ class StorageHelper
 
         Storage::disk('public')->put($path, $imageData);
 
-        return $filename;
+        return $path;
     }
 }

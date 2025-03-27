@@ -7,6 +7,7 @@ use App\Models\Plant;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Helpers\StorageHelper;
 
 class ArticleFactory extends Factory
 {
@@ -14,6 +15,8 @@ class ArticleFactory extends Factory
 
     public function definition()
     {
+        $imagePaths = StorageHelper::generateImagesToFolder('articles', 1, 5); // Generate 1 to 5 images for the article
+
         return [
             'title' => $this->faker->sentence,
             'plant_id' => Plant::inRandomOrder()->first()->id,
@@ -21,7 +24,7 @@ class ArticleFactory extends Factory
             'author_id' => User::inRandomOrder()->whereIn('role_id', [1, 2])->first()->id ?? User::factory()->create(['role_id' => 2])->id,
             'category_id' => Category::inRandomOrder()->first()->id,
             'description' => $this->faker->text(200),
-            'content' => $this->generateMarkdown(),
+            'content' => $this->generateMarkdown($imagePaths),
             'source' => $this->faker->url,
         ];
     }
@@ -36,8 +39,9 @@ class ArticleFactory extends Factory
     }
 
 
-    private function generateMarkdown()
+    private function generateMarkdown($imagepaths, $length)
     {
+        //TODO: put the images in random places of the md text. format it as a md link
         $faker = $this->faker;
         $mdSentences = [
             "# " . $faker->sentence . "\n\n",
@@ -53,11 +57,32 @@ class ArticleFactory extends Factory
         ];
     
         $text = ""; // Initialize an empty string
-    
-        for ($i = 0; $i < 100; $i++) {
-            $text .= $faker->randomElement($mdSentences);
+        $mdtext = "";
+        // Insert random sentences into markdown
+        for ($i = 0; $i < $length; $i++;) {
+            $mdtext .= $faker->randomElement($mdSentences);
         }
-    
-        return $text;
-    }
+
+                        // Pick a random image path
+                        $imagePath = $faker->randomElement($imagePaths);  
+                
+                        // Construct the full URL for the image
+                        $imageUrl = $baseUrl . $imagePath;
+                        
+                        // Using the article title (or part of it) and a number for alt text
+                        $altText = $faker->sentence . ' ' . rand(1, 100);  // Example: "Article Title 1"
+                        
+                        // Append the image markdown to the content
+                        $text .= "\n![$altText]($imageUrl)\n\n";  // Insert full image link
+
+
+                // Merge sentences and images into one array
+                $merged = array_merge($sentences, $images);
+
+                // Shuffle the final array to mix the content
+                shuffle($merged);
+                    
+                return $text;
+            
+}
 }

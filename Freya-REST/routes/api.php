@@ -62,6 +62,8 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
     Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
     Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
+    Route::post('/articles/upload-image', [ArticleController::class, 'uploadArticleImage'])->name('articles.upload-image');
+
 
     //dictionay tables index/show
     Route::get('/stages', [StageController::class, 'index']);
