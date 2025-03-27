@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -14,29 +14,24 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-
-        DB::table('users')->insert([
+        // Create the main admin with specific details
+        User::create([
             'username' => 'admin',
             'email' => 'admin@freyasgarden.com',
             'city' => 'bottyan',
-            'birthdate' => $faker->date(),
-            'password' => bcrypt('admin123'),
+            'birthdate' => now()->subYears(30)->format('Y-m-d'),
+            'password' => Hash::make('admin123'),
             'role_id' => 1,
-            'picture' => storage_path('app/public/placeholders/Shovel.png'),
+            'picture' => 'placeholders/Shovel.png',
         ]);
 
-        
-        foreach (range(1, 100) as $index) {
-            DB::table('users')->insert([
-                'username' => $faker->userName,
-                'email' => $faker->email,
-                'city' => $faker->city,
-                'birthdate' => $faker->date(),
-                'password' => bcrypt('password'),
-                'role_id' => $faker->numberBetween(1, 3),
-                'picture' => storage_path('app/public/placeholders/GyümölcsBig.png'),
-            ]);
-        }
+        // Create 4 additional admins
+        User::factory()->withRole(1)->count(4)->create();
+
+        // Create 20 staff users (role_id = 2)
+        User::factory()->withRole(2)->count(20)->create();
+
+        // Create 50 regular users (role_id = 3)
+        User::factory()->count(50)->create();
     }
 }

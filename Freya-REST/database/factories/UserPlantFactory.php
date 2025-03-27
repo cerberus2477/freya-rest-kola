@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserPlantFactory extends Factory
 {
-    //picks random user, plant, stage, ha nincs még egy se akor hoz létre
-
     /**
      * Define the model's default state.
      *
@@ -23,9 +21,9 @@ class UserPlantFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id??User::factory()->create()->id,
-            'plant_id' => Plant::inRandomOrder()->first()->id??Plant::factory()->create()->id,
-            'stage_id' => Stage::inRandomOrder()->first()->id??Plant::factory()->create()->id,
-            'count'=> $this->faker->randomNumber(1, 4),
+            'plant_id' => Plant::inRandomOrder()->first()->id,
+            'stage_id' => Stage::inRandomOrder()->first()->id,
+            'count'=> $this->faker->randomDigitNotNull(),
         ];
     }
 }

@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
             //these simulate having an actual userbase. this is test data.
             UserSeeder::class,
             UserPlantSeeder::class,
-            ListingSeeder::class,
-            ArticleSeeder::class,
+            // ListingSeeder::class,
+            // ArticleSeeder::class,
         ]);
     }
 }

@@ -10,26 +10,7 @@ class UserPlantSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
-        $uniquePairs = [];  // Array to keep track of used user-plant pairs
-
-        // Loop until we have 20 unique pairs
-        while (count($uniquePairs) < 20) {
-            $userId = $faker->numberBetween(1, 10);  // Random user ID between 1 and 10
-            $plantId = $faker->numberBetween(1, 10);  // Random plant ID between 1 and 10
-            $stageId = $faker->numberBetween(1, 6);
-
-            // Check if this user-plant pair is already in the array
-            if (!in_array([$userId, $plantId, $stageId], $uniquePairs)) {
-                // Insert the pair into the array and database
-                $uniquePairs[] = [$userId, $plantId];
-
-                UserPlant::create([
-                    'user_id' => $userId,
-                    'plant_id' => $plantId,
-                    'stage_id' => $stageId
-                ]);
-            }
-        }
+        //these won't have listings associated with them
+        UserPlant::factory()->count(10)->create();
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('city');
-            $table->json('media')->nullable();
+            $table->json('media');
             $table->integer('price');
             $table->timestamps();
             $table->foreign('user_plants_id')->references('id')->on('user_plants')->onDelete('cascade');
