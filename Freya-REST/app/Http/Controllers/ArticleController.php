@@ -65,7 +65,13 @@ class ArticleController extends BaseController
 
             foreach ($filters as $param => $column) {
                 if ($value = $request->query($param)) {
-                    $query->where($column, '=', $value);
+
+                    //returning articles with no plants
+                    if ($value == "null") {
+                        $query->whereNull('plants.name');
+                    }else{
+                        $query->where($column, '=', $value);
+                    }
                 }
             }
 
@@ -78,7 +84,7 @@ class ArticleController extends BaseController
 
             //return matching results and cache
             $pageSize = $request->query('pageSize', 5);
-            if ($pageSize === 'all') {
+            if ($pageSize === "all") {
                 $articles = $query->get();
             }
             else {
