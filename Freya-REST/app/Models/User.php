@@ -82,8 +82,10 @@ class User extends Authenticatable
 {
     if ($model instanceof User) {
         return $this->id === $model->id || $this->tokenCan('admin');
+    }elseif($model instanceof Article){
+        $this->id === ($model->author_id) || $this->tokenCan('admin');
     }
 
-    return $this->id === ($model->user_id ?? null) || $this->tokenCan('admin');
+    return $this->id === ($model->user_id) || $this->tokenCan('admin');
 }
 }
