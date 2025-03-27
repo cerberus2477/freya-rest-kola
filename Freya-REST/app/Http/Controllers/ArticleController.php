@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
+use App\Http\Requests\ArticleImageRequest;
 use Carbon\Carbon;
 use App\Helpers\StorageHelper;
 
@@ -213,6 +214,17 @@ class ArticleController extends BaseController
          return $this->jsonResponse(201, 'Article deleted successfully');
      }
      
+
+     public function uploadArticleImage(ArticleImageRequest $request)
+     {
+        // Store images in the 'articles' folder
+        //TODO: not working yet, a listingre van kitalálva media fieldre
+        $imagePaths = StorageHelper::storeRequestImages($request, 'articles');
+
+        return $this->jsonResponse(201, 'Image uploaded successfully', [
+            'image_paths' => $imagePaths,
+        ]);
+    }
 
 }
 
