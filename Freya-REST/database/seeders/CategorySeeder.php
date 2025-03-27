@@ -15,6 +15,7 @@ class CategorySeeder extends Seeder
     {
         //feel free to add ideas
         DB::table('categories')->insert([
+            ['name' => 'egyéb'],
             ['name' => 'recept'],
             ['name' => 'hasznos tippek'],
             ['name' => 'alkalmazás használata'],
