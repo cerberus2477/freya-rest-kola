@@ -7,9 +7,7 @@ use illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+use App\Helpers\StorageHelper;
 
 class ArticleController extends BaseController
 {
@@ -192,22 +190,29 @@ class ArticleController extends BaseController
 
 
      //TODO: test listings, if listings work, implement destroy, update, create image handling similarly
-    public function destroy($title)
-    {
-        // $article = Article::where('title', $title)->firstOrFail();
-        
-        // $images = $article->images;
-        // if ($images) {
-        //     foreach ($images as $file) {
-        //         $filePath = storage_path('app/public/pubcli/articles/' . $file->filename);
-        //         if (file_exists($filePath)) {
-        //             unlink($filePath); // Delete the file from storage
-        //         }
-        //     }
-        // }
-        // $article->delete();
-        // return $this->jsonResponse(200, 'Article deleted succesfully');
-    }
+     public function destroy($title)
+     {
+         $article = Article::where('title', $title)->firstOrFail();
+     
+         // Extract image URLs from markdown content
+         preg_match_all('/!\[.*?\]\((.*?)\)/', $article->content, $matches);
+         
+         // Convert URLs to filenames
+         $filenames = array_map(function ($url) {
+             return basename(parse_url($url, PHP_URL_PATH));
+         }, $matches[1] ?? []);
+     
+         // Delete images if any were found
+         if (!empty($filenames)) {
+             StorageHelper::deleteMedia($filenames, 'articles');
+         }
+     
+         // Delete the article from the database
+         $article->delete();
+     
+         return $this->jsonResponse(201, 'Article deleted successfully');
+     }
+     
 
 }
 

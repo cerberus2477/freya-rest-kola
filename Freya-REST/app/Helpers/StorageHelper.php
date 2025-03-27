@@ -8,12 +8,10 @@ use Illuminate\Support\Str;
 class StorageHelper
 {
     // Deletes media files from storage folder.
-    public static function deleteMedia($model, string $folder): void
+    public static function deleteMedia($filenames, string $folder): void
     {
-        $previousImages = json_decode($model->media, true) ?? [];
-
-        foreach ($previousImages as $fileName) {
-            $filePath = "public/{$folder}/{$fileName}";
+        foreach ($filenames as $filename) {
+            $filePath = "public/{$folder}/{$filename}";
             Storage::disk('local')->delete($filePath);
         }
     }
