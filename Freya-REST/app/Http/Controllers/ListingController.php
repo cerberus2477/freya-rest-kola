@@ -9,6 +9,7 @@ use App\Http\Requests\ListingRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
+use App\Helpers\StorageHelper;
 
 class ListingController extends BaseController
 {
@@ -33,7 +34,7 @@ class ListingController extends BaseController
                 'description' => $listing->description,
                 //the json array stored in db is decoded, and each filename gets turned into the full path of the image
                 'media' => $listing->media 
-                ? array_map(fn($file) => Storage::url("public/listings/" . $file), json_decode($listing->media, true) ?? []) 
+                ? array_map(fn($file) => Storage::url("public/" . $file), json_decode($listing->media, true) ?? []) 
                 : [],
                 'price' => $listing->price,
                 'created_at' => $listing->created_at,
@@ -167,7 +168,7 @@ class ListingController extends BaseController
     public function create(ListingRequest $request)   
     {
         //TODO: there could be error cathing here, if its realistic that the saving fails. otherwise this could be put straight in $data
-        $imagePaths = $this->storeRequestImagesInApi($request, 'listings');
+        $imagePaths = StorageHelper::storeRequestImages($request, 'listings');
 
         // Store filenames (only filename, without path) in the DB as JSON
         $data = array_merge($request->validated(), ['media' => json_encode($imagePaths)]);
@@ -191,10 +192,9 @@ class ListingController extends BaseController
             return $this->jsonResponse(403, "You don't have permission to modify this listing");
         }
 
-        $this->deleteMediaFromApi($listing, 'listings');
-
-        //TODO: there could be error cathing here, if its realistic that the saving fails. otherwise this could be put straight in $data
-        $newImagePaths =  $this->storeRequestImagesInApi($request, 'listings');
+        // delete previous photos and save the new ones
+        StorageHelper::deleteMedia($listing, 'listings');
+        $newImagePaths = StorageHelper::storeRequestImages($request, 'listings');
 
         // Update listing with new data
         $data = array_merge($request->validated(), ['media' => json_encode($newImagePaths)]);
@@ -223,7 +223,8 @@ class ListingController extends BaseController
         //     return $this->jsonResponse(403, "You don't have permission to modify this listing");
         // }
 
-        $this->deleteMediaFromApi($listing, 'listings');
+        // delete the images from storage and finally delete the listing from db
+        StorageHelper::deleteMedia($listing, 'listings');
         $listing->delete();
         return $this->jsonResponse(201, 'Listing deleted successfully');
     }

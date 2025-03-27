@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Listing;
 use App\Models\UserPlant;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Storage;
 use App\Helpers\StorageHelper;
 
 class ListingFactory extends Factory
