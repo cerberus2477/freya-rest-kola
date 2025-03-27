@@ -58,7 +58,7 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'role_id' => $roleId,
             'picture' => $roleId === 1 
-                ? 'placeholders/Shovel.png'
+                ? StorageHelper::getPlaceholderImage('Shovel.png') // Specific placeholder for admins
                 : $attributes['picture'],
         ]);
     }
