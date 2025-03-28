@@ -195,6 +195,7 @@ class ArticleController extends BaseController
      {
          $article = Article::where('title', $title)->firstOrFail();
      
+         //TODO: put regex in a seperate function
          // Extract image URLs from markdown content
          preg_match_all('/!\[.*?\]\((.*?)\)/', $article->content, $matches);
          
