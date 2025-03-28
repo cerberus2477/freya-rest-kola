@@ -74,7 +74,8 @@ class ArticleFactory extends Factory
         // Randomly insert images into the text
         foreach ($imagePaths as $imagePath) {
             // $imageUrl = $baseUrl . ltrim($imagePath, '/');
-            $imageUrl = $baseUrl . $imagePath;
+            // $imageUrl = $baseUrl . $imagePath;
+            $imageUrl = asset("storage/{$imagePath}");
             
             $imageMarkdown = "\n![$faker->sentence]($imageUrl)\n\n";
             
