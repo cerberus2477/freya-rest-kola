@@ -46,9 +46,9 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
 
     //userplants
-    Route::post('/profile/plants', [UserPlantController::class, 'store']);//TODO test
+    Route::post('/profile/plants', [UserPlantController::class, 'store']);
     //Own resource
-    Route::middleware(['ownerOrAdmin:userPlant'])->group(function(){
+    Route::middleware(['ownerOrAdmin'])->group(function(){
         Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);//TODO test
         Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);//TODO test
     });
@@ -57,8 +57,8 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
-    //Own resource
-    Route::middleware(['ownerOrAdmin:listing'])->group(function(){
+        //Own resource
+    Route::middleware(['ownerOrAdmin:id'])->group(function(){
         Route::patch('/listings/{id}', [ListingController::class, 'update']);
         Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
     });
@@ -71,7 +71,7 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     //article
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
     //Own resource
-    Route::middleware(['ownerOrAdmin:article'])->group(function(){
+    Route::middleware(['ownerOrAdmin'])->group(function(){
         Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
         Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
     });

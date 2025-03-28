@@ -25,7 +25,7 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'id');
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
     public function userPlants()
@@ -79,13 +79,25 @@ class User extends Authenticatable
     }
 
     public function canModify($model): bool
-{
-    if ($model instanceof User) {
-        return $this->id === $model->id || $this->tokenCan('admin');
-    }elseif($model instanceof Article){
-        $this->id === ($model->author_id) || $this->tokenCan('admin');
+    {
+        if($this->tokenCan('admin')) return true;
+        
+        if (is_object($model) && method_exists($model, 'getRelated')) {
+            $model = $model->getRelated();
+        }
+    
+        if ($model instanceof User) {
+            return $this->id === $model->id;
+        }
+    
+        if ($model instanceof Article) {
+            return $this->id === $model->author_id;
+        }
+    
+        if ($model instanceof UserPlant || $model instanceof Listing) {
+            return $this->id === $model->user_id;
+        }
+    
+        return false; // Default deny if model type not recognized
     }
-
-    return $this->id === ($model->user_id) || $this->tokenCan('admin');
-}
 }

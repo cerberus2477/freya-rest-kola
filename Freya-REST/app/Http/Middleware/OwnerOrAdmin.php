@@ -5,20 +5,19 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Listing;
+use App\Models\User;
+use App\Models\Article;
+use App\Models\UserPlant;
+use Illuminate\Database\Eloquent\Model;
 
 class OwnerOrAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, string $modelParam): Response
+    public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        $model = $request->route($modelParam);
-
-        // Check if model exists and user is owner or admin
+        $model = $this->resolveModelFromRequest($request);
+        
         if (!$model || !$user->canModify($model)) {
             return response()->json([
                 'status' => 403,
@@ -27,6 +26,34 @@ class OwnerOrAdmin
             ], 403);
         }
 
+        // Attach the model to the request for controller use
+        $request->attributes->set('authorized_model', $model);
+
         return $next($request);
+    }
+
+    protected function resolveModelFromRequest(Request $request)
+    {
+        $route = $request->route();
+        $path = $request->path();
+        $id = $route->parameter('id');
+        
+        if (str_contains($path, 'listings')) {
+            return Listing::find($id);
+        }
+        
+        if (str_contains($path, 'articles')) {
+            return Article::find($id);
+        }
+        
+        if (str_contains($path, 'user-plants')) {
+            return UserPlant::find($id);
+        }
+        
+        if (str_contains($path, 'users')) {
+            return User::find($id);
+        }
+        
+        return null;
     }
 }
