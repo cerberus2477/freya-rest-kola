@@ -193,7 +193,8 @@ class ListingController extends BaseController
         }
 
         // delete previous photos and save the new ones
-        StorageHelper::deleteMedia($listing, 'listings');
+        $previousImages = json_decode($listing->media, true);
+        if ($previousImages) StorageHelper::deleteMedia($previousImages, 'listings');
         $newImagePaths = StorageHelper::storeRequestImages($request, 'listings');
 
         // Update listing with new data

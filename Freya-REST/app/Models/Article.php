@@ -9,11 +9,7 @@ class Article extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'plant_id', 'author_id', 'category_id', 'source', 'description', 'content', 'images'];
-
-    protected $casts = [
-        'images' => 'array',
-    ];
+    protected $fillable = ['title', 'plant_id', 'author_id', 'category_id', 'source', 'description', 'content'];
 
     public function plant()
     {

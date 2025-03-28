@@ -42,6 +42,7 @@ class UserFactory extends Factory
     /**
      * Indicate that the model's email address should be unverified.
      */
+    //todo: implement maybe xd
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -49,9 +50,7 @@ class UserFactory extends Factory
         ]);
     }
 
-    //TODO: set role in seeder
-    // Create user with role_id = 1 example:
-    //$user = User::factory()->withRole(1)->create();
+
     public function withRole(int $roleId): static
     {
         //if admin, have shovel as profile pic
