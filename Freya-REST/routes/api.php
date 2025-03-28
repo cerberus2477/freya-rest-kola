@@ -34,6 +34,13 @@ Route::get('/articles/{title}', [ArticleController::class, 'show']);
 Route::get('/listings', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
 
+//filter dropdowns WEB
+Route::get('/types', [TypeController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/stages', [StageController::class, 'index']);
+Route::get('/plants', [PlantController::class, 'index']);
+
+
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
@@ -80,13 +87,9 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
 //     });
 
     //dictionay tables index/show
-    Route::get('/stages', [StageController::class, 'index']);
     Route::get('/stages/{id}', [StageController::class, 'show']);
-    Route::get('/types', [TypeController::class, 'index']);
     Route::get('/types/{id}', [TypeController::class, 'show']);
-    Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{id}', [CategoryController::class, 'show']);
-    Route::get('/plants', [PlantController::class, 'index']);
     Route::get('/plants/{id}', [PlantController::class, 'show']);
 });
 
