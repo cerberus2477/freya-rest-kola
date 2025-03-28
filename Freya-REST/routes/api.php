@@ -26,8 +26,6 @@ Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::post('/forgot-password', [UserController::class, 'sendResetLinkEmail'])->name('forgot-password');
 Route::post('/reset-password', [UserController::class, 'passwordReset'])->name('password-reset');
 
-Route::resource('userplants', UserPlantController::class);
-
 //articles
 Route::get('/articles', [ArticleController::class, 'search']);
 Route::get('/articles/{title}', [ArticleController::class, 'show']);
@@ -39,19 +37,31 @@ Route::get('/listings/{id}',[ListingController::class, 'show']);
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
-    //users/profile
-    Route::get('/profile', [UserController::class, 'showMyPlants']);
-    Route::patch('/profile', [UserController::class, 'update'])->name('update');
+    //other users
     Route::get('/users/{username}', [UserController::class, 'show']);
-    Route::get('/profile/plants', [UserController::class, 'showMyPlants']);
-    Route::post('/profile/plants', [UserPlantController::class, 'create']);//TODO implement
-    Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);//TODO implement
-    Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);//TODO implement
+
+    //profile
+    Route::get('/profile', [UserController::class, 'showMyPlants']);
+    Route::delete('/profile', [UserController::class, 'destroy']);
+    Route::patch('/profile', [UserController::class, 'update'])->name('update');
+
+    //userplants
+    Route::post('/profile/plants', [UserPlantController::class, 'store']);//TODO test
+    //Own resource
+    Route::middleware(['ownerOrAdmin:userPlant'])->group(function(){
+        Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);//TODO test
+        Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);//TODO test
+    });
 
     //listings
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
+    //Own resource
+    Route::middleware(['ownerOrAdmin:listing'])->group(function(){
+        Route::patch('/listings/{id}', [ListingController::class, 'update']);
+        Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
+    });
 });
 
 //requires stats abilities
@@ -60,10 +70,14 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
 
     //article
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
-    Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
-    Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
     Route::post('/articles/upload-image', [ArticleController::class, 'uploadArticleImage'])->name('articles.upload-image');
 
+    //TODO!! (yes) (middllefiddlemiddleware)
+    //Own resource
+//     Route::middleware(['ownerOrAdmin:article'])->group(function(){
+        Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
+        Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
+//     });
 
     //dictionay tables index/show
     Route::get('/stages', [StageController::class, 'index']);

@@ -78,4 +78,13 @@ class User extends Authenticatable
         // Send the notification with the custom URL
         $this->notify(new CustomResetPassword($url));
     }
+
+    public function canModify($model): bool
+{
+    if ($model instanceof User) {
+        return $this->id === $model->id || $this->tokenCan('admin');
+    }
+
+    return $this->id === ($model->user_id ?? null) || $this->tokenCan('admin');
+}
 }
