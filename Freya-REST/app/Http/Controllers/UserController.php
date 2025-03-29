@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Password;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Helpers\StorageHelper;
 
 class UserController extends BaseController
 {
@@ -158,6 +159,8 @@ class UserController extends BaseController
             'city' => null,
             'birthdate' => null,
             'password' => Hash::make($request->password),
+            'description' => null,
+            'picture' => StorageHelper::getPlaceholderImage(),
         ]);
 
         // Create a token for the newly registered user

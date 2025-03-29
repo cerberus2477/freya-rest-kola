@@ -37,7 +37,7 @@ class ListingRequest extends FormRequest
         'title' => 'required|string|max:255|min:2',
         'description' => 'required|string|max:1000',
         'city' => 'required|string|max:100',
-        'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
         //there should be 1-10 img
         'price' => 'required|integer|min:0',
     ];
@@ -50,7 +50,7 @@ public function rulesForUpdate(): array
         'title' => 'sometimes|string|max:255|min:2',
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',
-        'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
         //there should be 1-10 img
         'price' => 'sometimes|integer|min:0',
     ];
@@ -85,7 +85,7 @@ public function messages(): array
         'media.required' => 'A médiafájl megadása kötelező.',
         'media.image.*' => 'A médiafájlnak képnek kell lennie.',
         'media.mimes.*' => 'A médiafájl csak jpeg, png, jpg, gif vagy svg formátumú lehet.',
-        'media.max.*' => 'A médiafájl legfeljebb 2048 kilobájt méretű lehet.',
+        'media.max.*' => 'A médiafájl legfeljebb 10 MB méretű lehet.',
 
         // Price
         'price.required' => 'Az ár megadása kötelező.',

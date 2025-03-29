@@ -5,28 +5,48 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Listing;
+use App\Models\User;
+use App\Models\Article;
+use App\Models\UserPlant;
+use Illuminate\Database\Eloquent\Model;
 
 class OwnerOrAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, string $modelParam): Response
-    {
-        $user = $request->user();
-        $model = $request->route($modelParam);
+    protected function resolveModelFromRequest(Request $request, ?string $modelType)
+{
+    $id = $request->route('id'); // Get the 'id' parameter from the route
 
-        // Check if model exists and user is owner or admin
-        if (!$model || !$user->canModify($model)) {
-            return response()->json([
-                'status' => 403,
-                'message' => 'You must be the owner or admin to perform this action',
-                'data' => [],
-            ], 403);
-        }
-
-        return $next($request);
+    switch ($modelType) {
+        case 'listing':
+            return Listing::find($id);
+        case 'article':
+            return Article::find($id);
+        case 'user-plant':
+            return UserPlant::find($id);
+        case 'user':
+            return User::find($id);
+        default:
+            return null; // Return null if the model type is not recognized
     }
+}
+
+public function handle(Request $request, Closure $next, ?string $modelType): Response
+{
+    $user = $request->user();
+    $model = $this->resolveModelFromRequest($request, $modelType);
+
+    if (!$model || !$user->canModify($model)) {
+        return response()->json([
+            'status' => 403,
+            'message' => 'You must be the owner or admin to perform this action',
+            'data' => [],
+        ], 403);
+    }
+
+    // Attach the model to the request for controller use
+    $request->attributes->set('authorized_model', $model);
+
+    return $next($request);
+}
 }

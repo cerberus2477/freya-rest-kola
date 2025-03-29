@@ -12,17 +12,17 @@ class UserPlantController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(UserPlantRequest $request)
-    {
-        return $this->jsonResponse(200, "Data retrived succesfully", UserPlant::with([
-            'user'=> function ($query) {$query->select('username');},
-            'plant'=> function ($query) {$query->select('id', 'name');},
-            'stage'=> function ($query) {$query->select('name');}
-            ])
-            ->where('deleted_at', null)
-            ->where('username', $request->user())
-            ->get(['count']));
-    }
+    // public function index(UserPlantRequest $request)
+    // {
+    //     return $this->jsonResponse(200, "Data retrived succesfully", UserPlant::with([
+    //         'user'=> function ($query) {$query->select('username');},
+    //         'plant'=> function ($query) {$query->select('id', 'name');},
+    //         'stage'=> function ($query) {$query->select('name');}
+    //         ])
+    //         ->where('deleted_at', null)
+    //         ->where('username', $request->user())
+    //         ->get(['count']));
+    // }
 
     /**
      * Display the specified resource.
@@ -36,10 +36,14 @@ class UserPlantController extends BaseController
      * Store a newly created resource in storage.
      */
     public function store(UserPlantRequest $request)
-    {
-        $userplant = UserPlant::create($request->validated());
-        return $this->jsonResponse(200, 'User plant created succesfully', $userplant);
-    }
+{
+    $validated = $request->validated();
+    $validated['user_id'] = $request->user()->id; // Set the authenticated user's ID
+    
+    $userplant = UserPlant::create($validated);
+    
+    return $this->jsonResponse(200, 'User plant created successfully', $userplant);
+}
 
     /**
      * Update the specified resource in storage.

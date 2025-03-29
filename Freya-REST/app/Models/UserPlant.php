@@ -11,6 +11,8 @@ class UserPlant extends Model
 
     protected $table = 'user_plants';
 
+    protected $fillable = ['user_id', 'plant_id', 'stage_id', 'count'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -23,7 +25,7 @@ class UserPlant extends Model
 
     public function listing()
     {
-        return $this->hasOne(Listing::class, 'user_plants_id');
+        return $this->hasOne(Listing::class);
     }
 
     public function stage()
