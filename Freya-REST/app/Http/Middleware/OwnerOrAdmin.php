@@ -13,47 +13,40 @@ use Illuminate\Database\Eloquent\Model;
 
 class OwnerOrAdmin
 {
-    public function handle(Request $request, Closure $next): Response
-    {
-        $user = $request->user();
-        $model = $this->resolveModelFromRequest($request);
-        
-        if (!$model || !$user->canModify($model)) {
-            return response()->json([
-                'status' => 403,
-                'message' => 'You must be the owner or admin to perform this action',
-                'data' => [],
-            ], 403);
-        }
+    protected function resolveModelFromRequest(Request $request, ?string $modelType)
+{
+    $id = $request->route('id'); // Get the 'id' parameter from the route
 
-        // Attach the model to the request for controller use
-        $request->attributes->set('authorized_model', $model);
-
-        return $next($request);
-    }
-
-    protected function resolveModelFromRequest(Request $request)
-    {
-        $route = $request->route();
-        $path = $request->path();
-        $id = $route->parameter('id');
-        
-        if (str_contains($path, 'listings')) {
+    switch ($modelType) {
+        case 'listing':
             return Listing::find($id);
-        }
-        
-        if (str_contains($path, 'articles')) {
+        case 'article':
             return Article::find($id);
-        }
-        
-        if (str_contains($path, 'user-plants')) {
+        case 'user-plant':
             return UserPlant::find($id);
-        }
-        
-        if (str_contains($path, 'users')) {
+        case 'user':
             return User::find($id);
-        }
-        
-        return null;
+        default:
+            return null; // Return null if the model type is not recognized
     }
+}
+
+public function handle(Request $request, Closure $next, ?string $modelType): Response
+{
+    $user = $request->user();
+    $model = $this->resolveModelFromRequest($request, $modelType);
+
+    if (!$model || !$user->canModify($model)) {
+        return response()->json([
+            'status' => 403,
+            'message' => 'You must be the owner or admin to perform this action',
+            'data' => [],
+        ], 403);
+    }
+
+    // Attach the model to the request for controller use
+    $request->attributes->set('authorized_model', $model);
+
+    return $next($request);
+}
 }

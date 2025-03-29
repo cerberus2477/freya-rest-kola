@@ -77,27 +77,35 @@ class User extends Authenticatable
         // Send the notification with the custom URL
         $this->notify(new CustomResetPassword($url));
     }
-
+    /**
+     * Check if the user has a specific token.
+     *
+     * @param  string  $token
+     * @return bool
+     */
     public function canModify($model): bool
     {
-        if($this->tokenCan('admin')) return true;
-        
-        if (is_object($model) && method_exists($model, 'getRelated')) {
-            $model = $model->getRelated();
+        if ($this->tokenCan('admin')) {
+            return true; // Admins can modify these models
         }
     
         if ($model instanceof User) {
-            return $this->id === $model->id;
+            return $this->id === $model->id; // Users can modify their own profile
         }
     
         if ($model instanceof Article) {
-            return $this->id === $model->author_id;
+            return $this->id === $model->author_id; // Users can modify their own articles
         }
     
-        if ($model instanceof UserPlant || $model instanceof Listing) {
-            return $this->id === $model->user_id;
+        if ($model instanceof UserPlant) {
+            return $this->id === $model->user_id; // Users can modify their own plants
         }
     
-        return false; // Default deny if model type not recognized
+        if ($model instanceof Listing) {
+            $userPlant = $model->userPlant; // This retrieves the related UserPlant model
+            return $userPlant && $this->id == $model->userPlant->user->id; // Check if the user owns the UserPlant
+        }
+    
+        return false; // Default deny
     }
 }
