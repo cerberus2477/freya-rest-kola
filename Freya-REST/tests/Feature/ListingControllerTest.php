@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\UserPlant;
@@ -152,7 +153,7 @@ class ListingControllerTest extends TestCase
         ]);
         $userplant4 = UserPlant::factory()->create([
             'user_id' => $user1->id,
-            'plant_id' => 4, //szőlő
+            'plant_id' => 50, //zöldborsó
             'stage_id' => 1 //mag
         ]);
 
@@ -171,7 +172,7 @@ class ListingControllerTest extends TestCase
         ]);
 
 
-        //alma
+        //plant
         $response = $this->get('/api/listings?plant=Alma');
         $response->assertStatus(200);
         $response->assertJsonStructure([
@@ -185,7 +186,7 @@ class ListingControllerTest extends TestCase
 
 
         //user
-        $response = $this->get('/api/listings?user=aaa');
+        $response = $this->get('/api/listings?user=bbb');
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'status',
@@ -194,15 +195,65 @@ class ListingControllerTest extends TestCase
                 '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
             ]
         ]);
+        $responseData = $response->decodeResponseJson()->json();
+        foreach ($responseData['data'] as $item) {
+            $this->assertEquals('bbb', $item['user']['username']);
+        }
+
+        //noUser
+        $response = $this->get('/api/listings?user=fff');
         $response->assertJson([
+            'status' => 200,
+            'message' => 'Listings retrieved successfully', //TODO: "No listings found" kene ide no?
+        ]);
+
+        //type
+        $response = $this->get('/api/listings?type=gyümölcs');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
             'data' => [
-                [
-                    'user' => [
-                        'username' => 'aaa'
-                    ]
-                ]
+                '*' => [
+                    'listing_id',
+                    'title',
+                    'description',
+                    'media',
+                    'price',
+                    'created_at',
+                    'user',
+                    'plant',
+                    'stage']
             ]
         ]);
+        $responseData = $response->decodeResponseJson()->json();
+        $n = 0;
+        foreach ($responseData['data'] as $item) {
+            $this->assertEquals('gyümölcs', $item['plant']['type']);
+            $n = $n+1;
+        }
+        $this->assertEquals(3, $n);
+
+        //stage
+        $response = $this->get('/api/listings?stage=mag');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => [
+                    'listing_id',
+                    'title',
+                    'description',
+                    'media',
+                    'price',
+                    'created_at',
+                    'user',
+                    'plant',
+                    'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.stage.name', 'mag');
     }
     
 }
