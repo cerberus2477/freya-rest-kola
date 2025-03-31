@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class ArticleImageRequest extends FormRequest
+class ArticleImageRequest extends BaseRequest
 {
     public function authorize(): bool
     {

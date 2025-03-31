@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 abstract class BaseController extends Controller
 {
     // message e.g "Articles retrieved successfully"
-    protected function jsonResponse(int $status, string $message, $data = []): JsonResponse
+    public static function jsonResponse(int $status, string $message, $data = []): JsonResponse
     {
         $response = [
             'status' => $status,
