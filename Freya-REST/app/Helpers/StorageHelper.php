@@ -4,6 +4,10 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Exception;
+
 
 class StorageHelper
 {
@@ -20,7 +24,7 @@ class StorageHelper
     // Stores request images, compresses them, and saves them as WebP.
     public static function storeRequestImages($request, string $folder): array
     {
-        $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+        $manager = new ImageManager(new Driver());
         $imagePaths = [];
 
         foreach ($request->file('media') as $image) {
@@ -42,7 +46,7 @@ class StorageHelper
         $placeholders = Storage::disk('public')->files('placeholders');
 
         if (empty($placeholders)) {
-            throw new \Exception("No placeholder images found in 'storage/app/public/placeholders'");
+            throw new Exception("No placeholder images found in 'storage/app/public/placeholders'");
         }
         return $filename ? "placeholders/{$filename}" : $placeholders[array_rand($placeholders)];
     }

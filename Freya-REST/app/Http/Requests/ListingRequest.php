@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class ListingRequest extends FormRequest
+class ListingRequest extends BaseRequest
 {
  /**
      * Determine if the user is authorized to make this request.
@@ -38,7 +38,7 @@ class ListingRequest extends FormRequest
         'description' => 'required|string|max:1000',
         'city' => 'required|string|max:100',
         'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
-        //there should be 1-10 img
+        'media' => 'required|array|min:1|max:10',
         'price' => 'required|integer|min:0',
     ];
 }
@@ -51,7 +51,7 @@ public function rulesForUpdate(): array
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',
         'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
-        //there should be 1-10 img
+        'media' => 'required|array|min:1|max:10',
         'price' => 'sometimes|integer|min:0',
     ];
 }
@@ -82,10 +82,14 @@ public function messages(): array
         'city.max' => 'A város neve legfeljebb 100 karakter hosszú lehet.',
 
         // Media
-        'media.required' => 'A médiafájl megadása kötelező.',
-        'media.image.*' => 'A médiafájlnak képnek kell lennie.',
-        'media.mimes.*' => 'A médiafájl csak jpeg, png, jpg, gif vagy svg formátumú lehet.',
-        'media.max.*' => 'A médiafájl legfeljebb 10 MB méretű lehet.',
+        'media.array' => 'A média mezőnek egy tömbnek kell lennie.',
+        'media.min' => 'Legalább 1 képet fel kell tölteni.',
+        'media.max' => 'Legfeljebb 10 képet lehet feltölteni.',
+        'media.required' => 'Médiafájl megadása kötelező.',
+        'media.image.*' => 'Médiafájlnak képnek kell lennie.',
+        'media.mimes.*' => 'Médiafájl csak jpeg, png, jpg, gif vagy svg formátumú lehet.',
+        //TODO: ez nem túl kevés?
+        'media.max.*' => 'Médiafájl legfeljebb 10 MB méretű lehet.',
 
         // Price
         'price.required' => 'Az ár megadása kötelező.',

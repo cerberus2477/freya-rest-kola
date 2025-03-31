@@ -18,6 +18,7 @@ class Abilities
         return $next($request);
     }
 
+    //TODO: unauthenticated response should be pretty
     return Response()->json([
         'status' => 403,
         'message'=>'The user does not have the required abilities',
