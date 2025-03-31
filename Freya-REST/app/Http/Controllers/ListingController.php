@@ -27,7 +27,7 @@ class ListingController extends BaseController
     //TODO: format datetime if necessary (we need both date and time)
     protected function formatListings($listings)
     {
-        return $listings->map(function ($listing) {
+        return collect($listings)->map(function ($listing) {
             return [
                 'listing_id' => $listing->id,
                 'title' => $listing->title,

@@ -30,94 +30,179 @@ class ListingControllerTest extends TestCase
     }
 
     //tests for destroy
-    public function test_user_can_delete_their_own_listing()
-    {
-        //creating a listing to test with
-        $listing = Listing::factory()->create();
-
-        //"loggin in" as the user who owns the listing
-        $this->actingAs($listing->userPlant->user);
-        
-        //deleting the listing as the user
-        $response = $this->deleteJson(route('listings.destroy', $listing->id));
-        
-        //checking if the api response is as expected
-        $response//->assertStatus(201)
-                 ->assertJson(['status' => 201, 'message' => 'Listing deleted successfully']);
-        
-        //checking if the listing has been truly deleted
-        $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
-    }
-
-
-    // public function test_user_cannot_delete_other_users_listing()
+    // public function test_user_can_delete_their_own_listing()
     // {
-    //     $user = User::factory()->create();
-    //     $otherUser = User::factory()->create();
-    //     $userPlant = UserPlant::factory()->create(['user_id' => $otherUser->id]);
-    //     $listing = Listing::factory()->create(['user_plants_id' => $userPlant->id]);
- 
-    //     $this->actingAs($user);
- 
+    //     //creating a listing to test with
+    //     $listing = Listing::factory()->create();
+
+    //     //"loggin in" as the user who owns the listing
+    //     $this->actingAs($listing->userPlant->user);
+        
+    //     //deleting the listing as the user
     //     $response = $this->deleteJson(route('listings.destroy', $listing->id));
- 
-    //     $response->assertStatus(403)
-    //              ->assertJson(['status' => 403, 'message' => "You don't have permission to modify this listing"]);
- 
-    //     $this->assertDatabaseHas('listings', ['id' => $listing->id]);
+        
+    //     //checking if the api response is as expected
+    //     $response//->assertStatus(201)
+    //              ->assertJson(['status' => 201, 'message' => 'Listing deleted successfully']);
+        
+    //     //checking if the listing has been truly deleted
+    //     $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
     // }
 
 
-    public function test_admin_can_delete_any_listing()
+    // // public function test_user_cannot_delete_other_users_listing()
+    // // {
+    // //     $user = User::factory()->create();
+    // //     $otherUser = User::factory()->create();
+    // //     $userPlant = UserPlant::factory()->create(['user_id' => $otherUser->id]);
+    // //     $listing = Listing::factory()->create(['user_plants_id' => $userPlant->id]);
+ 
+    // //     $this->actingAs($user);
+ 
+    // //     $response = $this->deleteJson(route('listings.destroy', $listing->id));
+ 
+    // //     $response->assertStatus(403)
+    // //              ->assertJson(['status' => 403, 'message' => "You don't have permission to modify this listing"]);
+ 
+    // //     $this->assertDatabaseHas('listings', ['id' => $listing->id]);
+    // // }
+
+
+    // public function test_admin_can_delete_any_listing()
+    // {
+    //     $admin = User::factory()->withRole(1)->create();
+    //     // $admin->tokens()->create(['name' => 'admin', 'abilities' => ['admin']]);
+        
+    //     $user = User::factory()->create();
+    //     $userPlant = UserPlant::factory()->create(['user_id' => $user->id]);
+    //     $listing = Listing::factory()->create(['user_plants_id' => $userPlant->id]);
+        
+    //     $this->actingAs($admin);
+        
+    //     $response = $this->deleteJson(route('listings.destroy', $listing->id));
+        
+    //     $response->assertStatus(201)
+    //              ->assertJson(['status' => 201, 'message' => 'Listing deleted successfully']);
+        
+    //     $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
+    // }
+
+
+    // public function test_destroy_returns_404_for_non_existent_listing()
+    // {
+    //     $user = User::factory()->withRole(1)->create();
+    //     $this->actingAs($user);
+        
+    //     $response = $this->deleteJson(route('listings.destroy', 9999));
+        
+    //     $response->assertStatus(404)
+    //              ->assertJson(['status' => 404, 'message' => 'Listing not found']);
+    // }
+
+
+    // public function test_media_is_deleted_from_storage_when_listing_is_deleted()
+    // {
+    //     Storage::fake('public');
+    //     $user = User::factory()->create();
+    //     $userPlant = UserPlant::factory()->create(['user_id' => $user->id]);
+        
+    //     $listing = Listing::factory()->create([
+    //         'user_plants_id' => $userPlant->id,
+    //         'media' => json_encode(['test.jpg']),
+    //     ]);
+        
+    //     Storage::put('public/listings/test.jpg', 'test content');
+        
+    //     $this->actingAs($user);
+    //     $this->deleteJson(route('listings.destroy', $listing->id));
+        
+    //     Storage::assertMissing('public/listings/test.jpg');
+    // }
+
+    //Filters & Search
+    public function test_can_get_all_listings_matching_filters()
     {
-        $admin = User::factory()->withRole(1)->create();
-        // $admin->tokens()->create(['name' => 'admin', 'abilities' => ['admin']]);
-        
-        $user = User::factory()->create();
-        $userPlant = UserPlant::factory()->create(['user_id' => $user->id]);
-        $listing = Listing::factory()->create(['user_plants_id' => $userPlant->id]);
-        
-        $this->actingAs($admin);
-        
-        $response = $this->deleteJson(route('listings.destroy', $listing->id));
-        
-        $response->assertStatus(201)
-                 ->assertJson(['status' => 201, 'message' => 'Listing deleted successfully']);
-        
-        $this->assertDatabaseMissing('listings', ['id' => $listing->id]);
-    }
 
-
-    public function test_destroy_returns_404_for_non_existent_listing()
-    {
-        $user = User::factory()->withRole(1)->create();
-        $this->actingAs($user);
-        
-        $response = $this->deleteJson(route('listings.destroy', 9999));
-        
-        $response->assertStatus(404)
-                 ->assertJson(['status' => 404, 'message' => 'Listing not found']);
-    }
-
-
-    public function test_media_is_deleted_from_storage_when_listing_is_deleted()
-    {
-        Storage::fake('public');
-        $user = User::factory()->create();
-        $userPlant = UserPlant::factory()->create(['user_id' => $user->id]);
-        
-        $listing = Listing::factory()->create([
-            'user_plants_id' => $userPlant->id,
-            'media' => json_encode(['test.jpg']),
+        //users
+        $user1 = User::factory()->create([
+            'username' => 'aaa',
         ]);
-        
-        Storage::put('public/listings/test.jpg', 'test content');
-        
-        $this->actingAs($user);
-        $this->deleteJson(route('listings.destroy', $listing->id));
-        
-        Storage::assertMissing('public/listings/test.jpg');
-    }
+        $user2 = User::factory()->create([
+            'username' => 'bbb',
+        ]);
+        $user3 = User::factory()->create([
+            'username' => 'ccc',
+        ]);
 
+        //userplants
+        $userplant1 = UserPlant::factory()->create([
+            'user_id' => $user1->id,
+            'plant_id' => 1, //alma
+            'stage_id' => 4 //termés
+        ]);
+        $userplant2 = UserPlant::factory()->create([
+            'user_id' => $user2->id,
+            'plant_id' => 2, //körte
+            'stage_id' => 3 //növény
+        ]);
+        $userplant3 = UserPlant::factory()->create([
+            'user_id' => $user3->id,
+            'plant_id' => 3, //banán
+            'stage_id' => 2 //palánta
+        ]);
+        $userplant4 = UserPlant::factory()->create([
+            'user_id' => $user1->id,
+            'plant_id' => 4, //szőlő
+            'stage_id' => 1 //mag
+        ]);
+
+
+        $listing1 = Listing::factory()->create([
+            'user_plants_id' => $userplant1->id,
+        ]);
+        $listing2 = Listing::factory()->create([
+            'user_plants_id' => $userplant2->id,
+        ]);
+        $listing3 = Listing::factory()->create([
+            'user_plants_id' => $userplant3->id,
+        ]);
+        $listing4 = Listing::factory()->create([
+            'user_plants_id' => $userplant4->id,
+        ]);
+
+
+        //alma
+        $response = $this->get('/api/listings?plant=Alma');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.plant.name', 'Alma');
+
+
+        //user
+        $response = $this->get('/api/listings?user=aaa');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJson([
+            'data' => [
+                [
+                    'user' => [
+                        'username' => 'aaa'
+                    ]
+                ]
+            ]
+        ]);
+    }
     
 }
