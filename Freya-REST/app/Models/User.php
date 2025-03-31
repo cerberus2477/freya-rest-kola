@@ -25,7 +25,7 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'id');
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
     public function userPlants()
@@ -72,20 +72,41 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         // Customize the reset URL to point to your frontend
+        //TODO put web url in env
         $url = 'http://127.0.0.1:8000/reset-password?token=' . $token . '&email=' . $this->email;
 
         // Send the notification with the custom URL
         $this->notify(new CustomResetPassword($url));
     }
-
+    /**
+     * Check if the user has a specific token.
+     *
+     * @param  string  $token
+     * @return bool
+     */
     public function canModify($model): bool
-{
-    if ($model instanceof User) {
-        return $this->id === $model->id || $this->tokenCan('admin');
-    }elseif($model instanceof Article){
-        $this->id === ($model->author_id) || $this->tokenCan('admin');
+    {
+        if ($this->tokenCan('admin')) {
+            return true; // Admins can modify these models
+        }
+    
+        if ($model instanceof User) {
+            return $this->id === $model->id; // Users can modify their own profile
+        }
+    
+        if ($model instanceof Article) {
+            return $this->id === $model->author_id; // Users can modify their own articles
+        }
+    
+        if ($model instanceof UserPlant) {
+            return $this->id === $model->user_id; // Users can modify their own plants
+        }
+    
+        if ($model instanceof Listing) {
+            $userPlant = $model->userPlant; // This retrieves the related UserPlant model
+            return $userPlant && $this->id == $model->userPlant->user->id; // Check if the user owns the UserPlant
+        }
+    
+        return false; // Default deny
     }
-
-    return $this->id === ($model->user_id) || $this->tokenCan('admin');
-}
 }

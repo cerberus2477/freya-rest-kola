@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             //hard coded, fix data. this is recommended for the application to work properly.
             TypeSeeder::class,
-            StagesSeeder::class,
+            StageSeeder::class,
             RoleSeeder::class,
             CategorySeeder::class,
             PlantSeeder::class,
@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             UserPlantSeeder::class,
             ListingSeeder::class,
-            // ArticleSeeder::class,
+            ArticleSeeder::class,
         ]);
     }
 }

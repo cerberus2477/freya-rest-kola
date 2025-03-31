@@ -12,12 +12,10 @@ use Exception;
 class StorageHelper
 {
     // Deletes media files from storage folder.
-    public static function deleteMedia($model, string $folder): void
+    public static function deleteMedia($filenames, string $folder): void
     {
-        $previousImages = json_decode($model->media, true) ?? [];
-
-        foreach ($previousImages as $fileName) {
-            $filePath = "public/{$folder}/{$fileName}";
+        foreach ($filenames as $filename) {
+            $filePath = "public/{$folder}/{$filename}";
             Storage::disk('local')->delete($filePath);
         }
     }
@@ -80,7 +78,7 @@ class StorageHelper
     }
 
 
-    // Stores an image with a unique name and returns the filename.
+    // Stores an image with a unique name and returns the path.
     public static function storeImageWithUniqueName(string $folder, string $imageData): string
     {
         $filename = "{$folder}_" . Str::uuid() . '.webp';
@@ -88,6 +86,6 @@ class StorageHelper
 
         Storage::disk('public')->put($path, $imageData);
 
-        return $filename;
+        return $path;
     }
 }

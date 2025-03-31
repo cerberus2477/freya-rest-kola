@@ -34,6 +34,13 @@ Route::get('/articles/{title}', [ArticleController::class, 'show']);
 Route::get('/listings', [LIstingController::class, 'search']);
 Route::get('/listings/{id}',[ListingController::class, 'show']);
 
+//filter dropdowns WEB
+Route::get('/types', [TypeController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/stages', [StageController::class, 'index']);
+Route::get('/plants', [PlantController::class, 'index']);
+
+
 //requires users abilities 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
@@ -46,9 +53,9 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
 
     //userplants
-    Route::post('/profile/plants', [UserPlantController::class, 'store']);//TODO test
+    Route::post('/profile/plants', [UserPlantController::class, 'store']);
     //Own resource
-    Route::middleware(['ownerOrAdmin:userPlant'])->group(function(){
+    Route::middleware(['ownerOrAdmin:user-plant'])->group(function(){
         Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);//TODO test
         Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);//TODO test
     });
@@ -57,7 +64,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
-    //Own resource
+        //Own resource
     Route::middleware(['ownerOrAdmin:listing'])->group(function(){
         Route::patch('/listings/{id}', [ListingController::class, 'update']);
         Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
@@ -70,20 +77,19 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
 
     //article
     Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
+    Route::post('/articles/upload-image', [ArticleController::class, 'uploadArticleImage'])->name('articles.upload-image');
+
+    //TODO!! (yes) (middllefiddlemiddleware)
     //Own resource
-    Route::middleware(['ownerOrAdmin:article'])->group(function(){
+//     Route::middleware(['ownerOrAdmin:article'])->group(function(){
         Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
         Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
-    });
+//     });
 
     //dictionay tables index/show
-    Route::get('/stages', [StageController::class, 'index']);
     Route::get('/stages/{id}', [StageController::class, 'show']);
-    Route::get('/types', [TypeController::class, 'index']);
     Route::get('/types/{id}', [TypeController::class, 'show']);
-    Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{id}', [CategoryController::class, 'show']);
-    Route::get('/plants', [PlantController::class, 'index']);
     Route::get('/plants/{id}', [PlantController::class, 'show']);
 });
 

@@ -6,10 +6,9 @@ use Illuminate\Support\Facades\Cache;
 use illuminate\Support\Facades\DB;
 use App\Models\Article;
 use App\Http\Requests\ArticleRequest;
+use App\Http\Requests\ArticleImageRequest;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+use App\Helpers\StorageHelper;
 
 class ArticleController extends BaseController
 {
@@ -65,7 +64,13 @@ class ArticleController extends BaseController
 
             foreach ($filters as $param => $column) {
                 if ($value = $request->query($param)) {
-                    $query->where($column, '=', $value);
+
+                    //returning articles with no plants
+                    if ($value == "null") {
+                        $query->whereNull('plants.name');
+                    }else{
+                        $query->where($column, '=', $value);
+                    }
                 }
             }
 
@@ -78,7 +83,7 @@ class ArticleController extends BaseController
 
             //return matching results and cache
             $pageSize = $request->query('pageSize', 5);
-            if ($pageSize === 'all') {
+            if ($pageSize === "all") {
                 $articles = $query->get();
             }
             else {
@@ -192,21 +197,40 @@ class ArticleController extends BaseController
 
 
      //TODO: test listings, if listings work, implement destroy, update, create image handling similarly
-    public function destroy($title)
-    {
-        // $article = Article::where('title', $title)->firstOrFail();
-        
-        // $images = $article->images;
-        // if ($images) {
-        //     foreach ($images as $file) {
-        //         $filePath = storage_path('app/public/pubcli/articles/' . $file->filename);
-        //         if (file_exists($filePath)) {
-        //             unlink($filePath); // Delete the file from storage
-        //         }
-        //     }
-        // }
-        // $article->delete();
-        // return $this->jsonResponse(200, 'Article deleted succesfully');
+     public function destroy($title)
+     {
+         $article = Article::where('title', $title)->firstOrFail();
+     
+         //TODO: put regex in a seperate function
+         // Extract image URLs from markdown content
+         preg_match_all('/!\[.*?\]\((.*?)\)/', $article->content, $matches);
+         
+         // Convert URLs to filenames
+         $filenames = array_map(function ($url) {
+             return basename(parse_url($url, PHP_URL_PATH));
+         }, $matches[1] ?? []);
+     
+         // Delete images if any were found
+         if (!empty($filenames)) {
+             StorageHelper::deleteMedia($filenames, 'articles');
+         }
+     
+         // Delete the article from the database
+         $article->delete();
+     
+         return $this->jsonResponse(201, 'Article deleted successfully');
+     }
+     
+
+     public function uploadArticleImage(ArticleImageRequest $request)
+     {
+        // Store images in the 'articles' folder
+        //TODO: not working yet, a listingre van kitalálva media fieldre
+        $imagePaths = StorageHelper::storeRequestImages($request, 'articles');
+
+        return $this->jsonResponse(201, 'Image uploaded successfully', [
+            'image_paths' => $imagePaths,
+        ]);
     }
 
 }

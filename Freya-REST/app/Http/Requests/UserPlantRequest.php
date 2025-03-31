@@ -35,7 +35,7 @@ class UserPlantRequest extends FormRequest
                 'exists:plants,id',
                 $this->uniquePlantStageRule()
             ],
-            'stage_id' => 'required|numeric|exists:stage, id',
+            'stage_id' => 'required|numeric|exists:stages,id',
             'count' => 'nullable|numeric|min:1'
         ];
     }
@@ -47,7 +47,7 @@ class UserPlantRequest extends FormRequest
                 'exists:plants,id',
                 $this->uniquePlantStageRule()
             ],
-            'stage_id' => 'sometimes|numeric|exists:stages, id',
+            'stage_id' => 'sometimes|numeric|exists:stages,id',
             'count' => 'nullable|numeric|min:1'
         ];
     }
@@ -72,6 +72,5 @@ class UserPlantRequest extends FormRequest
             'count.numeric' => 'A mennyiségnek számnak kell lennie.',
             'count.min' => 'A mennyiségnek legalább 1-nek kell lennie.'
         ];
-
     }
 }
