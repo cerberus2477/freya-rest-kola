@@ -35,7 +35,7 @@ public function handle(Request $request, Closure $next, ?string $modelType): Res
 {
     $user = $request->user();
     $model = $this->resolveModelFromRequest($request, $modelType);
-
+    //TODO: use jsonresponse class
     if (!$model || !$user->canModify($model)) {
         return response()->json([
             'status' => 403,

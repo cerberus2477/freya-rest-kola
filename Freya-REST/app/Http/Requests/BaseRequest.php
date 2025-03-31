@@ -13,7 +13,7 @@ abstract class BaseRequest extends FormRequest
     {
         $response = BaseController::jsonResponse(
             422,
-            "Validation failed",
+            "Nem megfelelő adatok",
             ['errors' => $validator->errors()]
         );
 

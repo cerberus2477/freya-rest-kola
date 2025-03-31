@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class HardCodedController extends Controller
 {
+    //TODO: legyen baserequest
     public function getDocumentation()
 {
     $filename = 'FreyasGardenDocumentation.docx';

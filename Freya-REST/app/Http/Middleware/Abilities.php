@@ -19,6 +19,7 @@ class Abilities
     }
 
     //TODO: unauthenticated response should be pretty
+    //TODO: use jsonresponse class
     return Response()->json([
         'status' => 403,
         'message'=>'The user does not have the required abilities',

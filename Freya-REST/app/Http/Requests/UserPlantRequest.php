@@ -3,11 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Models\Plant;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rule;
 
-class UserPlantRequest extends FormRequest
+class UserPlantRequest extends BaseRequest
 {
     public function authorize(): bool
     {
