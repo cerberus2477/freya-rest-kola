@@ -214,16 +214,7 @@ class ListingControllerTest extends TestCase
             'status',
             'message',
             'data' => [
-                '*' => [
-                    'listing_id',
-                    'title',
-                    'description',
-                    'media',
-                    'price',
-                    'created_at',
-                    'user',
-                    'plant',
-                    'stage']
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
             ]
         ]);
         $responseData = $response->decodeResponseJson()->json();
@@ -241,16 +232,7 @@ class ListingControllerTest extends TestCase
             'status',
             'message',
             'data' => [
-                '*' => [
-                    'listing_id',
-                    'title',
-                    'description',
-                    'media',
-                    'price',
-                    'created_at',
-                    'user',
-                    'plant',
-                    'stage']
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
             ]
         ]);
         $response->assertJsonPath('data.0.stage.name', 'mag');
