@@ -5,25 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class HardCodedController extends Controller
+class HardCodedController extends BaseController
 {
-    //TODO: legyen baserequest
     public function getDocumentation()
 {
     $filename = 'FreyasGardenDocumentation.docx';
     $relativePath = "documentation/{$filename}";
     
     if (!Storage::disk('public')->exists($relativePath)) {
-        return response()->json([
-            'message' => 'Documentation file not found',
-            'path' => $relativePath
-        ], 404);
+        return $this->jsonResponse(404,
+            'Documentation file not found',
+            $relativePath);
     }
 
-    return response()->json([
-        'download_url' => asset("storage/documentation/{$filename}"),
-        'message' => 'Documentation available at the provided URL'
-    ]);
+    return $this->jsonResponse(200,
+        'Documentation available at the provided URL',
+        asset("storage/documentation/{$filename}"));
 }
 
 public function getPlaceholders()
@@ -32,10 +29,9 @@ public function getPlaceholders()
     $disk = Storage::disk('public');
     
     if (!$disk->exists($directoryPath)) {
-        return response()->json([
-            'message' => 'Placeholders directory not found',
-            'path' => $directoryPath
-        ], 404);
+        return $this->jsonResponse(404,
+            'Placeholders directory not found',
+            $directoryPath);
     }
 
     $files = $disk->files($directoryPath);
@@ -47,10 +43,11 @@ public function getPlaceholders()
         $fileUrls[] = asset("storage/{$cleanPath}");
     }
 
-    return response()->json([
-        'files' => $fileUrls,
-        'count' => count($fileUrls),
-        'message' => 'Placeholder images available'
-    ]);
+    return $this->jsonResponse(200,
+    'Placeholders available at the provided URLs',
+    [
+        $directoryPath => $fileUrls,
+        'count' => count($fileUrls)
+    ]);    
 }
 }
