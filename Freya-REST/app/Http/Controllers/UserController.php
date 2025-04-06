@@ -310,8 +310,7 @@ class UserController extends BaseController
         }
     }
 
-    //TODO: untested.
-    public function destroy(UserRequest $request, string $username)
+    public function destroy(UserRequest $request, ?string $username = null)
     {
         try {
             if($username){
@@ -320,7 +319,6 @@ class UserController extends BaseController
             elseif($request->user()){
                 $user = $request->user();
             }
-            // Perform the soft delete
             $user->delete();
 
             return $this->jsonResponse(200, 'Felhasználó sikeresen törölve');
@@ -329,7 +327,6 @@ class UserController extends BaseController
         }
     }
 
-    //TODO untested
     public function restore(string $username)
     {
         try {
