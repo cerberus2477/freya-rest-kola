@@ -254,6 +254,9 @@ class UserController extends BaseController
             'picture' => $user->picture,
             'description' => $user->description,
             'role_id' => $user->role_id,
+            'role_name' => $user->role->name,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
         ],
         'plants' => $userPlants->map(function ($userPlant) {
             return [
