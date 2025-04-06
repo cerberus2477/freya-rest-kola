@@ -179,7 +179,6 @@ class ListingController extends BaseController
 
     public function update(ListingRequest $request, $id)
     {
-        // Find listing by ID
         $listing = Listing::find($id);
         if (!$listing) {
             return $this->jsonResponse(404, 'Listing not found');
