@@ -233,9 +233,7 @@ class ListingController extends BaseController
 
 
 
-// APIDOC COMMENTS 
-//TODO: maybie put these in a sepereate file
-
+// APIDOC COMMENTS
 
 /**
  * @api {delete} /listing/:id Delete Listing

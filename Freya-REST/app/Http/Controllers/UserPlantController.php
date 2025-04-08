@@ -7,8 +7,6 @@ use App\Models\UserPlant;
 
 class UserPlantController extends BaseController
 {
-    //TODO: make sure errors are catched (like not found) 
-
     /**
      * Display a listing of the resource.
      */
