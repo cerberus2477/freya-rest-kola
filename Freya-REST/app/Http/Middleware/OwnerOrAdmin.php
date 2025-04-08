@@ -9,7 +9,6 @@ use App\Models\Listing;
 use App\Models\User;
 use App\Models\Article;
 use App\Models\UserPlant;
-use Illuminate\Database\Eloquent\Model;
 
 class OwnerOrAdmin
 {
@@ -35,7 +34,6 @@ public function handle(Request $request, Closure $next, ?string $modelType): Res
 {
     $user = $request->user();
     $model = $this->resolveModelFromRequest($request, $modelType);
-    //TODO: use jsonresponse class
     if (!$model || !$user->canModify($model)) {
         return response()->json([
             'status' => 403,
