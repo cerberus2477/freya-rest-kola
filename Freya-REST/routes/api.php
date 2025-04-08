@@ -56,8 +56,8 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::post('/profile/plants', [UserPlantController::class, 'store']);
     //Own resource
     Route::middleware(['ownerOrAdmin:user-plant'])->group(function(){
-        Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);//TODO test
-        Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);//TODO test
+        Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);
+        Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);
     });
 
     //listings
@@ -76,7 +76,7 @@ Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     Route::get('/stats', [UserPlantController::class, 'get-stats']);//TODO to be written
 
     //article
-    Route::post('/article', [ArticleController::class, 'create']);//TODO not ttested
+    Route::post('/article', [ArticleController::class, 'create']);//TODO not tested
     Route::post('/articles/upload-image', [ArticleController::class, 'uploadArticleImage'])->name('articles.upload-image');
 
     //TODO!! (yes) (middllefiddlemiddleware)
@@ -98,8 +98,8 @@ Route::middleware(['auth:sanctum', 'abilities:admin'])->group(function (){
     //users
     Route::get('/users', [UserController::class, 'index']);
     Route::patch('/users/{username}', [UserController::class, 'update'])->name('update');
-    Route::delete('/users/{username}', [UserController::class, 'destroy']);//TODO to be tested
-    Route::patch('/users/{username}/restore', [UserController::class, 'restore']);//TODO to be tested
+    Route::delete('/users/{username}', [UserController::class, 'destroy']);
+    Route::patch('/users/{username}/restore', [UserController::class, 'restore']);
     Route::patch('/users/{username}/role', [UserController::class, 'roleUpdate'])->name('role-update');
     
 
