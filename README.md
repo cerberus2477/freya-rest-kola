@@ -13,6 +13,7 @@
 ```cmd
 composer install (composer update)
 php artisan migrate:refresh --seed
+php artisan storage:link
 php artisan serve --port 8069
 ```
 4. Az api megnyitása a `http://127.0.0.1:8069/` címen.  Ajánlott pl. Postman, EchoAPI használata teszteléshez. Enjoy :)
