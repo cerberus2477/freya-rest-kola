@@ -233,19 +233,8 @@ class ListingController extends BaseController
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 // APIDOC COMMENTS 
-//TODO: put these in a sepereate file
+//TODO: maybie put these in a sepereate file
 
 
 /**
@@ -266,7 +255,6 @@ class ListingController extends BaseController
  *         "message": "Hirdetés sikeresen törölve"
  *     }
  *
-//TODO: implemnt error
  */
 
 
@@ -310,7 +298,6 @@ class ListingController extends BaseController
  *         }
  *     }
  *
- //TODO: implement this 
  * @apiErrorExample {json} Error-Response:
  *     HTTP/1.1 404 Not Found
  *     {
@@ -360,7 +347,6 @@ class ListingController extends BaseController
      *
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 422 Unprocessable Entity
-    //TODO: example here
      */
 
 
