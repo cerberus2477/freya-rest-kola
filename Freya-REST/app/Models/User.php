@@ -71,9 +71,7 @@ class User extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        // Customize the reset URL to point to your frontend
-        //TODO put web url in env
-        $url = 'http://127.0.0.1:8000/reset-password?token=' . $token . '&email=' . $this->email;
+        $url = env('FRONTEND_URL') .'/reset-password?token=' . $token . '&email=' . $this->email;
 
         // Send the notification with the custom URL
         $this->notify(new CustomResetPassword($url));
