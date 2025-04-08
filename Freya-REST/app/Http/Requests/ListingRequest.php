@@ -37,7 +37,7 @@ class ListingRequest extends BaseRequest
         'title' => 'required|string|max:255|min:2',
         'description' => 'required|string|max:1000',
         'city' => 'required|string|max:100',
-        'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
+        'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:51200',
         'media' => 'required|array|min:1|max:10',
         'price' => 'required|integer|min:0',
     ];
@@ -50,7 +50,7 @@ public function rulesForUpdate(): array
         'title' => 'sometimes|string|max:255|min:2',
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',
-        'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
+        'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:51200',
         'media' => 'required|array|min:1|max:10',
         'price' => 'sometimes|integer|min:0',
     ];
@@ -60,7 +60,6 @@ public function messages(): array
 {
     return [
         // User Plants ID
-        //TODO
         'user_plants_id.required' => 'A növény azonosítójának megadása kötelező.',
         'user_plants_id.integer' => 'A növény azonosítójának egész számnak kell lennie.',
         'user_plants_id.exists' => 'A kiválasztott növény nem létezik.',
@@ -88,8 +87,7 @@ public function messages(): array
         'media.required' => 'Médiafájl megadása kötelező.',
         'media.image.*' => 'Médiafájlnak képnek kell lennie.',
         'media.mimes.*' => 'Médiafájl csak jpeg, png, jpg, gif vagy svg formátumú lehet.',
-        //TODO: ez nem túl kevés?
-        'media.max.*' => 'Médiafájl legfeljebb 10 MB méretű lehet.',
+        'media.max.*' => 'Médiafájl legfeljebb 50 MB méretű lehet.',
 
         // Price
         'price.required' => 'Az ár megadása kötelező.',
