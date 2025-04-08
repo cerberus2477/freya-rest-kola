@@ -160,15 +160,19 @@ class ListingControllerTest extends TestCase
 
         $listing1 = Listing::factory()->create([
             'user_plants_id' => $userplant1->id,
+            'price' => 100
         ]);
         $listing2 = Listing::factory()->create([
             'user_plants_id' => $userplant2->id,
+            'price' => 200
         ]);
         $listing3 = Listing::factory()->create([
             'user_plants_id' => $userplant3->id,
+            'price' => 300
         ]);
         $listing4 = Listing::factory()->create([
             'user_plants_id' => $userplant4->id,
+            'price' => 400
         ]);
 
 
@@ -184,6 +188,12 @@ class ListingControllerTest extends TestCase
         ]);
         $response->assertJsonPath('data.0.plant.name', 'Alma');
 
+        //noPlant
+        $response = $this->get('/api/listings?plant=Aaaaaa');
+        $response->assertJson([
+            'status' => 200,
+            'message' => 'Listings retrieved successfully', //TODO: "No listings found" kene ide no?
+        ]);
 
         //user
         $response = $this->get('/api/listings?user=bbb');
@@ -225,6 +235,13 @@ class ListingControllerTest extends TestCase
         }
         $this->assertEquals(3, $n);
 
+        //noType
+        $response = $this->get('/api/listings?type=Aaaaaa');
+        $response->assertJson([
+            'status' => 200,
+            'message' => 'Listings retrieved successfully', //TODO: "No listings found" kene ide no?
+        ]);
+
         //stage
         $response = $this->get('/api/listings?stage=mag');
         $response->assertStatus(200);
@@ -236,6 +253,171 @@ class ListingControllerTest extends TestCase
             ]
         ]);
         $response->assertJsonPath('data.0.stage.name', 'mag');
+
+        //noStage
+        $response = $this->get('/api/listings?stage=Aaaaaa');
+        $response->assertJson([
+            'status' => 200,
+            'message' => 'Listings retrieved successfully', //TODO: "No listings found" kene ide no?
+        ]);
+
+        //price
+        $response = $this->get('/api/listings?minprice=300');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.price', 300);
+        $response->assertJsonPath('data.1.price', 400);
+
+        $response = $this->get('/api/listings?maxprice=200');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.price', 100);
+        $response->assertJsonPath('data.1.price', 200);
     }
     
+    public function test_can_get_all_listings_matching_filters_paginated()
+    {
+
+        //users
+        $user1 = User::factory()->create([
+            'username' => 'aaa',
+        ]);
+        $user2 = User::factory()->create([
+            'username' => 'bbb',
+        ]);
+        $user3 = User::factory()->create([
+            'username' => 'ccc',
+        ]);
+
+        //userplants
+        $userplant1 = UserPlant::factory()->create([
+            'user_id' => $user1->id,
+            'plant_id' => 1, //alma
+            'stage_id' => 4 //termés
+        ]);
+        $userplant2 = UserPlant::factory()->create([
+            'user_id' => $user2->id,
+            'plant_id' => 2, //körte
+            'stage_id' => 3 //növény
+        ]);
+        $userplant3 = UserPlant::factory()->create([
+            'user_id' => $user3->id,
+            'plant_id' => 3, //banán
+            'stage_id' => 2 //palánta
+        ]);
+        $userplant4 = UserPlant::factory()->create([
+            'user_id' => $user1->id,
+            'plant_id' => 50, //zöldborsó
+            'stage_id' => 1 //mag
+        ]);
+
+
+        $listing1 = Listing::factory()->create([
+            'user_plants_id' => $userplant1->id,
+        ]);
+        $listing2 = Listing::factory()->create([
+            'user_plants_id' => $userplant2->id,
+        ]);
+        $listing3 = Listing::factory()->create([
+            'user_plants_id' => $userplant3->id,
+        ]);
+        $listing4 = Listing::factory()->create([
+            'user_plants_id' => $userplant4->id,
+        ]);
+
+
+        //plant
+        $response = $this->get('/api/listings?plant=Alma');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.plant.name', 'Alma');
+
+        //user
+        $response = $this->get('/api/listings?user=bbb');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $responseData = $response->decodeResponseJson()->json();
+        foreach ($responseData['data'] as $item) {
+            $this->assertEquals('bbb', $item['user']['username']);
+        }
+
+        //type
+        $response = $this->get('/api/listings?type=gyümölcs');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $responseData = $response->decodeResponseJson()->json();
+        $n = 0;
+        foreach ($responseData['data'] as $item) {
+            $this->assertEquals('gyümölcs', $item['plant']['type']);
+            $n = $n+1;
+        }
+        $this->assertEquals(3, $n);
+
+        //stage
+        $response = $this->get('/api/listings?stage=mag');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.stage.name', 'mag');
+
+        //price
+        $response = $this->get('/api/listings?minprice=300');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.price', 300);
+        $response->assertJsonPath('data.1.price', 400);
+
+        $response = $this->get('/api/listings?maxprice=200');
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'status',
+            'message',
+            'data' => [
+                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+            ]
+        ]);
+        $response->assertJsonPath('data.0.price', 100);
+        $response->assertJsonPath('data.1.price', 200);
+    }
 }
