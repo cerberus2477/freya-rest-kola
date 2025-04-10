@@ -23,8 +23,8 @@ class HardCodedControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson([
-            'download_url' => 'http://localhost:8069/storage/documentation/FreyasGardenDocumentation.docx',
             'message' => 'Documentation available at the provided URL',
+            'data' => 'http://localhost:8069/storage/documentation/FreyasGardenDocumentation.docx',
         ]);
     }
 
@@ -34,8 +34,8 @@ class HardCodedControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson([
-            'download_url' => 'http://localhost:8069/storage/documentation/FreyasGardenDocumentation.docx',
             'message' => 'Documentation available at the provided URL',
+            'data' => 'http://localhost:8069/storage/documentation/FreyasGardenDocumentation.docx',
         ]);
     }
 
@@ -56,31 +56,42 @@ class HardCodedControllerTest extends TestCase
         }
 
         // Call the API endpoint
-        $response = $this->get('/api/placeholders');
+        $response = $this->get('/api/images/placeholders');
 
         // Assert the response status
         $response->assertStatus(200);
 
         // Assert the response JSON structure
         $response->assertJsonStructure([
-            'files',
-            'count',
             'message',
+            'data' => [
+                'placeholders',
+                'count',
+            ],
         ]);
 
         // Assert the count of files
         $response->assertJson([
-            'count' => count($files),
-            'message' => 'Placeholder images available',
+            'status' => 200,
+            'message' => 'Placeholders available at the provided URLs',
+            'data' => [
+                'placeholders' => [
+                    'http://localhost:8069/storage/placeholders/image1.jpg',
+                    'http://localhost:8069/storage/placeholders/image2.png',
+                    'http://localhost:8069/storage/placeholders/image3.gif',
+                ],
+                'count' => count($files),
+            ],
         ]);
 
         // Assert the file URLs
         $expectedUrls = array_map(function ($file) {
             return asset("storage/{$file}");
         }, $files);
-
         $response->assertJson([
-            'files' => $expectedUrls,
+            'data' => [
+                'placeholders' => $expectedUrls,
+            ],
         ]);
     }
 }

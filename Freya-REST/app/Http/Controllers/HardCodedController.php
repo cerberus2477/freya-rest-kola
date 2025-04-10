@@ -23,9 +23,8 @@ class HardCodedController extends BaseController
         asset("storage/documentation/{$filename}"));
 }
 
-public function getPlaceholders()
+public function getPlaceholders(string $directoryPath)
 {
-    $directoryPath = 'placeholders'; // Relative to public disk
     $disk = Storage::disk('public');
     
     if (!$disk->exists($directoryPath)) {
