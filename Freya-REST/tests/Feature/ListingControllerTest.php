@@ -287,9 +287,9 @@ class ListingControllerTest extends TestCase
         $response->assertJsonPath('data.1.price', 200);
     }
     
-    public function test_can_get_all_listings_matching_filters_paginated()
+    public function test_can_get_paginated_listings()
     {
-
+        
         //users
         $user1 = User::factory()->create([
             'username' => 'aaa',
@@ -326,98 +326,78 @@ class ListingControllerTest extends TestCase
 
         $listing1 = Listing::factory()->create([
             'user_plants_id' => $userplant1->id,
+            'price' => 100
         ]);
         $listing2 = Listing::factory()->create([
             'user_plants_id' => $userplant2->id,
+            'price' => 200
         ]);
         $listing3 = Listing::factory()->create([
             'user_plants_id' => $userplant3->id,
+            'price' => 300
         ]);
         $listing4 = Listing::factory()->create([
             'user_plants_id' => $userplant4->id,
+            'price' => 400
+        ]);
+
+        //pagesize = 10
+        $response = $this->get('/api/listings?pageSize=10');
+        $response->assertStatus(200);
+        $response->assertJsonCount(4, 'data');
+
+        //pagesize = 3, page 1
+        $response = $this->get('/api/listings?pageSize=3&page=1');
+        $response->assertStatus(200);
+        $response->assertJsonCount(3, 'data');
+
+        //pagesize = 3, page 2
+        $response = $this->get('/api/listings?pageSize=3&page=2');
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_can_view_one_listing()
+    {
+        $user1 = User::factory()->create([
+            'username' => 'aaa',
+        ]);
+        $user2 = User::factory()->create([
+            'username' => 'bbb',
+        ]);
+
+        $userplant1 = UserPlant::factory()->create([
+            'user_id' => $user1->id,
+            'plant_id' => 1, //alma
+            'stage_id' => 4 //termés
+        ]);
+
+        $listing1 = Listing::factory()->create([
+            'user_plants_id' => $userplant1->id,
+            'price' => 100
         ]);
 
 
-        //plant
-        $response = $this->get('/api/listings?plant=Alma');
+        //show existing
+        $response = $this->get('/api/listings/'.$listing1->id);
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'status',
             'message',
+            'data' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+        ]);
+        $response->assertJson([
             'data' => [
-                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
+                'price' => 100,
+                'user' => ['username' => 'aaa'],
             ]
         ]);
-        $response->assertJsonPath('data.0.plant.name', 'Alma');
 
-        //user
-        $response = $this->get('/api/listings?user=bbb');
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'status',
-            'message',
-            'data' => [
-                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
-            ]
+        //cannot show 
+        $response = $this->get('/api/listings/0');
+        $response->assertStatus(404);
+        $response->assertJson([
+            'message' => '0. listing not found'
         ]);
-        $responseData = $response->decodeResponseJson()->json();
-        foreach ($responseData['data'] as $item) {
-            $this->assertEquals('bbb', $item['user']['username']);
-        }
-
-        //type
-        $response = $this->get('/api/listings?type=gyümölcs');
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'status',
-            'message',
-            'data' => [
-                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
-            ]
-        ]);
-        $responseData = $response->decodeResponseJson()->json();
-        $n = 0;
-        foreach ($responseData['data'] as $item) {
-            $this->assertEquals('gyümölcs', $item['plant']['type']);
-            $n = $n+1;
-        }
-        $this->assertEquals(3, $n);
-
-        //stage
-        $response = $this->get('/api/listings?stage=mag');
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'status',
-            'message',
-            'data' => [
-                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
-            ]
-        ]);
-        $response->assertJsonPath('data.0.stage.name', 'mag');
-
-        //price
-        $response = $this->get('/api/listings?minprice=300');
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'status',
-            'message',
-            'data' => [
-                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
-            ]
-        ]);
-        $response->assertJsonPath('data.0.price', 300);
-        $response->assertJsonPath('data.1.price', 400);
-
-        $response = $this->get('/api/listings?maxprice=200');
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'status',
-            'message',
-            'data' => [
-                '*' => ['listing_id', 'title', 'description', 'media', 'price', 'created_at', 'user', 'plant', 'stage']
-            ]
-        ]);
-        $response->assertJsonPath('data.0.price', 100);
-        $response->assertJsonPath('data.1.price', 200);
     }
 }
