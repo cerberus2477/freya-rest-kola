@@ -30,7 +30,7 @@ class User extends Authenticatable
 
     public function userPlants()
     {
-        return $this->hasMany(UserPlant::class, 'user_id');
+        return $this->hasMany(UserPlant::class);
     }
 
 
@@ -85,24 +85,28 @@ class User extends Authenticatable
     public function canModify($model): bool
     {
         if ($this->tokenCan('admin')) {
-            return true; // Admins can modify these models
+            return true;
         }
     
         if ($model instanceof User) {
-            return $this->id === $model->id; // Users can modify their own profile
+            return $this->id === $model->id;
         }
     
         if ($model instanceof Article) {
-            return $this->id === $model->author_id; // Users can modify their own articles
+            return $this->id === $model->author_id;
         }
     
         if ($model instanceof UserPlant) {
-            return $this->id === $model->user_id; // Users can modify their own plants
+            return $this->id === $model->user_id;
         }
     
         if ($model instanceof Listing) {
-            $userPlant = $model->userPlant; // This retrieves the related UserPlant model
-            return $userPlant && $this->id == $model->userPlant->user->id; // Check if the user owns the UserPlant
+            if (!$model->relationLoaded('userPlant')) {
+                $model->load(['userPlant.user']);
+            }
+
+            $userPlant = $model->userPlant;
+            return $userPlant && $this->canModify($userPlant);
         }
     
         return false; // Default deny
