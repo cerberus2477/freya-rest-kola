@@ -51,7 +51,7 @@ public function rulesForUpdate(): array
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',
         'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:51200',
-        'media' => 'required|array|min:1|max:10',
+        'media' => 'sometimes|array|min:1|max:10',
         'price' => 'sometimes|integer|min:0',
     ];
 }
