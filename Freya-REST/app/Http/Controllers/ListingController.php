@@ -23,10 +23,9 @@ class ListingController extends BaseController
         ]);
     }
 
-    
-    //TODO: format datetime if necessary (we need both date and time)
     protected function formatListings($listings)
     {
+
         return collect($listings)->map(function ($listing) {
             return [
                 'listing_id' => $listing->id,
@@ -37,7 +36,7 @@ class ListingController extends BaseController
                 ? array_map(fn($file) => Storage::url("public/" . $file), json_decode($listing->media, true) ?? []) 
                 : [],
                 'price' => $listing->price,
-                'created_at' => $listing->created_at,
+                'created_at' => $listing->created_at ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
                 'user' => [
                     'id' => $listing->userPlant->user->id,
                     'username' => $listing->userPlant->user->username,
