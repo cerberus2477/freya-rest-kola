@@ -33,7 +33,7 @@ class ListingController extends BaseController
                 'description' => $listing->description,
                 //the json array stored in db is decoded, and each filename gets turned into the full path of the image
                 'media' => $listing->media 
-                ? array_map(fn($file) => Storage::url("public/" . $file), json_decode($listing->media, true) ?? []) 
+                ? array_map(fn($file) => env('APP_URL') . Storage::url("public/" . $file), json_decode($listing->media, true) ?? []) 
                 : [],
                 'price' => $listing->price,
                 'created_at' => $listing->created_at ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
