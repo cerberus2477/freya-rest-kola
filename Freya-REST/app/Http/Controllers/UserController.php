@@ -199,6 +199,7 @@ class UserController extends BaseController
                 $user->forceFill([
                     'password' => bcrypt($password), // Hash the password
                 ])->save();
+                $user->tokens()->delete();
             }
         );
 
