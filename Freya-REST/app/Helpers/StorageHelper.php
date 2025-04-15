@@ -43,12 +43,12 @@ class StorageHelper
     // Returns a placeholder image path (random if filename is not provided).
     public static function getPlaceholderImage(?string $filename = null): string
     {
-        $placeholders = Storage::disk('public')->files('profilePictures');
+        $placeholders = Storage::disk('public')->files('placeholders');
 
         if (empty($placeholders)) {
-            throw new Exception("No placeholder images found in 'storage/app/public/profilePictures'.");
+            throw new Exception("No placeholder images found in 'storage/app/public/placeholders'.");
         }
-        return $filename ? "profilePictures/{$filename}" : $placeholders[array_rand($placeholders)];
+        return $filename ? "placeholders/{$filename}" : $placeholders[array_rand($placeholders)];
     }
 
 
