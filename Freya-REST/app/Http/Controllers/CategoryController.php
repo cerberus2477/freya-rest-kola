@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends BaseController
 {
@@ -35,9 +36,15 @@ class CategoryController extends BaseController
      *         ]
      *     }
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->jsonResponse(200, "Categories retrieved successfully", Category::all());
+        $cacheKey = 'categories_all_' . md5($request->fullUrl());
+            if (Cache::has($cacheKey)) {
+                return Cache::get($cacheKey);
+            }
+        $response = Category::all();
+        Cache::put($cacheKey, $response);
+        return $this->jsonResponse(200, "Categories retrieved successfully", $response);
     }
 
     /**

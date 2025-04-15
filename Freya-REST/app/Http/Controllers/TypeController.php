@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Type;
 use App\Http\Requests\TypeRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+
 
 class TypeController extends BaseController
 {
@@ -34,9 +37,15 @@ class TypeController extends BaseController
      *         ]
      *     }
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->jsonResponse(200, "Types retrieved successfully", Type::all());
+        $cacheKey = 'Type_all_' . md5($request->fullUrl());
+            if (Cache::has($cacheKey)) {
+                return Cache::get($cacheKey);
+            }
+        $response = Type::all();
+        Cache::put($cacheKey, $response);
+        return $this->jsonResponse(200, "Types retrieved successfully", $response);
     }
 
     /**

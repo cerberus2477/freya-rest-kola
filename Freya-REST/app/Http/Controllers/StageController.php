@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Stage;
 use App\Http\Requests\StageRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class StageController extends BaseController
 {
@@ -34,9 +36,16 @@ class StageController extends BaseController
      *         ]
      *     }
      */
-    public function index()
+
+    public function index(Request $request)
     {
-        return $this->jsonResponse(200, "Stages retrieved successfully", Stage::all());
+        $cacheKey = 'Stages_all_' . md5($request->fullUrl());
+            if (Cache::has($cacheKey)) {
+                return Cache::get($cacheKey);
+            }
+        $response = Stage::all();
+        Cache::put($cacheKey, $response);
+        return $this->jsonResponse(200, "Stages retrieved successfully", $response);
     }
 
     /**

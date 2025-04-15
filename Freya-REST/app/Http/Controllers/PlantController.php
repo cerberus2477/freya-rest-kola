@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Plant;
 use App\Http\Requests\PlantRequest;
+use Illuminate\support\Facades\Cache;
+use Illuminate\Http\Request;
 
 class PlantController extends BaseController
 {
@@ -61,13 +63,16 @@ class PlantController extends BaseController
      *     }
      */
     
-    public function index()
+    public function index(Request $request)
     {
+        $cacheKey = 'plants_all_' . md5($request->fullUrl());
+            if (Cache::has($cacheKey)) {
+                return Cache::get($cacheKey);
+            }
         $plants = Plant::with('type')->get();
-    
-        $formattedPlants = $this->format($plants);
-
-        return $this->jsonResponse(200, "Plants retrieved successfully", $formattedPlants);
+        $response = $this->format($plants);
+        Cache::put($cacheKey, $response);
+        return $this->jsonResponse(200, "Plants retrieved successfully", $response);
     }
 
     /**
