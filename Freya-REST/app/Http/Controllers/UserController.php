@@ -293,7 +293,7 @@ class UserController extends BaseController
             $user = $request->user();
         }
 
-        $user->update($request);
+        $user->update($request->validated());
 
         return $this->jsonResponse(200, 'Felhasználó sikeresen frissítve',$user);
     }
