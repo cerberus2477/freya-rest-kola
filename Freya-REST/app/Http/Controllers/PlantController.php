@@ -7,6 +7,20 @@ use App\Http\Requests\PlantRequest;
 
 class PlantController extends BaseController
 {
+    protected function format($plants){
+        return collect($plants)->map(function ($plant) {
+            return [
+                'id' => $plant->id,
+                'name' => $plant->name,
+                'latin_name' => $plant->latin_name,
+                'type'=>[
+                    'id' => $plant->type->id,
+                    'name' => $plant->type->name,
+                ]];
+        });
+    }
+
+    //TODO apidoc comments update(formatttin function is new)
     /**
      * @api {get} /api/plants Get Plants
      * @apiName GetPlants
@@ -49,7 +63,11 @@ class PlantController extends BaseController
     
     public function index()
     {
-        return $this->jsonResponse(200, "Plants retrieved successfully", Plant::all());
+        $plants = Plant::with('type')->get();
+    
+        $formattedPlants = $this->format($plants);
+
+        return $this->jsonResponse(200, "Plants retrieved successfully", $formattedPlants);
     }
 
     /**
@@ -83,7 +101,9 @@ class PlantController extends BaseController
     public function show($id)
     {
         $plant = Plant::findOrFail($id);
-        return $this->jsonResponse(200, "Plant retrieved successfully", $plant);
+        $formattedPlant = $this->format($plant);
+
+        return $this->jsonResponse(200, "Plant retrieved successfully", $formattedPlant);
     }
     
     /**
@@ -117,7 +137,9 @@ class PlantController extends BaseController
     public function store(PlantRequest $request)
     {
         $plant = Plant::create($request->validated());
-        return $this->jsonResponse(201, "Plant created successfully", $plant); 
+        $formattedPlant = $this->format($plant);
+
+        return $this->jsonResponse(201, "Plant created successfully", $formattedPlant); 
     }
 
     /**
@@ -153,7 +175,9 @@ class PlantController extends BaseController
     {
         $plant = Plant::findOrFail($id);
         $plant->update($request->validated());
-        return $this->jsonResponse(200, "Plant updated successfully", $plant);
+        $formattedPlant = $this->format($plant);
+
+        return $this->jsonResponse(200, "Plant updated successfully", $formattedPlant);
     }
 
     /**
