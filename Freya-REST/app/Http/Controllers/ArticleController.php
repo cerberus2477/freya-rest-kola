@@ -93,7 +93,7 @@ class ArticleController extends BaseController
             }
 
             $response = $this->jsonResponse(200, 'Articles retrieved successfully', $articles);
-            Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+            Cache::put($cacheKey, $response, Carbon::now()->addMinutes(60));
             return $response;
         }
 
@@ -117,7 +117,7 @@ class ArticleController extends BaseController
         }
         
         $response = $this->jsonResponse(200, "\"$title\" article found", $article);
-        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(60));
         return $response;
     }
 

@@ -14,7 +14,7 @@ use App\Http\Controllers\HardCodedController;
 //No need for token
 //fixed file paths
 Route::get('/documentation', [HardCodedController::class, 'getDocumentation']);
-Route::get('/images/{folder}', [HardCodedController::class, 'getPlaceholders'])->where('folder', 'placeholders|profilePictures');
+Route::get('/images/{folder}', [HardCodedController::class, 'getPlaceholders'])->where('folder', 'placeholders|profilePictures|notFoundImage');
 
 //login
 Route::post('/login', [UserController::class,'login'])->name('login');

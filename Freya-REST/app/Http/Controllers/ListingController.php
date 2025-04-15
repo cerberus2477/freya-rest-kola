@@ -31,12 +31,19 @@ class ListingController extends BaseController
                 'listing_id' => $listing->id,
                 'title' => $listing->title,
                 'description' => $listing->description,
-                //the json array stored in db is decoded, and each filename gets turned into the full path of the image
                 'media' => $listing->media 
-                ? array_map(fn($file) => env('APP_URL') . Storage::url("public/" . $file), json_decode($listing->media, true) ?? []) 
-                : [],
+                    ? array_map(function ($file) {
+                        $storagePath = $file; // No need for "public/" if disk is 'public'
+                        $fullUrl = env('APP_URL') . Storage::url("public/" . $file);
+                        $notFoundUrl = 'http://127.0.0.1:8069/storage/notFoundImage/NotFound.png';
+                    
+                        return Storage::disk('public')->exists($storagePath) 
+                            ? $fullUrl 
+                            : $notFoundUrl;
+                    }, json_decode($listing->media, true) ?? []) 
+                    : [],
                 'price' => $listing->price,
-                'created_at' => $listing->created_at ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
+                'created_at' => $listing->created_at, //? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null, ezzel nézne ki jól a dátum
                 'user' => [
                     'id' => $listing->userPlant->user->id,
                     'username' => $listing->userPlant->user->username,
@@ -133,7 +140,7 @@ class ListingController extends BaseController
             $response = $this->jsonResponse(200, 'Listings retrieved successfully', $paginatedListings);
         }
 
-        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(1));
         return $response;
     }
 
@@ -157,7 +164,7 @@ class ListingController extends BaseController
 
         // Cache the response
         $response = $this->jsonResponse(200, "$id. listing found", $formattedListing);
-        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(10));
+        Cache::put($cacheKey, $response, Carbon::now()->addMinutes(1));
 
         return $response;
     }
@@ -172,7 +179,7 @@ class ListingController extends BaseController
         // Store filenames (only filename, without path) in the DB as JSON
         $data = array_merge($request->validated(), ['media' => json_encode($imagePaths)]);
         $listing = Listing::create($data);
-        return $this->jsonResponse(201, 'Listing created successfully', $listing);
+        return $this->jsonResponse(201, 'Listing created successfully', $this->formatListings(collect([$listing]))->first());
     }
 
 
@@ -198,7 +205,7 @@ class ListingController extends BaseController
         // Update listing with new data
         $data = array_merge($request->validated(), ['media' => json_encode($newImagePaths)]);
         $listing->update($data);
-        return $this->jsonResponse(201, 'Listing updated successfully', $listing);
+        return $this->jsonResponse(201, 'Listing updated successfully', $this->formatListings(collect([$listing]))->first());
     }
 
 
