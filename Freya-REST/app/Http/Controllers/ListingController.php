@@ -43,7 +43,8 @@ class ListingController extends BaseController
                     }, json_decode($listing->media, true) ?? []) 
                     : [],
                 'price' => $listing->price,
-                'created_at' => $listing->created_at, //? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null, ezzel nézne ki jól a dátum
+                'created_at' => $listing->created_at, 
+// date formatting: ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
                 'user' => [
                     'id' => $listing->userPlant->user->id,
                     'username' => $listing->userPlant->user->username,
