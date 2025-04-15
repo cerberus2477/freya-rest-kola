@@ -36,7 +36,7 @@ class ListingController extends BaseController
                 ? array_map(fn($file) => env('APP_URL') . Storage::url("public/" . $file), json_decode($listing->media, true) ?? []) 
                 : [],
                 'price' => $listing->price,
-                'created_at' => $listing->created_at 
+                'created_at' => $listing->created_at, 
 // date formatting: ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
                 'user' => [
                     'id' => $listing->userPlant->user->id,
