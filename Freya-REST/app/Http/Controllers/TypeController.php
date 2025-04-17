@@ -15,6 +15,7 @@ class TypeController extends BaseController
      * @apiName GetTypes
      * @apiGroup Type
      * @apiDescription Retrieve a list of all types.
+     * This response is cached for improved performance. Cache is invalidated when a type is created, updated, deleted, or restored.
      * 
      * @apiSuccess {Integer} id The ID of the type.
      * @apiSuccess {String} name The name of the type.
@@ -81,6 +82,7 @@ class TypeController extends BaseController
      * @apiName CreateType
      * @apiGroup Type
      * @apiDescription Create a new type.
+     * This operation invalidates the cache for types.
      * 
      * @apiParam {String} name The name of the type.
      * 
@@ -101,6 +103,7 @@ class TypeController extends BaseController
     public function store(TypeRequest $request)
     {
         $type = Type::create($request->validated());
+        Cache::forget('types_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(201, "Type created successfully", $type);
     }
 
@@ -109,6 +112,7 @@ class TypeController extends BaseController
      * @apiName UpdateType
      * @apiGroup Type
      * @apiDescription Update an existing type.
+     * This operation invalidates the cache for types.
      * 
      * @apiParam {Integer} id The ID of the type to update.
      * @apiParam {String} name The name of the type.
@@ -131,6 +135,7 @@ class TypeController extends BaseController
     {
         $type = Type::findOrFail($id);
         $type->update($request->validated());
+        Cache::forget('types_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Type updated successfully", $type);
     }
 
@@ -139,6 +144,7 @@ class TypeController extends BaseController
      * @apiName DeleteType
      * @apiGroup Type
      * @apiDescription Delete a type by its ID.
+     * This operation invalidates the cache for types.
      * 
      * @apiParam {Integer} id The ID of the type to delete.
      * 
@@ -153,6 +159,7 @@ class TypeController extends BaseController
     {
         $type = Type::findOrFail($id);
         $type->delete();
+        Cache::forget('types_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Type deleted successfully");
     }
 
@@ -161,6 +168,7 @@ class TypeController extends BaseController
      * @apiName RestoreType
      * @apiGroup Type
      * @apiDescription Restore a deleted type by its ID.
+     * This operation invalidates the cache for types.
      * 
      * @apiParam {Integer} id The ID of the type to restore.
      * 
@@ -175,6 +183,7 @@ class TypeController extends BaseController
     {
         $type = Type::onlyTrashed()->where('id', $id)->firstOrFail();
         $type->restore();
+        Cache::forget('types_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, 'Type restored successfully');
     }
 }

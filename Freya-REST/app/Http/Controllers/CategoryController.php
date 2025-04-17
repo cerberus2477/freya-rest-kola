@@ -14,6 +14,7 @@ class CategoryController extends BaseController
      * @apiName GetCategories
      * @apiGroup Category
      * @apiDescription Retrieve a list of all categories.
+     * The response is cached for improved performance. Cache is invalidated when a category is created, updated, deleted, or restored.
      * 
      * @apiSuccess {Integer} id The ID of the category.
      * @apiSuccess {String} name The name of the category.
@@ -102,6 +103,7 @@ class CategoryController extends BaseController
     public function store(CategoryRequest $request)
     {
         $category = Category::create($request->validated());
+        Cache::forget('categories_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(201, "Category created successfully", $category);
     }
 
@@ -110,6 +112,7 @@ class CategoryController extends BaseController
      * @apiName UpdateCategory
      * @apiGroup Category
      * @apiDescription Update an existing category.
+     * This operation invalidates the cached list of categories.
      * 
      * @apiParam {Integer} id The ID of the category to update.
      * @apiParam {String} name The name of the category.
@@ -132,6 +135,7 @@ class CategoryController extends BaseController
     {
         $category = Category::findOrFail($id);
         $category->update($request->validated());
+        Cache::forget('categories_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Category updated successfully", $category);
     }
 
@@ -140,6 +144,7 @@ class CategoryController extends BaseController
      * @apiName DeleteCategory
      * @apiGroup Category
      * @apiDescription Delete a category by its ID.
+     * This operation invalidates the cached list of categories.
      * 
      * @apiParam {Integer} id The ID of the category to delete.
      * 
@@ -154,6 +159,7 @@ class CategoryController extends BaseController
     {
         $category = Category::findOrFail($id);
         $category->delete();
+        Cache::forget('categories_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Category deleted successfully");
     }
 
@@ -162,6 +168,7 @@ class CategoryController extends BaseController
      * @apiName RestoreCategory
      * @apiGroup Category
      * @apiDescription Restore a deleted category by its ID.
+     * This operation invalidates the cached list of categories.
      * 
      * @apiParam {Integer} id The ID of the category to restore.
      * 
@@ -176,6 +183,7 @@ class CategoryController extends BaseController
     {
         $category = Category::onlyTrashed()->where('id', $id)->firstOrFail();
         $category->restore();
+        Cache::forget('categories_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, 'Category restored successfully');
     }
 }

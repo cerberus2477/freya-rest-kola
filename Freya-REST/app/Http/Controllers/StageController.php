@@ -14,6 +14,7 @@ class StageController extends BaseController
      * @apiName GetStages
      * @apiGroup Stage
      * @apiDescription Retrieve a list of all stages.
+     * This response is cached for improved performance. Cache is invalidated when a stage is created, updated, deleted, or restored.
      * 
      * @apiSuccess {Integer} id The ID of the stage.
      * @apiSuccess {String} name The name of the stage.
@@ -90,6 +91,7 @@ class StageController extends BaseController
      * @apiName CreateStage
      * @apiGroup Stage
      * @apiDescription Create a new stage.
+     * This operation invalidates the cache for stages.
      * 
      * @apiParam {String} name The name of the stage.
      * 
@@ -110,6 +112,7 @@ class StageController extends BaseController
     public function store(StageRequest $request)
     {
         $stage = Stage::create($request->validated());
+        Cache::forget('stages_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(201, "Stage created successfully", $stage);
     }
 
@@ -118,6 +121,7 @@ class StageController extends BaseController
      * @apiName UpdateStage
      * @apiGroup Stage
      * @apiDescription Update an existing stage.
+     * This operation invalidates the cache for stages.
      * 
      * @apiParam {Integer} id The ID of the stage to update.
      * @apiParam {String} name The name of the stage.
@@ -140,6 +144,7 @@ class StageController extends BaseController
     {
         $stage = Stage::findOrFail($id);
         $stage->update($request->validated());
+        Cache::forget('stages_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Stage updated successfully", $stage);
     }
 
@@ -148,6 +153,7 @@ class StageController extends BaseController
      * @apiName DeleteStage
      * @apiGroup Stage
      * @apiDescription Delete a stage by its ID.
+     * This operation invalidates the cache for stages.
      * 
      * @apiParam {Integer} id The ID of the stage to delete.
      * 
@@ -162,6 +168,7 @@ class StageController extends BaseController
     {
         $stage = Stage::findOrFail($id);
         $stage->delete();
+        Cache::forget('stages_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Stage deleted successfully");
     }
 
@@ -170,6 +177,7 @@ class StageController extends BaseController
      * @apiName RestoreStage
      * @apiGroup Stage
      * @apiDescription Restore a deleted stage by its ID.
+     * This operation invalidates the cache for stages.
      * 
      * @apiParam {Integer} id The ID of the stage to restore.
      * 
@@ -184,6 +192,7 @@ class StageController extends BaseController
     {
         $stage = Stage::onlyTrashed()->where('id', $id)->firstOrFail();
         $stage->restore();
+        Cache::forget('stages_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, 'Stage restored successfully');
     }
 }

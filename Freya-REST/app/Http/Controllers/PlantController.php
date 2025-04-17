@@ -28,11 +28,14 @@ class PlantController extends BaseController
      * @apiName GetPlants
      * @apiGroup Plant
      * @apiDescription Retrieve a list of all plants.
+     * The response is cached for improved performance. Cache is invalidated when a plant is created, updated, deleted, or restored.
      * 
      * @apiSuccess {Integer} id The ID of the plant.
      * @apiSuccess {String} name The name of the plant.
      * @apiSuccess {String} latin_name The Latin name of the plant.
-     * @apiSuccess {Integer} type_id The type ID of the plant.
+     * @apiSuccess {Object} type The type of the plant.
+     * @apiSuccess {Integer} type.id The ID of the plant type.
+     * @apiSuccess {String} type.name The name of the plant type.
      * 
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
@@ -44,21 +47,20 @@ class PlantController extends BaseController
      *                 "id": 1,
      *                 "name": "Alma",
      *                 "latin_name": "Malus",
-     *                 "type_id": 1
+     *                 "type": {
+     *                     "id": 1,
+     *                     "name": "Fruit"
+     *                 }
      *             },
      *             {
      *                 "id": 2,
      *                 "name": "Körte",
      *                 "latin_name": "Pyrus",
-     *                 "type_id": 1
-     *             },
-     *             {
-     *                 "id": 3,
-     *                 "name": "Banán",
-     *                 "latin_name": "Musa",
-     *                 "type_id": 1
-     *             },
-     *             ...
+     *                 "type": {
+     *                     "id": 1,
+     *                     "name": "Fruit"
+     *                 }
+     *             }
      *         ]
      *     }
      */
@@ -86,21 +88,24 @@ class PlantController extends BaseController
      * @apiSuccess {Integer} id The ID of the plant.
      * @apiSuccess {String} name The name of the plant.
      * @apiSuccess {String} latin_name The Latin name of the plant.
-     * @apiSuccess {Integer} type_id The type ID of the plant.
+     * @apiSuccess {Object} type The type of the plant.
+     * @apiSuccess {Integer} type.id The ID of the plant type.
+     * @apiSuccess {String} type.name The name of the plant type.
      * 
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      *     {
      *         "status": 200,
-     *         "message": "Plants retrieved successfully",
-     *         "data": [
-     *             {
+     *         "message": "Plant retrieved successfully",
+     *         "data": {
+     *             "id": 1,
+     *             "name": "Alma",
+     *             "latin_name": "Malus",
+     *             "type": {
      *                 "id": 1,
-     *                 "name": "Alma",
-     *                 "latin_name": "Malus",
-     *                 "type_id": 1
+     *                 "name": "Fruit"
      *             }
-     *         ]
+     *         }
      *     }
      */
     public function show($id)
@@ -116,6 +121,7 @@ class PlantController extends BaseController
      * @apiName CreatePlant
      * @apiGroup Plant
      * @apiDescription Create a new plant.
+     * This operation invalidates the cached list of plants.
      * 
      * @apiParam {String} name The name of the plant.
      * @apiParam {String} latin_name The Latin name of the plant.
@@ -124,7 +130,9 @@ class PlantController extends BaseController
      * @apiSuccess {Integer} id The ID of the created plant.
      * @apiSuccess {String} name The name of the created plant.
      * @apiSuccess {String} latin_name The Latin name of the created plant.
-     * @apiSuccess {Integer} type_id The type ID of the created plant.
+     * @apiSuccess {Object} type The type of the created plant.
+     * @apiSuccess {Integer} type.id The ID of the plant type.
+     * @apiSuccess {String} type.name The name of the plant type.
      * 
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 201 Created
@@ -135,7 +143,10 @@ class PlantController extends BaseController
      *             "id": 1,
      *             "name": "Alma",
      *             "latin_name": "Malus",
-     *             "type_id": 1
+     *             "type": {
+     *                 "id": 1,
+     *                 "name": "Fruit"
+     *             }
      *         }
      *     }
      */
@@ -143,7 +154,7 @@ class PlantController extends BaseController
     {
         $plant = Plant::create($request->validated());
         $formattedPlant = $this->format($plant);
-
+        Cache::forget('plants_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(201, "Plant created successfully", $formattedPlant); 
     }
 
@@ -152,6 +163,7 @@ class PlantController extends BaseController
      * @apiName UpdatePlant
      * @apiGroup Plant
      * @apiDescription Update an existing plant.
+     * This operation invalidates the cached list of plants.
      * 
      * @apiParam {Integer} id The ID of the plant to update.
      * @apiParam {String} name The name of the plant.
@@ -161,7 +173,9 @@ class PlantController extends BaseController
      * @apiSuccess {Integer} id The ID of the updated plant.
      * @apiSuccess {String} name The name of the updated plant.
      * @apiSuccess {String} latin_name The Latin name of the updated plant.
-     * @apiSuccess {Integer} type_id The type ID of the updated plant.
+     * @apiSuccess {Object} type The type of the updated plant.
+     * @apiSuccess {Integer} type.id The ID of the plant type.
+     * @apiSuccess {String} type.name The name of the plant type.
      * 
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
@@ -172,7 +186,10 @@ class PlantController extends BaseController
      *             "id": 1,
      *             "name": "Alma",
      *             "latin_name": "Malus",
-     *             "type_id": 1
+     *             "type": {
+     *                 "id": 1,
+     *                 "name": "Fruit"
+     *             }
      *         }
      *     }
      */
@@ -181,29 +198,31 @@ class PlantController extends BaseController
         $plant = Plant::findOrFail($id);
         $plant->update($request->validated());
         $formattedPlant = $this->format($plant);
-
+        Cache::forget('plants_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Plant updated successfully", $formattedPlant);
     }
 
     /**
-     * @api {delete} /api/plants/:id Delete Plant
-     * @apiName DeletePlant
-     * @apiGroup Plant
-     * @apiDescription Delete a plant by its ID.
-     * 
-     * @apiParam {Integer} id The ID of the plant to delete.
-     * 
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *         "status": 200,
-     *         "message": "Plant deleted successfully"
-     *     }
-     */
+    * @api {delete} /api/plants/:id Delete Plant
+    * @apiName DeletePlant
+    * @apiGroup Plant
+    * @apiDescription Delete a plant by its ID.
+    * This operation invalidates the cached list of plants.
+    * 
+    * @apiParam {Integer} id The ID of the plant to delete.
+    * 
+    * @apiSuccessExample Success-Response:
+    *     HTTP/1.1 200 OK
+    *     {
+    *         "status": 200,
+    *         "message": "Plant deleted successfully"
+    *     }
+    */
     public function destroy($id)
     {
         $plant = Plant::findOrFail($id);
         $plant->delete();
+        Cache::forget('plants_all_' . md5(request()->fullUrl()));
         return $this->jsonResponse(200, "Plant deleted successfully");
     }
 
@@ -212,6 +231,7 @@ class PlantController extends BaseController
      * @apiName RestorePlant
      * @apiGroup Plant
      * @apiDescription Restore a deleted plant by its ID.
+     * This operation invalidates the cached list of plants.
      * 
      * @apiParam {Integer} id The ID of the plant to restore.
      * 
@@ -226,7 +246,7 @@ class PlantController extends BaseController
     {
        $plant = Plant::onlyTrashed()->where('id', $id)->firstOrFail();
        $plant->restore();
-
+       Cache::forget('plants_all_' . md5(request()->fullUrl()));
        return $this->jsonResponse(200, 'Plant restored successfully');
     }
 }
