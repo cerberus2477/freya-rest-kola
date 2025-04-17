@@ -39,7 +39,7 @@ class TypeController extends BaseController
      */
     public function index(Request $request)
     {
-        $cacheKey = 'Type_all_' . md5($request->fullUrl());
+        $cacheKey = 'types_all_' . md5($request->fullUrl());
             if (Cache::has($cacheKey)) {
                 return Cache::get($cacheKey);
             }

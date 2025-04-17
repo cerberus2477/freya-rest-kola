@@ -39,7 +39,7 @@ class StageController extends BaseController
 
     public function index(Request $request)
     {
-        $cacheKey = 'Stages_all_' . md5($request->fullUrl());
+        $cacheKey = 'stages_all_' . md5($request->fullUrl());
             if (Cache::has($cacheKey)) {
                 return Cache::get($cacheKey);
             }
