@@ -98,7 +98,7 @@ class ListingController extends BaseController
             if ($value = $request->query($param)) {
                 $query->whereHas($filter['relationship'], function ($relationshipQuery) use ($filter, $value) {
                     $relationshipQuery->where($filter['column'], '=', $value);
-                });
+                }, '>=', 1);
             }
         }
 
@@ -121,9 +121,6 @@ class ListingController extends BaseController
             $response = $this->jsonResponse(200, 'Listings retrieved successfully', $formattedListings);
         } 
         else{
-            //TODO: test this, refactor
-            // TODO: $articles = $query->paginate($pageSize, ['*'], 'page', $page); lehet e pl, kell e az a hosszú  $paginatedListings
-
             // Return a page of matching results
             $pageSize = intval($pageSize); // make sure that pagesize is a number
             $page = $request->query('page', 1);

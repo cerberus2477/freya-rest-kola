@@ -12,7 +12,7 @@ use App\Http\Controllers\StageController;
 use App\Http\Controllers\HardCodedController;
 
 //No need for token
-//fixed file paths
+//get fixed file paths from storage
 Route::get('/documentation', [HardCodedController::class, 'getDocumentation']);
 Route::get('/images/{folder}', [HardCodedController::class, 'getPlaceholders'])->where('folder', 'placeholders|profilePictures|notFoundImage');
 
