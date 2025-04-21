@@ -166,14 +166,10 @@ class ListingController extends BaseController
         return $response;
     }
 
-
-   //TODO test the image upload function
     public function create(ListingRequest $request)   
     {
-        //TODO: there could be error cathing here, if its realistic that the saving fails. otherwise this could be put straight in $data
         $imagePaths = StorageHelper::storeRequestImages($request, 'listings');
 
-        // Store filenames (only filename, without path) in the DB as JSON
         $data = array_merge($request->validated(), ['media' => json_encode($imagePaths)]);
         $listing = Listing::create($data);
         return $this->jsonResponse(201, 'Listing created successfully', $this->formatListings(collect([$listing]))->first());
