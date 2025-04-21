@@ -187,10 +187,16 @@ class ListingController extends BaseController
             return $this->jsonResponse(404, 'Listing not found');
         }
 
-        // delete previous photos and save the new ones
-        $previousImages = json_decode($listing->media, true);
-        if ($previousImages) StorageHelper::deleteMedia($previousImages, 'listings');
-        $newImagePaths = StorageHelper::storeRequestImages($request, 'listings');
+        $newImagePaths = [];
+        if ($request->hasFile('media')) {
+            // delete previous photos and save the new ones
+            $previousImages = json_decode($listing->media, true);
+            if ($previousImages) StorageHelper::deleteMedia($previousImages, 'listings');
+            $newImagePaths = StorageHelper::storeRequestImages($request, 'listings');
+        } else {
+            // if no new images are uploaded, keep the old ones
+            $newImagePaths = json_decode($listing->media, true);
+        }
 
         // Update listing with new data
         $data = array_merge($request->validated(), ['media' => json_encode($newImagePaths)]);
@@ -215,8 +221,6 @@ class ListingController extends BaseController
         return $this->jsonResponse(201, 'Listing deleted successfully');
     }
 }
-
-
 
 
 // APIDOC COMMENTS
