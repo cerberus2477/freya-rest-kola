@@ -86,7 +86,6 @@ class ListingController extends BaseController
         }
 
         // Filters
-        //TODO: warning here, correct this or test if it works really
         $filters = [
             'user' => ['column' => 'users.username', 'relationship' => 'userPlant.user'],
             'plant' => ['column' => 'plants.name', 'relationship' => 'userPlant.plant'],
@@ -188,13 +187,6 @@ class ListingController extends BaseController
             return $this->jsonResponse(404, 'Listing not found');
         }
 
-        $user = $request->user();
-
-        // Check permissions
-        if(!$user->tokenCan('admin') && $user->$id != $listing->userPlant()->user()->id){
-            return $this->jsonResponse(403, "You don't have permission to modify this listing");
-        }
-
         // delete previous photos and save the new ones
         $previousImages = json_decode($listing->media, true);
         if ($previousImages) StorageHelper::deleteMedia($previousImages, 'listings');
@@ -211,21 +203,11 @@ class ListingController extends BaseController
     {
         // Fetch the listing with the userPlant relationship
         $listing = Listing::with('userPlant')->find($id);
-        $user = $request->user();
 
         // If the listing doesn't exist, return a 404 response
         if (!$listing) {
             return $this->jsonResponse(404, 'Listing not found');
         }
-
-        // If the user doesn't have permission, return a 403 response
-        if(!$user->tokenCan('admin') && $user->id != $listing->userPlant()->user()->id){
-            return $this->jsonResponse(403, "You don't have permission to modify this listing");
-        }
-
-        // if (!$user->tokenCan('admin') && $user->id !== $listing->userPlant->user->id) {
-        //     return $this->jsonResponse(403, "You don't have permission to modify this listing");
-        // }
 
         // delete the images from storage and finally delete the listing from db
         StorageHelper::deleteMedia($listing, 'listings');

@@ -65,7 +65,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
         //Own resource
-    Route::middleware(['ownerOrAdmin:listing'])->group(function(){
+    Route::middleware(['ownerOrAdmin:listing'])->group(function(){ //i have given up on this
         Route::patch('/listings/{id}', [ListingController::class, 'update']);
         Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
     });
