@@ -12,17 +12,6 @@ class UserRequest extends BaseRequest
         return true;
     }
 
-//All the posible fields with most likely     
-// return [
-//     'username' => 'required|string|unique:users,username|max:255',
-//     'email' => 'required|email|unique:users,email|max:255',
-//     'city' => 'required|string|max:255',
-//     'birthdate' => 'required|date|before:today',
-//     'password' => 'required|string|min:8|confirmed',
-//     'role_id' => 'required|exists:roles,id',
-//     'active' => 'boolean',
-// ];
-
 public function rules(): array
 {
     // Determine which rules to use based on the route or request purpose
@@ -68,7 +57,7 @@ public function rulesForUpdate(): array
         'city' => 'sometimes|string|max:255',
         'birthdate' => 'sometimes|date|before:today',
         'picture' => ['sometimes','string','max:255', new IsPlaceholderImage],//should be one of the placeholders
-        'description' => 'sometimes|string|max255'
+        'description' => 'sometimes|string|max:255'
     ];
 }
 
