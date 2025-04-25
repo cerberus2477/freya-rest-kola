@@ -51,7 +51,7 @@ class UserPlantController extends BaseController
         $userplant = UserPlant::findOrFail($id);
 
         $userplant->update($request->validated());
-        return $this->jsonResponse(200, 'User plant modified succesfully', $userplant);
+        return $this->jsonResponse(200, 'Userplant modified succesfully', $userplant);
     }
 
     /**
