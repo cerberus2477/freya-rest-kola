@@ -31,6 +31,7 @@ class ListingController extends BaseController
                 'listing_id' => $listing->id,
                 'title' => $listing->title,
                 'description' => $listing->description,
+                'city' => $listing->city,
                 'media' => $listing->media 
                     ? array_map(function ($file) {
                         $storagePath = $file; // No need for "public/" if disk is 'public'
@@ -43,7 +44,8 @@ class ListingController extends BaseController
                     }, json_decode($listing->media, true) ?? []) 
                     : [],
                 'price' => $listing->price,
-                'created_at' => $listing->created_at, 
+                'created_at' => $listing->created_at,
+                'updated_at' => $listing->updated_at,
 // date formatting: ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
                 'user' => [
                     'id' => $listing->userPlant->user->id,
