@@ -87,20 +87,16 @@ class User extends Authenticatable
         if ($this->tokenCan('admin')) {
             return true;
         }
-    
-        if ($model instanceof User) {
+        else if ($model instanceof User) {
             return $this->id === $model->id;
         }
-    
-        if ($model instanceof Article) {
+        else if ($model instanceof Article) {
             return $this->id === $model->author_id;
         }
-    
-        if ($model instanceof UserPlant) {
+        else if ($model instanceof UserPlant) {
             return $this->id === $model->user_id;
         }
-    
-        if ($model instanceof Listing) {
+        else if ($model instanceof Listing) {
             if (!$model->relationLoaded('userPlant')) {
                 $model->load(['userPlant.user']);
             }

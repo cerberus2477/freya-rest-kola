@@ -64,8 +64,8 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::post('/listing', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
-        //Own resource
-    Route::middleware(['ownerOrAdmin:listing'])->group(function(){ //i have given up on this
+    //Own resource
+    Route::middleware(['ownerOrAdmin:listing'])->group(function(){
         Route::patch('/listings/{id}', [ListingController::class, 'update']);
         Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
     });
@@ -73,13 +73,10 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
 //requires stats abilities
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
-    Route::get('/stats', [UserPlantController::class, 'get-stats']);//TODO to be written
-
     //article
     Route::post('/article', [ArticleController::class, 'create']);//TODO not tested
     Route::post('/articles/upload-image', [ArticleController::class, 'uploadArticleImage'])->name('articles.upload-image');
 
-    //TODO!! (yes) (middllefiddlemiddleware)
     //Own resource
     Route::middleware(['ownerOrAdmin:article'])->group(function(){
         Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested

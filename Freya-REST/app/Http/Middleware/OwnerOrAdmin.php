@@ -14,13 +14,19 @@ class OwnerOrAdmin
 {
     protected function resolveModelFromRequest(Request $request, ?string $modelType)
 {
-    $id = $request->route('id'); // Get the 'id' parameter from the route
+    $id = $request->route('id');
+    if (!$id) {
+        $title = $request->route('title');
+        if ($modelType === 'article') {
+            return Article::where('title', $title)->first();
+        }
+    }
 
     switch ($modelType) {
         case 'listing':
             return Listing::find($id);
         case 'article':
-            return Article::find($id);
+            return Article::where('title', $title)->first();
         case 'user-plant':
             return UserPlant::find($id);
         case 'user':

@@ -37,7 +37,6 @@ public function getPlaceholders(string $directoryPath)
     $fileUrls = [];
 
     foreach ($files as $file) {
-        // Remove any 'public/' prefix if present
         $cleanPath = str_replace('public/', '', $file);
         $fileUrls[] = asset("storage/{$cleanPath}");
     }

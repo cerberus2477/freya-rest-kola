@@ -27,6 +27,8 @@ class StorageHelper
         $manager = new ImageManager(new Driver());
         $imagePaths = [];
 
+        Storage::disk('public')->makeDirectory($folder);
+
         foreach ($request->file('media') as $image) {
             $imageInstance = $manager->read($image->getRealPath());
             $imageInstance->scaleDown(1920, 1080);
