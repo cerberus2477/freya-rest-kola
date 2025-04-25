@@ -67,7 +67,7 @@ class UserController extends BaseController
         if (!$user || !Hash::check($password, $user->password)) {
             return $this->jsonResponse(
                 401,
-                'Helytelen hitelesítő adatok'
+                'Invalid credentials',
             );
         }
     
@@ -94,7 +94,7 @@ class UserController extends BaseController
         $token = $user->createToken('access', $abilities)->plainTextToken;
         return $this->jsonResponse(
             200,
-            "Sikeres bejelentkezés",
+            "Login successful",
             ['user' => $user,
             'token' => $token]);
     }
@@ -167,7 +167,7 @@ class UserController extends BaseController
         $token = $user->createToken('access', ['user'])->plainTextToken;
 
         return $this->jsonResponse(201,
-            'Sikeres regisztráció',
+            'User registered successfully',
             ['user' => $user,
             'token' => $token]
         );
@@ -205,8 +205,8 @@ class UserController extends BaseController
 
         // Return a JSON response based on the status
         return $status === Password::PASSWORD_RESET
-            ? $this->jsonResponse(200, "Sikeres módosítás")
-            : $this->jsonResponse(400, "Sikertelen módosítás");
+            ? $this->jsonResponse(200, "Password reset succesuffly")
+            : $this->jsonResponse(400, "Password reset failed");
 
     }
 
@@ -217,7 +217,7 @@ class UserController extends BaseController
     {
         return $this->jsonResponse(
             200,
-            "Sikeres lekérdezés",
+            "Data retrived succesfully",
             User::all());
     }
 
@@ -229,12 +229,12 @@ class UserController extends BaseController
         $user = User::where('username', $username)->first();
 
         if($user == $request->user()){
-            return $this->jsonResponse(200, 'Saját felhasználó sikeres lekérdezése', $user);
+            return $this->jsonResponse(200, 'Own user retrived succesfully', $user);
         }elseif($user){
-            return $this->jsonResponse(200, 'Sikeres lekérdezés', $user);
+            return $this->jsonResponse(200, 'User retrived succesfully', $user);
         } 
         else{
-            return $this->jsonResponse(404, 'Nem talált felhasználó');
+            return $this->jsonResponse(404, 'User not foound');
         }
     }
 
@@ -295,7 +295,7 @@ class UserController extends BaseController
 
         $user->update($request->validated());
 
-        return $this->jsonResponse(200, 'Felhasználó sikeresen frissítve',$user);
+        return $this->jsonResponse(200, 'User updated successufully',$user);
     }
 
     /**
@@ -305,9 +305,9 @@ class UserController extends BaseController
         try{
             $user = User::where('username', $username)->firstOrFail();
             $user->role_id = $request->input('role_id');
-            return $this->jsonResponse(200, 'Felhasználó szerepköre sikeresen frissítve');
+            return $this->jsonResponse(200, 'User role updated successfully');
         } catch (ModelNotFoundException $e) {
-            return $this->jsonResponse(404, 'Felhasználó nem található');
+            return $this->jsonResponse(404, 'User not found');
         }
     }
 
@@ -322,9 +322,9 @@ class UserController extends BaseController
             }
             $user->delete();
 
-            return $this->jsonResponse(200, 'Felhasználó sikeresen törölve');
+            return $this->jsonResponse(200, 'user deleted successfully');
         } catch (ModelNotFoundException $e) {
-            return $this->jsonResponse(404, 'Felhasználó nem található');
+            return $this->jsonResponse(404, 'User not found');
         }
     }
 
@@ -335,9 +335,9 @@ class UserController extends BaseController
 
             $user->restore();
 
-            return $this->jsonResponse(200, 'Felhasználó sikeresen visszaállítva');
+            return $this->jsonResponse(200, 'User restored successfully');
         } catch (ModelNotFoundException $e) {
-            return $this->jsonResponse(404, 'Felhasználó nem található');
+            return $this->jsonResponse(404, 'User not found');
         }
     }
 }
