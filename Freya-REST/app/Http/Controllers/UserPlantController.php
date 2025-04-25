@@ -27,7 +27,7 @@ class UserPlantController extends BaseController
      */
     public function show(string $id)
     {
-        return $this->jsonResponse(200, 'User plant retrived succesfully',UserPlant::findOrFail($id)::with('user', 'plant', 'stage')->get());
+        return $this->jsonResponse(200, 'Userplant retrived succesfully',UserPlant::findOrFail($id)::with('user', 'plant', 'stage')->get());
     }
 
     /**
@@ -40,7 +40,7 @@ class UserPlantController extends BaseController
     
     $userplant = UserPlant::create($validated);
     
-    return $this->jsonResponse(200, 'User plant created successfully', $userplant);
+    return $this->jsonResponse(200, 'Userplant created successfully', $userplant);
 }
 
     /**
@@ -62,6 +62,6 @@ class UserPlantController extends BaseController
         $userplant = UserPlant::findOrFail($id);
         $userplant->delete();
 
-        return $this->jsonResponse(204,'User plant deleted succesfully');
+        return $this->jsonResponse(204,'Userplant deleted succesfully');
     }
 }
