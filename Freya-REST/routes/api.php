@@ -74,13 +74,13 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 //requires stats abilities
 Route::middleware(['auth:sanctum', 'abilities:stats'])->group(function () {
     //article
-    Route::post('/article', [ArticleController::class, 'create']);//TODO not tested
+    Route::post('/article', [ArticleController::class, 'create']);
     Route::post('/articles/upload-image', [ArticleController::class, 'uploadArticleImage'])->name('articles.upload-image');
 
     //Own resource
     Route::middleware(['ownerOrAdmin:article'])->group(function(){
-        Route::patch('/article/{title}', [ArticleController::class, 'update']);//TODO not tested
-        Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//TODO not tested
+        Route::patch('/article/{title}', [ArticleController::class, 'update']);//should do thing with te pictures no longer used but it will not hapen
+        Route::delete('/article/{title}', [ArticleController::class, 'destroy']);//should do thing with te pictures no longer used but it will not hapen
     });
 
     //dictionay tables index/show
