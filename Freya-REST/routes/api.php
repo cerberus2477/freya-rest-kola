@@ -53,9 +53,11 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     Route::patch('/profile', [UserController::class, 'update'])->name('update');
 
     //userplants
+
     Route::post('/profile/plants', [UserPlantController::class, 'store']);
     //Own resource
     Route::middleware(['ownerOrAdmin:user-plant'])->group(function(){
+        Route::get('/profile/plants/{id}', [UserPlantController::class, 'show']);
         Route::patch('/profile/plants/{id}', [UserPlantController::class, 'update']);
         Route::delete('/profile/plants/{id}', [UserPlantController::class, 'destroy']);
     });
