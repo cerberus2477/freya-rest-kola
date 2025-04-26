@@ -47,6 +47,10 @@ class ListingController extends BaseController
                 'created_at' => $listing->created_at,
                 'updated_at' => $listing->updated_at,
 // date formatting: ? Carbon::parse($listing->created_at)->format('Y-m-d H:i:s') : null,
+                'use_plant'=> [
+                    'id' => $listing->userPlant->id,
+                    'count' => $listing->userPlant->count,
+                ],
                 'user' => [
                     'id' => $listing->userPlant->user->id,
                     'username' => $listing->userPlant->user->username,
