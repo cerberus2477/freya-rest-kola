@@ -40,6 +40,7 @@ class TypeRequest extends BaseRequest
     {
         return [
             'name.required' => 'A típusnév megadása kötelező.',
+            'name.string' => 'A típusnévnek szövegnek kell lennie.',
             'name.unique' => 'A megadott típus már létezik.',
             'name.max' => 'A típus maximum 255 karakter hosszú lehet.',
             'name.min' => 'A típus minimum 3 karakter hosszú kell legyen.',

@@ -17,7 +17,7 @@ class ArticleImageRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:51200',
         ];
     }
 
@@ -27,7 +27,7 @@ class ArticleImageRequest extends BaseRequest
             'media.required' => 'A médiafájl megadása kötelező.',
             'media.*.image' => 'A médiafájlnak képnek kell lennie.',
             'media.*.mimes' => 'A médiafájl csak jpeg, png, jpg, gif, svg vagy webp formátumú lehet.',
-            'media.*.max' => 'A médiafájl legfeljebb 2048 kilobájt méretű lehet.',
+            'media.*.max' => 'A médiafájl legfeljebb 51200 kilobájt méretű lehet.',
         ];
     }
 }

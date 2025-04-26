@@ -39,7 +39,7 @@ class ListingRequest extends BaseRequest
         'city' => 'required|string|max:100',
         'media.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:51200',
         'media' => 'required|array|min:1|max:10',
-        'price' => 'required|integer|min:0',
+        'price' => 'required|integer|max:200000|min:0',
     ];
 }
 
@@ -52,7 +52,7 @@ public function rulesForUpdate(): array
         'city' => 'sometimes|string|max:100',
         'media.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg,webp|max:51200',
         'media' => 'sometimes|array|min:1|max:10',
-        'price' => 'sometimes|integer|min:0',
+        'price' => 'sometimes|integer|max:200000|min:0',
     ];
 }
 
@@ -93,6 +93,7 @@ public function messages(): array
         'price.required' => 'Az ár megadása kötelező.',
         'price.integer' => 'Az árnak egész számnak kell lennie.',
         'price.min' => 'Az árnak legalább 0-nak kell lennie.',
+        'price.max' => 'Az ár legfeljebb 200000 lehet.',
     ];
 }
 

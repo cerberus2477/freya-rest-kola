@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->unsignedBigInteger('role_id')->default(3);
             $table->string('picture');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
 
             $table->timestamps();
             $table->rememberToken();
