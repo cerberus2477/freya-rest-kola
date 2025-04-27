@@ -61,6 +61,7 @@ class ListingController extends BaseController
                     'type' => $listing->userPlant->plant->type->name,
                 ],
                 'stage' => [
+                    'id' => $listing->userPlant->stage->name,
                     'name' => $listing->userPlant->stage->name,
                 ],
             ];
