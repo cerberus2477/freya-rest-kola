@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\notUsedByOtherListing;
 
 class ListingRequest extends BaseRequest
 {
@@ -33,7 +34,7 @@ class ListingRequest extends BaseRequest
     public function rulesForCreate(): array
 {
     return [
-        'user_plants_id' => 'required|integer|exists:user_plants,id',
+        'user_plants_id' => 'required|integer|exists:user_plants,id|', new notUsedByOtherListing(),
         'title' => 'required|string|max:255|min:2',
         'description' => 'required|string|max:1000',
         'city' => 'required|string|max:100',
@@ -46,7 +47,7 @@ class ListingRequest extends BaseRequest
 public function rulesForUpdate(): array
 {
     return [
-        'user_plants_id' => 'sometimes|integer|exists:user_plants,id',
+        'user_plants_id' => 'sometimes|integer|exists:user_plants,id|', new notUsedByOtherListing(),
         'title' => 'sometimes|string|max:255|min:2',
         'description' => 'sometimes|string|max:1000',
         'city' => 'sometimes|string|max:100',

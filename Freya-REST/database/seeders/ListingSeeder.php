@@ -19,7 +19,7 @@ class ListingSeeder extends Seeder
 
         // Insert a static user_plant for admin's listing
         DB::table('user_plants')->insert([
-            'id' => 30,
+            'id' => 50,
             'user_id' => 1,
             'plant_id' => 2,
             'stage_id' => 5,
@@ -30,8 +30,8 @@ class ListingSeeder extends Seeder
 
         // Insert the static listing linked to the user_plant
         DB::table('listings')->insert([
-            'id' => 30,
-            'user_plants_id' => 30, // link to the above inserted user_plant
+            'id' => 50,
+            'user_plants_id' => 50, // link to the above inserted user_plant
             'title' => 'Egészséges szobanövények',
             'description' => "🌿 Egészséges szobanövények eladók! 🌿\nKülönféle méretű és fajtájú növények közvetlenül tőlünk – szeretettel nevelve, gondosan ápolva. Tökéletesek otthonod vagy irodád szebbé tételéhez! 🌱\nÁrak és fajták változók, érdeklődj üzenetben!\n\nTöbb vásárlás esetén kedvezmény!\n\n📍 Átvétel: személyesen vagy előzetes egyeztetéssel szállítás is megoldható.\n",
             'city' => 'Őrbottyán',
