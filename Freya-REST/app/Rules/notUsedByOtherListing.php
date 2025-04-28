@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\Listing;
+use App\Models\UserPlant;
 
 class notUsedByOtherListing implements ValidationRule
 {
@@ -26,17 +26,17 @@ class notUsedByOtherListing implements ValidationRule
     protected function isUsedByOtherListing(int $plantId): bool
     {
         // Using the UserPlant model's relationship
-        $userPlant = \App\Models\UserPlant::find($plantId);
+        $userPlant = UserPlant::find($plantId);
 
         if (!$userPlant) {
-        return false;
+            return false;
         }
 
         $existingListing = $userPlant->listing;
 
         // If no listing exists, it's available
         if (!$existingListing) {
-        return false;
+            return false;
         }
 
         // If we're editing a listing, check if it's the same one

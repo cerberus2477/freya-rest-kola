@@ -8,21 +8,6 @@ use App\Models\UserPlant;
 class UserPlantController extends BaseController
 {
     /**
-     * Display a listing of the resource.
-     */
-    // public function index(UserPlantRequest $request)
-    // {
-    //     return $this->jsonResponse(200, "Data retrived succesfully", UserPlant::with([
-    //         'user'=> function ($query) {$query->select('username');},
-    //         'plant'=> function ($query) {$query->select('id', 'name');},
-    //         'stage'=> function ($query) {$query->select('name');}
-    //         ])
-    //         ->where('deleted_at', null)
-    //         ->where('username', $request->user())
-    //         ->get(['count']));
-    // }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $id)
@@ -65,3 +50,107 @@ class UserPlantController extends BaseController
         return $this->jsonResponse(204,'Userplant deleted succesfully');
     }
 }
+
+//apidoc
+
+/**
+ * @api {get} /profile/plants/:id Get UserPlant by ID
+ * @apiName GetUserPlantById
+ * @apiGroup UserPlant
+ * @apiDescription Retrieve a specific UserPlant by its ID.
+ * 
+ * @apiParam {Integer} id The ID of the UserPlant to retrieve.
+ * 
+ * @apiSuccess {Integer} id The ID of the UserPlant.
+ * @apiSuccess {Integer} user_id The ID of the user.
+ * @apiSuccess {Integer} plant_id The ID of the plant.
+ * @apiSuccess {Integer} stage_id The ID of the stage.
+ * @apiSuccess {Integer} count The count of the UserPlant.
+ * 
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Userplant retrieved successfully",
+ *         "data": {
+ *             "id": 1,
+ *             "user_id": 1,
+ *             "plant_id": 2,
+ *             "stage_id": 3,
+ *             "count": 5
+ *         }
+ *     }
+ * 
+ * @api {post} /profile/plants Create UserPlant
+ * @apiName CreateUserPlant
+ * @apiGroup UserPlant
+ * @apiDescription Create a new UserPlant.
+ * 
+ * @apiParam {Integer} plant_id The ID of the plant.
+ * @apiParam {Integer} stage_id The ID of the stage.
+ * @apiParam {Integer} [count] The count of the UserPlant (optional).
+ * 
+ * @apiSuccess {Integer} id The ID of the created UserPlant.
+ * @apiSuccess {Integer} user_id The ID of the user.
+ * @apiSuccess {Integer} plant_id The ID of the plant.
+ * @apiSuccess {Integer} stage_id The ID of the stage.
+ * @apiSuccess {Integer} count The count of the UserPlant.
+ * 
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Userplant created successfully",
+ *         "data": {
+ *             "id": 1,
+ *             "user_id": 1,
+ *             "plant_id": 2,
+ *             "stage_id": 3,
+ *             "count": 5
+ *         }
+ *     }
+ * 
+ * @api {patch} /profile/plants/:id Update UserPlant
+ * @apiName UpdateUserPlant
+ * @apiGroup UserPlant
+ * @apiDescription Update an existing UserPlant.
+ * 
+ * @apiParam {Integer} id The ID of the UserPlant to update.
+ * @apiParam {Integer} [plant_id] The ID of the plant (optional).
+ * @apiParam {Integer} [stage_id] The ID of the stage (optional).
+ * @apiParam {Integer} [count] The count of the UserPlant (optional).
+ * 
+ * @apiSuccess {Integer} id The ID of the updated UserPlant.
+ * @apiSuccess {Integer} user_id The ID of the user.
+ * @apiSuccess {Integer} plant_id The ID of the plant.
+ * @apiSuccess {Integer} stage_id The ID of the stage.
+ * @apiSuccess {Integer} count The count of the UserPlant.
+ * 
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Userplant modified successfully",
+ *         "data": {
+ *             "id": 1,
+ *             "user_id": 1,
+ *             "plant_id": 2,
+ *             "stage_id": 3,
+ *             "count": 10
+ *         }
+ *     }
+ * 
+ * @api {delete} /profile/plants/:id Delete UserPlant
+ * @apiName DeleteUserPlant
+ * @apiGroup UserPlant
+ * @apiDescription Delete a UserPlant by its ID.
+ * 
+ * @apiParam {Integer} id The ID of the UserPlant to delete.
+ * 
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 204 No Content
+ *     {
+ *         "status": 204,
+ *         "message": "Userplant deleted successfully"
+ *     }
+ */

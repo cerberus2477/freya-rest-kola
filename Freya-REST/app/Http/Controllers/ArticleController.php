@@ -182,147 +182,68 @@ class ArticleController extends BaseController
     }
 
 }
+//apidoc
 
+/**
+ * @api {get} /articles Retrieve articles
+ * @apiName GetArticles
+ * @apiGroup Articles
+ * @apiDescription Retrieve a paginated list of articles or all articles if `all` is passed. Returns key datapoints.
+ *
+ * @apiParam {Boolean} [all] If present, retrieves all articles without pagination.
+ * @apiParam {Number} [pageSize=5] Number of articles per page.
+ * @apiParam {Number} [page=1] Page number.
+ * @apiParam {String} [q] Search term for title or plant name (approximate search).
+ * @apiParam {Boolean} [deep] If present, also searches in content and description.
+ * @apiParam {String} [author] Filter by author username (exact match).
+ * @apiParam {String} [plant] Filter by plant name.
+ * @apiParam {String} [type] Filter by type of plant.
+ * @apiParam {String} [category] Filter by category name.
+ * @apiParam {Date} [before] Filter articles updated before this date.
+ * @apiParam {Date} [after] Filter articles updated after this date.
+ *
+ * @apiSuccess {Object[]} data List of articles.
+ * @apiSuccess {Number} data.id Article ID.
+ * @apiSuccess {String} data.title Article title.
+ * @apiSuccess {String} data.category Category name.
+ * @apiSuccess {String} data.description Article description.
+ * @apiSuccess {Date} data.updated_at Last updated date.
+ * @apiSuccess {String} data.plant_name Plant name related to the article (can be null).
+ * @apiSuccess {String} data.plant_type Type of plant (can be null).
+ * @apiSuccess {String} data.author Author username.
+ * @apiSuccess {Object} pagination Pagination information.
+ * @apiSuccess {Number} pagination.total Total number of articles.
+ * @apiSuccess {Number} pagination.page Current page number.
+ * @apiSuccess {Number} pagination.pageSize Number of articles per page.
+ * @apiSuccess {Number} pagination.totalPages Total number of pages.
+ *
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 200 OK
+ * {
+ *   "status": 200,
+ *   "message": "Articles retrieved successfully",
+ *   "data": [
+ *     {
+ *       "id": 1,
+ *       "title": "Article Title",
+ *       "category": "Gardening",
+ *       "description": "Short description",
+ *       "updated_at": "2025-03-09",
+ *       "plant_name": "Rose",
+ *       "plant_type": "Flower",
+ *       "author": "JohnDoe"
+ *     }
+ *   ],
+ *   "pagination": {
+ *     "total": 10,
+ *     "page": 1,
+ *     "pageSize": 5,
+ *     "totalPages": 2
+ *   }
+ * }
+ */
 
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * @api {delete} /articles/:title Delete an article
-     * @apiName DeleteArticle
-     * @apiGroup Articles
-     * @apiDescription Delete an article by its title.
-     *
-     * @apiParam {String} title The title of the article to delete (URL encoded).
-     *
-     * @apiSuccess {String} message Success message.
-     *
-     * @apiSuccessExample {json} Success Response:
-     * HTTP/1.1 200 OK
-     * {
-     *   "status": 200,
-     *   "message": "Cikk sikeresen törölve"
-     * }
-     */
-
-
-
-         /**
-     * @api {put} /articles/:title Update an existing article
-     * @apiName UpdateArticle
-     * @apiGroup Articles
-     * @apiDescription Update an existing article by its title.
-     *
-     * @apiParam {String} title The title of the article to update (URL encoded).
-     *
-     * @apiBody {String} [title] New title of the article.
-     * @apiBody {String} [category] Category of the article.
-     * @apiBody {String} [description] Short description of the article.
-     * @apiBody {String} [content] Full article content.
-     * @apiBody {String} [source] Source URL of the article.
-     * @apiBody {String} [plant_name] Name of the related plant.
-     * @apiBody {String} [plant_type] Type of the plant.
-     * @apiBody {String} [author] Author username.
-     *
-     * @apiSuccess {Number} id Article ID.
-     * @apiSuccess {String} title Title of the article.
-     * @apiSuccess {String} category Category of the article.
-     * @apiSuccess {String} description Short description of the article.
-     * @apiSuccess {String} content Full article content.
-     * @apiSuccess {String} source Source URL of the article.
-     * @apiSuccess {String} plant_name Name of the related plant.
-     * @apiSuccess {String} plant_type Type of the plant.
-     * @apiSuccess {String} author Author username.
-     * @apiSuccess {Date} created_at Date article was created.
-     * @apiSuccess {Date} updated_at Date article was last updated.
-     *
-     * @apiSuccessExample {json} Success Response:
-     * HTTP/1.1 200 OK
-     * {
-     *   "status": 200,
-     *   "message": "Cikk sikeresen frissítve",
-     *   "data": {
-     *     "id": 1,
-     *     "title": "Updated Article",
-     *     "category": "Gardening",
-     *     "description": "Updated description",
-     *     "content": "Updated content here...",
-     *     "source": "https://example.com/article",
-     *     "plant_name": "Tulip",
-     *     "plant_type": "Flower",
-     *     "author": "JohnDoe",
-     *     "created_at": "2025-03-09",
-     *     "updated_at": "2025-03-10"
-     *   }
-     * }
-     */
-
-
-
-
-
-    /**
-     * @api {post} /articles Create a new article
-     * @apiName CreateArticle
-     * @apiGroup Articles
-     * @apiDescription Create a new article with the given data.
-     *
-     * @apiBody {String} title Title of the article.
-     * @apiBody {String} category Category of the article.
-     * @apiBody {String} description Short description of the article.
-     * @apiBody {String} content Full article content.
-     * @apiBody {String} source Source URL of the article. Can be null.
-     * @apiBody {String} plant_name Name of the related plant. Can be null.
-     * @apiBody {String} plant_type Type of the plant. Can be null.
-     * @apiBody {String} author Author username.
-     *
-     * @apiSuccess {Number} id Article ID.
-     * @apiSuccess {String} title Title of the article.
-     * @apiSuccess {String} category Category of the article.
-     * @apiSuccess {String} description Short description of the article.
-     * @apiSuccess {String} content Full article content.
-     * @apiSuccess {String} source Source URL of the article.
-     * @apiSuccess {String} plant_name Name of the related plant.
-     * @apiSuccess {String} plant_type Type of the plant.
-     * @apiSuccess {String} author Author username.
-     * @apiSuccess {Date} created_at Date article was created.
-     * @apiSuccess {Date} updated_at Date article was last updated.
-     *
-     * @apiSuccessExample {json} Success Response:
-     * HTTP/1.1 201 Created
-     * {
-     *   "status": 201,
-     *   "message": "Cikk sikeresen létrehozva",
-     *   "data": {
-     *     "id": 1,
-     *     "title": "New Article",
-     *     "category": "Gardening",
-     *     "description": "Short description",
-     *     "content": "Full content here...",
-     *     "source": "https://example.com/article",
-     *     "plant_name": "Rose",
-     *     "plant_type": "Flower",
-     *     "author": "JohnDoe",
-     *     "created_at": "2025-03-09",
-     *     "updated_at": "2025-03-09"
-     *   }
-     * }
-     */
-
-
-
-
-     
-   /**
+/**
  * @api {get} /articles/:title Get article by title
  * @apiName GetArticle
  * @apiGroup Articles
@@ -346,131 +267,148 @@ class ArticleController extends BaseController
  * HTTP/1.1 200 OK
  * {
  *   "status": 200,
- *   "message": "\"Occaecati nostrum aliquid ipsum earum consequuntur.\" article found",
+ *   "message": "\"Article Title\" article found",
  *   "data": {
  *     "id": 1,
- *     "title": "Occaecati nostrum aliquid ipsum earum consequuntur.",
- *     "category": "egyéb",
- *     "description": "Illum cupiditate qui tempore placeat sint voluptas omnis.",
- *     "updated_at": "2025-03-04",
- *     "plant_name": "Málna",
- *     "plant_type": "gyümölcs",
- *     "author": "juanita75",
- *     "source": "http://rodriguez.com/dolor-similique-fuga-quis-fugit.html",
+ *     "title": "Article Title",
+ *     "category": "Gardening",
+ *     "description": "Short description",
  *     "content": "Full article content in markdown format...",
- *     "created_at": "2025-03-04"
+ *     "source": "https://example.com/article",
+ *     "created_at": "2025-03-09",
+ *     "updated_at": "2025-03-10",
+ *     "plant_name": "Rose",
+ *     "plant_type": "Flower",
+ *     "author": "JohnDoe"
  *   }
  * }
  */
 
-
-
-
-
- 
-  /**
- * @api {get} /articles Retrieve articles
- * @apiName GetArticles
- * @apiGroup Articles
- * @apiDescription Retrieve a paginated list of articles or all articles if `all` is passed. Returns key datapoints.
- *
- * @apiParam {Boolean} [all] If present, retrieves all articles without pagination.
- * @apiParam {Number} [pageSize=5] Number of articles per page.
- * @apiParam {Number} [page=1] Page number.
- *
- * @apiSuccess {Number} data.id Article ID.
- * @apiSuccess {String} data.title Article title.
- * @apiSuccess {String} data.category Category name..
- * @apiSuccess {String} data.description Article description
- * @apiSuccess {Date} data.updated_at Last updated date.
- * @apiSuccess {String} data.plant_name Plant name related to the article. Can be null.
- * @apiSuccess {String} data.plant_type Type of plant. Can be null.
- * @apiSuccess {String} data.author Author username.
- *
- * @apiSuccess {Object[]} data List of articles (depending on pagination).
- * @apiSuccess {Object} pagination Pagination information.
- * @apiSuccess {Number} pagination.total Total number of articles.
- * @apiSuccess {Number} pagination.page Current page number.
- * @apiSuccess {Number} pagination.pageSize Number of articles per page.
- * @apiSuccess {Number} pagination.totalPages Total number of pages.
- *
- * @apiSuccessExample {json} Success Response:
- * HTTP/1.1 200 OK
- * {
- *   "status": 200,
- *   "message": "Articles retrieved successfully",
- *   "data": [
- *     {
- *       "id": 5,
- *       "title": "Magni nisi accusantium vel.",
- *       "category": "hasznos tippek",
- *       "description": "Sunt ut ipsum non. Officiis cupiditate dolorem non unde tempora et deleniti.",
- *       "updated_at": "2025-03-04",
- *       "plant_name": null,
- *       "plant_type": null,
- *       "author": "luettgen.selina"
- *     }
- *   ],
- *   "pagination": {
- *     "total": 100,
- *     "page": 3,
- *     "pageSize": 2,
- *     "totalPages": 50
- *   }
- * }
- */
-
-
-
-   // GET /api/articles/search?q=&deep?&author=&plant=&type=&category=&before=&after=&all
-    
 /**
- * @api {get} /articles/search Search articles
- * @apiName SearchArticles
+ * @api {post} /articles Create a new article
+ * @apiName CreateArticle
  * @apiGroup Articles
- * @apiDescription Search articles by title, plant name, author, plant type, category, or date range. Returns paginated list of articles or all articles if `all` is passed.
+ * @apiDescription Create a new article with the given data.
  *
- * @apiParam {String} [q] Search term for title or plant name (approximate search).
- * @apiParam {Boolean} [deep] If present, also searches in content and description.
- * @apiParam {String} [author] Filter by author username (exact match).
- * @apiParam {String} [plant] Filter by plant name.
- * @apiParam {String} [type] Filter by type of plant.
- * @apiParam {String} [category] Filter by category name.
- * @apiParam {Date} [before] Filter articles updated before this date.
- * @apiParam {Date} [after] Filter articles updated after this date.
- * @apiParam {Boolean} [all] If present, retrieves all matching articles without pagination. No pagination data is returned.
- * @apiParam {Number} [pageSize=5] Number of articles per page.
- * @apiParam {Number} [page=1] Page number.
+ * @apiBody {String} title Title of the article.
+ * @apiBody {String} category Category of the article.
+ * @apiBody {String} description Short description of the article.
+ * @apiBody {String} content Full article content.
+ * @apiBody {String} source Source URL of the article. Can be null.
+ * @apiBody {Integer} plant_id ID of the related plant. Can be null.
+ * @apiBody {Integer} author_id ID of the author.
  *
- * @apiSuccess {Object[]} data List of articles matching the search criteria.
- * @apiSuccess {Object} pagination Pagination information.
- * @apiSuccess {Number} pagination.total Total number of articles.
- * @apiSuccess {Number} pagination.page Current page number.
- * @apiSuccess {Number} pagination.pageSize Number of articles per page.
- * @apiSuccess {Number} pagination.totalPages Total number of pages.
+ * @apiSuccess {Number} id Article ID.
+ * @apiSuccess {String} title Title of the article.
+ * @apiSuccess {String} category Category of the article.
+ * @apiSuccess {String} description Short description of the article.
+ * @apiSuccess {String} content Full article content.
+ * @apiSuccess {String} source Source URL of the article.
+ * @apiSuccess {Integer} plant_id ID of the related plant.
+ * @apiSuccess {Integer} author_id ID of the author.
+ * @apiSuccess {Date} created_at Date article was created.
+ * @apiSuccess {Date} updated_at Date article was last updated.
+ *
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 201 Created
+ * {
+ *   "status": 201,
+ *   "message": "Article successfully created",
+ *   "data": {
+ *     "id": 1,
+ *     "title": "New Article",
+ *     "category": "Gardening",
+ *     "description": "Short description",
+ *     "content": "Full content here...",
+ *     "source": "https://example.com/article",
+ *     "plant_id": 1,
+ *     "author_id": 1,
+ *     "created_at": "2025-03-09",
+ *     "updated_at": "2025-03-09"
+ *   }
+ * }
+ */
+
+/**
+ * @api {put} /articles/:title Update an existing article
+ * @apiName UpdateArticle
+ * @apiGroup Articles
+ * @apiDescription Update an existing article by its title.
+ *
+ * @apiParam {String} title The title of the article to update (URL encoded).
+ *
+ * @apiBody {String} [title] New title of the article.
+ * @apiBody {String} [category] Category of the article.
+ * @apiBody {String} [description] Short description of the article.
+ * @apiBody {String} [content] Full article content.
+ * @apiBody {String} [source] Source URL of the article.
+ * @apiBody {Integer} [plant_id] ID of the related plant.
+ *
+ * @apiSuccess {Number} id Article ID.
+ * @apiSuccess {String} title Title of the article.
+ * @apiSuccess {String} category Category of the article.
+ * @apiSuccess {String} description Short description of the article.
+ * @apiSuccess {String} content Full article content.
+ * @apiSuccess {String} source Source URL of the article.
+ * @apiSuccess {Integer} plant_id ID of the related plant.
+ * @apiSuccess {Date} updated_at Date article was last updated.
  *
  * @apiSuccessExample {json} Success Response:
  * HTTP/1.1 200 OK
  * {
  *   "status": 200,
- *   "message": "Articles retrieved successfully",
- *   "data": [
- *     {
- *       "id": 32,
- *       "title": "Deserunt repudiandae ut qui velit.",
- *       "category": "egyéb",
- *       "description": "Veritatis eaque nemo non et. Ut optio ad incidunt quibusdam.",
- *       "updated_at": "2025-03-04",
- *       "plant_name": "Alma",
- *       "plant_type": "gyümölcs",
- *       "author": "oberbrunner.gianni"
- *     }
- *   ],
- *   "pagination": {
- *     "total": 3,
- *     "page": 1,
- *     "pageSize": 5,
- *     "totalPages": 1
+ *   "message": "Article successfully updated",
+ *   "data": {
+ *     "id": 1,
+ *     "title": "Updated Article",
+ *     "category": "Gardening",
+ *     "description": "Updated description",
+ *     "content": "Updated content here...",
+ *     "source": "https://example.com/article",
+ *     "plant_id": 1,
+ *     "updated_at": "2025-03-10"
+ *   }
+ * }
+ */
+
+/**
+ * @api {delete} /articles/:title Delete an article
+ * @apiName DeleteArticle
+ * @apiGroup Articles
+ * @apiDescription Delete an article by its title.
+ *
+ * @apiParam {String} title The title of the article to delete (URL encoded).
+ *
+ * @apiSuccess {String} message Success message.
+ *
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 200 OK
+ * {
+ *   "status": 200,
+ *   "message": "Article successfully deleted"
+ * }
+ */
+
+/**
+ * @api {post} /articles/upload-image Upload article images
+ * @apiName UploadArticleImage
+ * @apiGroup Articles
+ * @apiDescription Upload images for articles. The uploaded images can later be referenced in the article content using their URLs.
+ *
+ * @apiBody {File[]} media Array of image files to upload.
+ *
+ * @apiSuccess {String[]} image_paths Array of URLs for the uploaded images.
+ *
+ * @apiSuccessExample {json} Success Response:
+ * HTTP/1.1 201 Created
+ * {
+ *   "status": 201,
+ *   "message": "Image uploaded successfully",
+ *   "data": {
+ *     "image_paths": [
+ *       "http://example.com/storage/articles/image1.webp",
+ *       "http://example.com/storage/articles/image2.webp"
+ *     ]
  *   }
  * }
  */

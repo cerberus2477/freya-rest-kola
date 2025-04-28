@@ -226,165 +226,62 @@ class ListingController extends BaseController
 }
 
 
-// APIDOC COMMENTS
+//apidoc
 
 /**
- * @api {delete} /listing/:id Delete Listing
- * @apiName DeleteListing
+ * @api {get} /listings Get Listings
+ * @apiName GetListings
  * @apiGroup Listing
- * @apiDescription Delete an existing listing.
+ * @apiDescription Retrieve a paginated list of listings or all listings if `all` is passed.
  *
- * @apiParam {Integer} id The ID of the listing to delete.
+ * @apiParam {Boolean} [all] If set, retrieves all listings without pagination.
+ * @apiParam {Integer} [pageSize=5] Number of listings per page.
+ * @apiParam {Integer} [page=1] Page number for pagination.
  *
  * @apiSuccess {Integer} status HTTP status code.
  * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object[]} data Array of listings.
+ * @apiSuccess {Object} pagination Pagination metadata.
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *         "status": 200,
- *         "message": "Hirdetés sikeresen törölve"
- *     }
- *
- */
-
-
-
-
-
-/**
- * @api {patch} /listing/:id Update Listing
- * @apiName UpdateListing
- * @apiGroup Listing
- * @apiDescription Update an existing listing.
- *
- * @apiParam {Integer} id The ID of the listing to update.
- *
- * @apiBody {Integer} [user_plants_id] Optional ID of the user's plant.
- * @apiBody {String} [title] Optional title of the listing.
- * @apiBody {String} [description] Optional description of the listing.
- * @apiBody {String} [city] Optional city where the listing is located.
- * @apiBody {String} [media] Optional media file or URL.
- * @apiBody {Integer} [price] Optional price of the listing.
- *
- * @apiSuccess {Integer} status HTTP status code.
- * @apiSuccess {String} message Success message.
- * @apiSuccess {Object} data The updated listing.
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *         "status": 200,
- *         "message": "Hirdetés sikeresen módosítva",
- *         "data": {
- *             "id": 1,
- *             "user_plants_id": 5,
- *             "title": "Updated Plant Title",
- *             "description": "Updated description.",
- *             "city": "Budapest",
- *             "media": "plant.jpg",
- *             "price": 1200,
- *             "created_at": "2023-10-01T12:00:00.000000Z",
- *             "updated_at": "2023-10-01T12:30:00.000000Z"
- *         }
- *     }
- *
- * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 404 Not Found
- *     {
- *         "status": 404,
- *         "message": "Listing not found."
- *         "data": []
- *     }
- */
-
-
-
-     //TODO: check apicomments below this line. 
-    /**
-     * @api {post} /listing Create Listing
-     * @apiName CreateListing
-     * @apiGroup Listing
-     * @apiDescription Create a new listing.
-     *
-     * @apiBody {Integer} user_plants_id The ID of the user's plant.
-     * @apiBody {String} title The title of the listing.
-     * @apiBody {String} description The description of the listing.
-     * @apiBody {String} city The city where the listing is located.
-     * @apiBody {String} [media] Optional media file or URL.
-     * @apiBody {Integer} price The price of the listing.
-     *
-     * @apiSuccess {Integer} status HTTP status code.
-     * @apiSuccess {String} message Success message.
-     * @apiSuccess {Object} data The created listing.
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 201 Created
-     *     {
-     *         "status": 201,
-     *         "message": "Hirdetés sikeresen létrehozva",
-     *         "data": {
-     *             "id": 1,
-     *             "user_plants_id": 5,
-     *             "title": "Beautiful Plant",
-     *             "description": "A very healthy plant.",
-     *             "city": "Budapest",
-     *             "media": "plant.jpg",
-     *             "price": 1000,
-     *             "created_at": "2023-10-01T12:00:00.000000Z",
-     *             "updated_at": "2023-10-01T12:00:00.000000Z"
-     *         }
-     *     }
-     *
-     * @apiErrorExample {json} Error-Response:
-     *     HTTP/1.1 422 Unprocessable Entity
-     */
-
-
-
-
-         /**
- * @api {get} /listings/:id Get Single Listing
- * @apiName GetListing
- * @apiGroup Listing
- * @apiDescription Retrieve details of a single listing.
- *
- * @apiParam {Integer} id The ID of the listing to retrieve.
- *
- * @apiSuccess {Integer} status HTTP status code.
- * @apiSuccess {String} message Success message.
- * @apiSuccess {Object} data The listing details.
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *         "status": 200,
- *         "message": "Listing found",
- *         "data": {
- *             "id": 2,
- *             "title": "Assumenda et repudiandae est laboriosam vitae nihil.",
- *             "description": "Et dolores aliquid delectus reprehenderit sunt distinctio molestias exercitationem.",
- *             "media": "http://example.com/image.jpg",
- *             "price": 6000,
- *             "created_at": "2025-03-03 19:29:45",
- *             "user": "lenna20",
- *             "plant": "Málna",
- *             "type": "gyümölcs",
- *             "stage": "növény",
- *             "email": "user@example.com"
+ *         "message": "Listings retrieved successfully",
+ *         "data": [
+ *             {
+ *                 "id": 1,
+ *                 "title": "Beautiful Plant",
+ *                 "description": "A healthy plant for sale.",
+ *                 "city": "Budapest",
+ *                 "media": ["http://example.com/image1.jpg", "http://example.com/image2.jpg"],
+ *                 "price": 1000,
+ *                 "created_at": "2025-03-03 19:29:45",
+ *                 "user": {
+ *                     "id": 1,
+ *                     "username": "john_doe"
+ *                 },
+ *                 "plant": {
+ *                     "id": 2,
+ *                     "name": "Rose",
+ *                     "type": "Flower"
+ *                 },
+ *                 "stage": {
+ *                     "id": 3,
+ *                     "name": "Seedling"
+ *                 }
+ *             }
+ *         ],
+ *         "pagination": {
+ *             "total": 10,
+ *             "page": 1,
+ *             "pageSize": 5,
+ *             "totalPages": 2
  *         }
  *     }
  */
 
-
-
-
-
-
-
-     // GET /api/listings/search?q=&deep&&user=&plant=&type=&stage&minprice=&maxprice=&all
-
-    /**
+/**
  * @api {get} /listings/search Search Listings
  * @apiName SearchListings
  * @apiGroup Listing
@@ -415,19 +312,28 @@ class ListingController extends BaseController
  *         "data": [
  *             {
  *                 "id": 1,
- *                 "title": "Culpa ab a quibusdam est debitis rerum.",
- *                 "description": "Aut odio facere consequatur incidunt minus iste.",
- *                 "media": "https://example.com/image.jpg",
- *                 "price": 16200,
- *                 "created_at": "2025-03-03 19:29:45",
- *                 "user": "mable.brakus",
- *                 "plant": "Gránátalma",
- *                 "type": "gyümölcs",
- *                 "stage": "palánta"
+ *                 "title": "Healthy Plant",
+ *                 "description": "A beautiful plant for sale.",
+ *                 "city": "Budapest",
+ *                 "media": ["http://example.com/image1.jpg"],
+ *                 "price": 1500,
+ *                 "user": {
+ *                     "id": 1,
+ *                     "username": "john_doe"
+ *                 },
+ *                 "plant": {
+ *                     "id": 2,
+ *                     "name": "Rose",
+ *                     "type": "Flower"
+ *                 },
+ *                 "stage": {
+ *                     "id": 3,
+ *                     "name": "Seedling"
+ *                 }
  *             }
  *         ],
  *         "pagination": {
- *             "total": 1,
+ *             "total": 5,
  *             "page": 1,
  *             "pageSize": 5,
  *             "totalPages": 1
@@ -435,53 +341,156 @@ class ListingController extends BaseController
  *     }
  */
 
-
-
-
-
-
-     //TODO modify apidoc for current responses
-
-    // GET /api/articles?all
-    /**
- * @api {get} /listings Get Listings
- * @apiName GetListings
+/**
+ * @api {get} /listings/:id Get Single Listing
+ * @apiName GetListing
  * @apiGroup Listing
- * @apiDescription Retrieve a paginated list of listings or all listings.
+ * @apiDescription Retrieve details of a single listing.
  *
- * @apiParam {Boolean} [all] If set, retrieves all listings without pagination.
- * @apiParam {Integer} [pageSize=5] Number of listings per page.
- * @apiParam {Integer} [page=1] Page number for pagination.
+ * @apiParam {Integer} id The ID of the listing to retrieve.
  *
  * @apiSuccess {Integer} status HTTP status code.
  * @apiSuccess {String} message Success message.
- * @apiSuccess {Object[]} data Array of listings.
- * @apiSuccess {Object} pagination Pagination metadata.
+ * @apiSuccess {Object} data The listing details.
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *         "status": 200,
- *         "message": "Listings retrieved successfully",
- *         "data": [
- *             {
+ *         "message": "Listing found",
+ *         "data": {
+ *             "id": 1,
+ *             "title": "Beautiful Plant",
+ *             "description": "A healthy plant for sale.",
+ *             "city": "Budapest",
+ *             "media": ["http://example.com/image1.jpg"],
+ *             "price": 1000,
+ *             "user": {
  *                 "id": 1,
- *                 "title": "Culpa ab a quibusdam est debitis rerum.",
- *                 "description": "Aut odio facere consequatur incidunt minus iste.",
- *                 "media": "https://example.com/image.jpg",
- *                 "price": 16200,
- *                 "created_at": "2025-03-03 19:29:45",
- *                 "user": "mable.brakus",
- *                 "plant": "Gránátalma",
- *                 "type": "gyümölcs",
- *                 "stage": "palánta"
+ *                 "username": "john_doe"
+ *             },
+ *             "plant": {
+ *                 "id": 2,
+ *                 "name": "Rose",
+ *                 "type": "Flower"
+ *             },
+ *             "stage": {
+ *                 "id": 3,
+ *                 "name": "Seedling"
  *             }
- *         ],
- *         "pagination": {
- *             "total": 15,
- *             "page": 1,
- *             "pageSize": 5,
- *             "totalPages": 3
  *         }
+ *     }
+ */
+
+/**
+ * @api {post} /listing Create Listing
+ * @apiName CreateListing
+ * @apiGroup Listing
+ * @apiDescription Create a new listing.
+ *
+ * @apiBody {Integer} user_plants_id The ID of the user's plant.
+ * @apiBody {String} title The title of the listing.
+ * @apiBody {String} description The description of the listing.
+ * @apiBody {String} city The city where the listing is located.
+ * @apiBody {File[]} media Array of image files to upload.
+ * @apiBody {Integer} price The price of the listing.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object} data The created listing.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 201 Created
+ *     {
+ *         "status": 201,
+ *         "message": "Listing created successfully",
+ *         "data": {
+ *             "id": 1,
+ *             "title": "Beautiful Plant",
+ *             "description": "A healthy plant for sale.",
+ *             "city": "Budapest",
+ *             "media": ["http://example.com/image1.jpg"],
+ *             "price": 1000,
+ *             "user": {
+ *                 "id": 1,
+ *                 "username": "john_doe"
+ *             },
+ *             "plant": {
+ *                 "id": 2,
+ *                 "name": "Rose",
+ *                 "type": "Flower"
+ *             },
+ *             "stage": {
+ *                 "id": 3,
+ *                 "name": "Seedling"
+ *             }
+ *         }
+ *     }
+ */
+
+/**
+ * @api {patch} /listings/:id Update Listing
+ * @apiName UpdateListing
+ * @apiGroup Listing
+ * @apiDescription Update an existing listing.
+ *
+ * @apiParam {Integer} id The ID of the listing to update.
+ *
+ * @apiBody {Integer} [user_plants_id] Optional ID of the user's plant.
+ * @apiBody {String} [title] Optional title of the listing.
+ * @apiBody {String} [description] Optional description of the listing.
+ * @apiBody {String} [city] Optional city where the listing is located.
+ * @apiBody {File[]} [media] Optional array of image files to upload.
+ * @apiBody {Integer} [price] Optional price of the listing.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ * @apiSuccess {Object} data The updated listing.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Listing updated successfully",
+ *         "data": {
+ *             "id": 1,
+ *             "title": "Updated Plant",
+ *             "description": "Updated description.",
+ *             "city": "Budapest",
+ *             "media": ["http://example.com/image1.jpg"],
+ *             "price": 1200,
+ *             "user": {
+ *                 "id": 1,
+ *                 "username": "john_doe"
+ *             },
+ *             "plant": {
+ *                 "id": 2,
+ *                 "name": "Rose",
+ *                 "type": "Flower"
+ *             },
+ *             "stage": {
+ *                 "id": 3,
+ *                 "name": "Seedling"
+ *             }
+ *         }
+ *     }
+ */
+
+/**
+ * @api {delete} /listings/:id Delete Listing
+ * @apiName DeleteListing
+ * @apiGroup Listing
+ * @apiDescription Delete an existing listing.
+ *
+ * @apiParam {Integer} id The ID of the listing to delete.
+ *
+ * @apiSuccess {Integer} status HTTP status code.
+ * @apiSuccess {String} message Success message.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *         "status": 200,
+ *         "message": "Listing deleted successfully"
  *     }
  */
