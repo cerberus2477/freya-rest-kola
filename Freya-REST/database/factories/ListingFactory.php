@@ -10,7 +10,7 @@ use App\Helpers\StorageHelper;
 class ListingFactory extends Factory
 {
 
-    //creates a new userplant with it. this ensures that every listing has a userplant, but every userplant is inly in one listing.
+    //creates a new userplant with it. this ensures that every listing has a userplant, but every userplant is only in one listing.
     protected $model = Listing::class;
 
     public function definition()
