@@ -185,7 +185,7 @@ class ArticleController extends BaseController
 //apidoc
 
 /**
- * @api {get} /articles Retrieve articles
+ * @api {get} /articles Search articles
  * @apiName GetArticles
  * @apiGroup Articles
  * @apiDescription Retrieve a paginated list of articles or all articles if `all` is passed. Returns key datapoints.

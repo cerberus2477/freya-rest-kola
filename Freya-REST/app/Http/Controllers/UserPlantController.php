@@ -80,7 +80,9 @@ class UserPlantController extends BaseController
  *             "count": 5
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {post} /profile/plants Create UserPlant
  * @apiName CreateUserPlant
  * @apiGroup UserPlant
@@ -109,7 +111,9 @@ class UserPlantController extends BaseController
  *             "count": 5
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {patch} /profile/plants/:id Update UserPlant
  * @apiName UpdateUserPlant
  * @apiGroup UserPlant
@@ -139,7 +143,9 @@ class UserPlantController extends BaseController
  *             "count": 10
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {delete} /profile/plants/:id Delete UserPlant
  * @apiName DeleteUserPlant
  * @apiGroup UserPlant

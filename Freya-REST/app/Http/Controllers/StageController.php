@@ -83,11 +83,12 @@ class StageController extends BaseController
  *             {
  *                 "id": 2,
  *                 "name": "Vegetative"
- *             },
- *             ...
+ *             }
  *         ]
  *     }
- * 
+ */
+
+/**
  * @api {get} /api/stages/:id Get Stage by ID
  * @apiName GetStageById
  * @apiGroup Stage
@@ -108,16 +109,9 @@ class StageController extends BaseController
  *             "name": "Seedling"
  *         }
  *     }
- * 
- * @apiError {Object} message Error message if stage not found.
- * @apiErrorExample Error-Response:
- *     HTTP/1.1 404 Not Found
- *     {
- *         "status": 404,
- *         "message": "Stage not found",
- *         "data": []
- *     }
- * 
+ */
+
+/**
  * @api {post} /api/stages Create Stage
  * @apiName CreateStage
  * @apiGroup Stage
@@ -139,7 +133,9 @@ class StageController extends BaseController
  *             "name": "Seedling"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {put} /api/stages/:id Update Stage
  * @apiName UpdateStage
  * @apiGroup Stage
@@ -162,7 +158,9 @@ class StageController extends BaseController
  *             "name": "Seedling"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {delete} /api/stages/:id Delete Stage
  * @apiName DeleteStage
  * @apiGroup Stage
@@ -177,7 +175,9 @@ class StageController extends BaseController
  *         "status": 200,
  *         "message": "Stage deleted successfully"
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/stages/:id/restore Restore Stage
  * @apiName RestoreStage
  * @apiGroup Stage

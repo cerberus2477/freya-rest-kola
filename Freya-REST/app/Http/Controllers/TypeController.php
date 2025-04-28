@@ -84,11 +84,12 @@ class TypeController extends BaseController
  *             {
  *                 "id": 2,
  *                 "name": "Vegetable"
- *             },
- *             ...
+ *             }
  *         ]
  *     }
- * 
+ */
+
+/**
  * @api {get} /api/types/:id Get Type by ID
  * @apiName GetTypeById
  * @apiGroup Type
@@ -109,7 +110,9 @@ class TypeController extends BaseController
  *             "name": "Fruit"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/types Create Type
  * @apiName CreateType
  * @apiGroup Type
@@ -131,7 +134,9 @@ class TypeController extends BaseController
  *             "name": "Fruit"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {put} /api/types/:id Update Type
  * @apiName UpdateType
  * @apiGroup Type
@@ -154,7 +159,9 @@ class TypeController extends BaseController
  *             "name": "Fruit"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {delete} /api/types/:id Delete Type
  * @apiName DeleteType
  * @apiGroup Type
@@ -169,7 +176,9 @@ class TypeController extends BaseController
  *         "status": 200,
  *         "message": "Type deleted successfully"
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/types/:id/restore Restore Type
  * @apiName RestoreType
  * @apiGroup Type

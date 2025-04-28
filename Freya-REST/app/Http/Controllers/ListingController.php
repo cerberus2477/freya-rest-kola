@@ -229,59 +229,6 @@ class ListingController extends BaseController
 //apidoc
 
 /**
- * @api {get} /listings Get Listings
- * @apiName GetListings
- * @apiGroup Listing
- * @apiDescription Retrieve a paginated list of listings or all listings if `all` is passed.
- *
- * @apiParam {Boolean} [all] If set, retrieves all listings without pagination.
- * @apiParam {Integer} [pageSize=5] Number of listings per page.
- * @apiParam {Integer} [page=1] Page number for pagination.
- *
- * @apiSuccess {Integer} status HTTP status code.
- * @apiSuccess {String} message Success message.
- * @apiSuccess {Object[]} data Array of listings.
- * @apiSuccess {Object} pagination Pagination metadata.
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *         "status": 200,
- *         "message": "Listings retrieved successfully",
- *         "data": [
- *             {
- *                 "id": 1,
- *                 "title": "Beautiful Plant",
- *                 "description": "A healthy plant for sale.",
- *                 "city": "Budapest",
- *                 "media": ["http://example.com/image1.jpg", "http://example.com/image2.jpg"],
- *                 "price": 1000,
- *                 "created_at": "2025-03-03 19:29:45",
- *                 "user": {
- *                     "id": 1,
- *                     "username": "john_doe"
- *                 },
- *                 "plant": {
- *                     "id": 2,
- *                     "name": "Rose",
- *                     "type": "Flower"
- *                 },
- *                 "stage": {
- *                     "id": 3,
- *                     "name": "Seedling"
- *                 }
- *             }
- *         ],
- *         "pagination": {
- *             "total": 10,
- *             "page": 1,
- *             "pageSize": 5,
- *             "totalPages": 2
- *         }
- *     }
- */
-
-/**
  * @api {get} /listings/search Search Listings
  * @apiName SearchListings
  * @apiGroup Listing

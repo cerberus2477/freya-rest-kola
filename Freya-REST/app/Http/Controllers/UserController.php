@@ -470,8 +470,9 @@ class UserController extends BaseController
 /**
  * @api {patch} /users/:username/role Update User Role
  * @apiName UpdateUserRole
- * @apiGroup Admin
+ * @apiGroup User
  * @apiDescription Update the role of a specific user.
+ * Requires admin privileges.
  *
  * @apiParam {String} username The username of the user whose role is being updated.
  * @apiBody {Integer} role_id The new role ID.

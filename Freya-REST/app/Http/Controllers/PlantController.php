@@ -78,7 +78,8 @@ class PlantController extends BaseController
 
 //apidoc
 
-/**
+
+ /**
  * @api {get} /api/plants Get Plants
  * @apiName GetPlants
  * @apiGroup Plant
@@ -106,11 +107,12 @@ class PlantController extends BaseController
  *                     "id": 1,
  *                     "name": "Fruit"
  *                 }
- *             },
- *             ...
+ *             }
  *         ]
  *     }
- * 
+ */
+
+/**
  * @api {get} /api/plants/:id Get Plant by ID
  * @apiName GetPlantById
  * @apiGroup Plant
@@ -140,7 +142,9 @@ class PlantController extends BaseController
  *             }
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/plants Create Plant
  * @apiName CreatePlant
  * @apiGroup Plant
@@ -173,7 +177,9 @@ class PlantController extends BaseController
  *             }
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {put} /api/plants/:id Update Plant
  * @apiName UpdatePlant
  * @apiGroup Plant
@@ -207,7 +213,9 @@ class PlantController extends BaseController
  *             }
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {delete} /api/plants/:id Delete Plant
  * @apiName DeletePlant
  * @apiGroup Plant
@@ -222,7 +230,9 @@ class PlantController extends BaseController
  *         "status": 200,
  *         "message": "Plant deleted successfully"
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/plants/:id/restore Restore Plant
  * @apiName RestorePlant
  * @apiGroup Plant

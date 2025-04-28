@@ -83,11 +83,12 @@ class CategoryController extends BaseController
  *             {
  *                 "id": 2,
  *                 "name": "Vegetable"
- *             },
- *             ...
+ *             }
  *         ]
  *     }
- * 
+ */
+
+/**
  * @api {get} /api/categories/:id Get Category by ID
  * @apiName GetCategoryById
  * @apiGroup Category
@@ -108,7 +109,9 @@ class CategoryController extends BaseController
  *             "name": "Fruit"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/categories Create Category
  * @apiName CreateCategory
  * @apiGroup Category
@@ -129,7 +132,9 @@ class CategoryController extends BaseController
  *             "name": "Fruit"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {put} /api/categories/:id Update Category
  * @apiName UpdateCategory
  * @apiGroup Category
@@ -152,7 +157,9 @@ class CategoryController extends BaseController
  *             "name": "Fruit"
  *         }
  *     }
- * 
+ */
+
+/**
  * @api {delete} /api/categories/:id Delete Category
  * @apiName DeleteCategory
  * @apiGroup Category
@@ -167,7 +174,9 @@ class CategoryController extends BaseController
  *         "status": 200,
  *         "message": "Category deleted successfully"
  *     }
- * 
+ */
+
+/**
  * @api {post} /api/categories/:id/restore Restore Category
  * @apiName RestoreCategory
  * @apiGroup Category
