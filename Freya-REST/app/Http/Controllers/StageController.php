@@ -9,15 +9,19 @@ use Illuminate\Support\Facades\Cache;
 
 class StageController extends BaseController
 {
-    public function index(Request $request)
+   public function index(Request $request)
     {
         $cacheKey = 'stages_all_' . md5($request->fullUrl());
-            if (Cache::has($cacheKey)) {
-                return Cache::get($cacheKey);
-            }
-        $response = Stage::all();
+
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey); // ← this must be a JsonResponse
+        }
+
+        $response = $this->jsonResponse(200, "Stages retrieved successfully", Stage::all());
+
         Cache::put($cacheKey, $response);
-        return $this->jsonResponse(200, "Stages retrieved successfully", $response);
+
+        return $response;
     }
 
     public function show($id)
