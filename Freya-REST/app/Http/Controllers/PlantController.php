@@ -25,14 +25,15 @@ class PlantController extends BaseController
     public function index(Request $request)
     {
         $cacheKey = 'plants_all_' . md5($request->fullUrl());
-            if (Cache::has($cacheKey)) {
-                return Cache::get($cacheKey);
-            }
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
         $plants = Plant::with('type')->get();
-        $response = $this->format($plants);
+        $response = $this->jsonResponse(200, "Plants retrieved successfully",  $this->format($plants));
         Cache::put($cacheKey, $response);
-        return $this->jsonResponse(200, "Plants retrieved successfully", $response);
+        return $response;
     }
+
 
     public function show($id)
     {
