@@ -54,6 +54,9 @@ class ListingController extends BaseController
                 'user' => [
                     'id' => $listing->userPlant->user->id,
                     'username' => $listing->userPlant->user->username,
+                    'email' => $listing->userPlant->user->email,
+                    'city' => $listing->userPlant->user->city,
+                    // todo: last online
                 ],
                 'plant' => [
                     'id' => $listing->userPlant->plant->id,
