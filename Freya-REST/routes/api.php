@@ -63,7 +63,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     });
 
     //listings
-    Route::post('/listing', [ListingController::class, 'create']);
+    Route::post('/listings', [ListingController::class, 'create']);
     Route::patch('/listings/{id}', [ListingController::class, 'update']);
     Route::delete('/listings/{id}', [ListingController::class, 'destroy']);
     //Own resource
