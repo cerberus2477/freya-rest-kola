@@ -11,8 +11,10 @@ class Listing extends Model
 
     protected $fillable = ['user_plants_id', 'city', 'title', 'description', 'media', 'price'];
 
+    // Laravel’s $casts feature tells Eloquent how to interpret and serialize values, including when converting to JSON for API responses.
     protected $casts = [
         'media' => 'array',
+        'price' => 'integer'
     ];
 
     public function userPlant()
